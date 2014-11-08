@@ -27,18 +27,15 @@ class VoteCounts(object):
 
     @property
     def percentages(self):
-        total_votes = sum(self._votes)
-        if total_votes == 0:
-            percentages = [0] * len(self.parties)
-        else:
-            percentages = [float(votes)/total_votes for votes in self._votes]
+        total_votes = sum(self._votes) or 0.1
+        percentages = [float(votes)/total_votes for votes in self._votes]
         return dict(zip(self.parties, percentages))
 
     def iter_votes(self):
         return itertools.izip(self.parties, self._votes)
 
     def iter_percentages(self):
-        total_votes = sum(self._votes)
+        total_votes = sum(self._votes) or 0.1
         for party, votes in self.iter_votes():
             yield party, float(votes)/total_votes
 
@@ -211,7 +208,7 @@ class ElectorateStatistics(GeneralStatistics):
             # Some files have these rows split by area
             elif location.lower().startswith("ordinary votes before polling day"):
                 if not hasattr(self, "ordinary_advance"):
-                    setattr(self, "ordinary_advance", VoteCounts(self, votes))
+                    self.ordinary_advance = VoteCounts(self, votes)
                 else:
                     self.ordinary_advance += VoteCounts(self, votes)
 
@@ -219,7 +216,7 @@ class ElectorateStatistics(GeneralStatistics):
                 ppr = PollingPlaceResults(self, num, suburb, location, votes)
                 self.pprs.append(ppr)
 
-        if self.year == 1999:
+        if self.year == 1999: # 1999 doesn't have these figures
             self.less_than_6 = VoteCounts.blank(self)
             self.party_only = VoteCounts.blank(self)
 
@@ -244,7 +241,7 @@ class ElectorateStatistics(GeneralStatistics):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("year", type=int)
     parser.add_argument("electorate", nargs="?", type=int, default=None)
     args = parser.parse_args()

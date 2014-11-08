@@ -8,16 +8,21 @@ import argparse
 from electorate import ElectorateStatistics
 from config import *
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("year", nargs="?", type=int, default=2014)
-parser.add_argument("-e", "--electorate", nargs="+", metavar="ID", type=int, default=[], help="Specific electorate, ID is the electorate number")
-parser.add_argument("-t", "--total", action="store_true", help="National totals")
-parser.add_argument("-r", "--compare-overall", action="store_true", help="National specials comparisons for all years")
-parser.add_argument("-s", "--compare-electorate", action="store_true", help="Specials comparisons by electorate")
-parser.add_argument("-d", "--diffs", action="store_true", help="Use differences instead of ratios in overseas vs specials comparisons")
-parser.add_argument("-v", "--votes", action="store_true", help="In --total or --electorate, also print raw vote counts")
-parser.add_argument("-P", "--all-parties", action="store_true", help="Print all parties, not just significant ones")
+actions = parser.add_argument_group("actions")
+actions.add_argument("-t", "--total", action="store_true", help="National totals")
+actions.add_argument("-e", "--electorate", nargs="+", metavar="ID", type=int, default=[], help="Specific electorate, ID is the electorate number")
+actions.add_argument("-r", "--compare-overall", action="store_true", help="National specials comparisons for all years")
+actions.add_argument("-s", "--compare-electorate", action="store_true", help="Specials comparisons by electorate")
+options = parser.add_argument_group("options")
+options.add_argument("-d", "--diffs", action="store_true", help="Use differences instead of ratios in overseas vs specials comparisons")
+options.add_argument("-v", "--votes", action="store_true", help="In --total or --electorate, also print raw vote counts")
+options.add_argument("-P", "--all-parties", action="store_true", help="Print all parties, not just significant ones")
 args = parser.parse_args()
+
+if not any([args.total, args.compare_electorate, args.compare_overall, args.electorate]):
+    parser.print_usage()
 
 def print_stats(stats, type="percentage"):
     functions = {

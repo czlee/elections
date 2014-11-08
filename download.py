@@ -55,10 +55,10 @@ def download_polling_place_results(year, elec_id, type="party", force=False, qui
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("year", type=int)
     parser.add_argument("electorate", nargs="?", type=int, default=None)
-    parser.add_argument("type", nargs="?", type=str, default="party")
+    parser.add_argument("type", nargs="?", type=str, choices=["party", "cand"], default="party")
     parser.add_argument("-f", "--force", action="store_true")
     args = parser.parse_args()
 
