@@ -74,7 +74,7 @@ if args.compare_overall or args.compare_electorate:
         COMPARISONS_HEADER = COMPARISONS_HEADER.replace("/", "-")
 
     if args.compare_overall:
-        print("                             Greens                                          Labour                                         National")
+        print(" " * 27 + "Greens" + " " * 42 + "Labour" + " " * 41 + "National")
         print("Year" + COMPARISONS_HEADER)
         for year in YEARS:
             total = ElectorateStatistics(year, 1)
@@ -84,7 +84,7 @@ if args.compare_overall or args.compare_electorate:
             print_comparison(total, line, compare_type)
 
     if args.compare_electorate:
-        print("Election {0:d}                               Greens                                          Labour                                         National".format(args.year))
+        print("Election {0:d}".format(args.year) + " " * 31 + "Greens" + " " * 42 + "Labour" + " " * 41 + "National")
         print("Electorate           " + COMPARISONS_HEADER)
         for elec_id in range(1, NUM_ELECTORATES[args.year]+1):
             es = ElectorateStatistics(args.year, elec_id)
