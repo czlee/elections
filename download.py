@@ -3,7 +3,7 @@
 Chuan-Zheng Lee <czlee@stanford.edu>
 November 2014
 """
-import urllib
+import urllib.request
 import os
 from config import NUM_ELECTORATES, ELECTORATE_NAMES_1999
 
@@ -50,7 +50,7 @@ def download_polling_place_results(year, elec_id, type="party", force=False, qui
         if not quiet:
             print("'{0}' already exists, not downloading".format(filename))
     else:
-        urllib.urlretrieve(url, filename)
+        urllib.request.urlretrieve(url, filename)
     return filename
 
 if __name__ == "__main__":

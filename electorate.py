@@ -32,7 +32,7 @@ class VoteCounts(object):
         return dict(zip(self.parties, percentages))
 
     def iter_votes(self):
-        return itertools.izip(self.parties, self._votes)
+        return zip(self.parties, self._votes)
 
     def iter_percentages(self):
         total_votes = sum(self._votes) or 0.1
@@ -43,7 +43,7 @@ class VoteCounts(object):
         """Add votes party-by-party"""
         assert(isinstance(other, VoteCounts))
         assert(self.parties == other.parties)
-        votes = map(sum, zip(self._votes, other._votes))
+        votes = list(map(sum, list(zip(self._votes, other._votes))))
         return VoteCounts(self.stats, votes)
 
     def __eq__(self, other):
@@ -79,7 +79,7 @@ class GeneralStatistics(object):
         self.parties = parties
         for key in self.BASIC_FIELDS:
             kwargs.setdefault(key, VoteCounts.blank(self))
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if key in self.BASIC_FIELDS:
                 if isinstance(value, VoteCounts):
                     setattr(self, key, value)
@@ -160,25 +160,25 @@ class ElectorateStatistics(GeneralStatistics):
 
         if self.year == 1999:
             # Electorate name and party column headings
-            line = reader.next()
+            line = next(reader)
             name, elec_id = line[0].rsplit(None, 4)[0:2]
             name = name.title()
             END_COLUMNS = 4
 
         else:
-            reader.next() # Header line
+            next(reader) # Header line
 
             # Electorate name line
-            line = reader.next()
+            line = next(reader)
             name, elec_id = line[0].rsplit(None, 1)
 
             # Party column headings
             # First two columns are polling place names, last two are totals
-            line = reader.next()
+            line = next(reader)
             END_COLUMNS = 2
 
-        self.parties = [unicode(party, "utf-8", errors="replace") for party in line[2:len(line)-END_COLUMNS]]
-        self.name = unicode(name, "utf-8")
+        self.parties = [party for party in line[2:len(line)-END_COLUMNS]]
+        self.name = name
         self.id = int(elec_id)
 
         # Polling places
@@ -191,13 +191,13 @@ class ElectorateStatistics(GeneralStatistics):
             if not any(line[2:]): # skip lines without vote counts
                 continue
 
-            suburb = unicode(line[0], "utf-8", errors="replace") or suburb
-            location = unicode(line[1], "utf-8", errors="replace")
-            votes = map(int, line[2:len(line)-END_COLUMNS])
+            suburb = line[0] or suburb
+            location = line[1]
+            votes = list(map(int, line[2:len(line)-END_COLUMNS]))
             if len(votes) == 0:
                 votes = [0] * len(self.parties)
 
-            if location.lower().strip().rsplit(None, 1) == [self.name.lower(), u"total"]:
+            if location.lower().strip().rsplit(None, 1) == [self.name.lower(), "total"]:
                 self.totals = VoteCounts(self, votes)
                 break # assume totals link is always last
 
@@ -252,4 +252,4 @@ if __name__ == "__main__":
     attributes = ["ordinary", "ordinary_polling_places", "advance", "specials", "specials_domestic", "overseas"]
     print("Party".ljust(35) + "Ordinary   Polling   Advance  Specials Dom Specs  Overseas")
     for party in es.parties:
-        print(party.ljust(35) + "  ".join(map(lambda x: str(getattr(es, x).votes[party]).rjust(8), attributes)))
+        print(party.ljust(35) + "  ".join([str(getattr(es, x).votes[party]).rjust(8) for x in attributes]))

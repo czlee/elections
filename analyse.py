@@ -30,7 +30,7 @@ def print_stats(stats, type="percentage"):
         "votes"     : lambda x: str(getattr(stats, x).votes[party]).rjust(8),
     }
     attributes = ["ordinary", "ordinary_polling_places", "advance", "domestic", "specials", "specials_domestic", "overseas", "totals"]
-    print(u"Party".ljust(35) + "Ordinary   Polling   Advance  Domestic  Specials  DomSpecs  Overseas     Total")
+    print("Party".ljust(35) + "Ordinary   Polling   Advance  Domestic  Specials  DomSpecs  Overseas     Total")
     parties = args.all_parties and stats.parties or PARTIES[args.year]
     for party in parties:
         print(party[:35].ljust(35) + "  ".join(map(functions[type], attributes)))
@@ -54,16 +54,16 @@ def print_comparison(stats, line, type):
                     specials-ordinary)
         else:
             raise ValueError("Unrecognized type: {0!r}".format(type))
-    print line
+    print(line)
 
 if args.total:
     total = ElectorateStatistics(args.year, 1)
     for elec_id in range(2, NUM_ELECTORATES[args.year]+1):
         total += ElectorateStatistics(args.year, elec_id)
-    print(u"National statistics for {0:d} election:".format(args.year))
+    print("National statistics for {0:d} election:".format(args.year))
     print_stats(total, "percentage")
     if args.votes:
-        print
+        print()
         print_stats(total, "votes")
 
 if args.compare_overall or args.compare_electorate:
@@ -80,7 +80,7 @@ if args.compare_overall or args.compare_electorate:
             total = ElectorateStatistics(year, 1)
             for elec_id in range(2, NUM_ELECTORATES[year]+1):
                 total += ElectorateStatistics(year, elec_id)
-            line = unicode(str(year), "utf-8")
+            line = str(year)
             print_comparison(total, line, compare_type)
 
     if args.compare_electorate:
@@ -93,8 +93,8 @@ if args.compare_overall or args.compare_electorate:
 
 for elec_id in args.electorate:
     es = ElectorateStatistics(args.year, elec_id)
-    print(u"Statistics for electorate {0:d} - {1:s} in {2:d} election".format(es.id, es.name, args.year))
+    print("Statistics for electorate {0:d} - {1:s} in {2:d} election".format(es.id, es.name, args.year))
     print_stats(es)
     if args.votes:
-        print
+        print()
         print_stats(total, "votes")
