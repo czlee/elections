@@ -7,7 +7,8 @@ import urllib.request
 import os
 from config import NUM_ELECTORATES, ELECTORATE_NAMES_1999
 
-URL_GENERAL = "http://electionresults.govt.nz/electionresults_{year:d}/e9/csv/e9_part8_{type:s}_{elec_id:d}.csv"
+URL_2017 = "https://electionresults.govt.nz/electionresults_{year:d}/statistics/csv/{type:s}-votes-by-voting-place-{elec_id:d}.csv"
+URL_2002_2014 = "http://electionresults.govt.nz/electionresults_{year:d}/e9/csv/e9_part8_{type:s}_{elec_id:d}.csv"
 URL_1999 = "http://electionresults.govt.nz/electionresults_{year:d}/e9/csv/{elec_id:02d}_{elec_name:s}_{type:s}.csv"
 RESULTS_DIR = "results"
 
@@ -31,21 +32,26 @@ def get_filename(year, elec_id, type):
 def download_all_polling_place_results(year, types=["party"], force=False, quiet=False):
     """Downloads all CSV files for the year."""
     for elec_id in range(1, NUM_ELECTORATES[year]+1):
-        for type in types:
-            download_polling_place_results(year, elec_id, type, force, quiet)
+        for vote_type in types:
+            download_polling_place_results(year, elec_id, vote_type, force, quiet)
 
-def get_details_file_url(year, elec_id, type):
+def get_details_file_url(year, elec_id, vote_type):
     if year == 1999:
         return URL_1999.format(year=year, elec_id=elec_id,
-                elec_name=ELECTORATE_NAMES_1999[elec_id-1], type=type[0])
-    return URL_GENERAL.format(year=year, elec_id=elec_id, type=type)
+                elec_name=ELECTORATE_NAMES_1999[elec_id-1], type=vote_type[0])
+    elif year >= 2002 and year <= 2014:
+        return URL_2002_2014.format(year=year, elec_id=elec_id, type=vote_type)
+    elif year == 2017:
+        if vote_type == "cand":
+            vote_type = "candidate"
+        return URL_2017.format(year=year, elec_id=elec_id, type=vote_type)
 
-def download_polling_place_results(year, elec_id, type="party", force=False, quiet=False):
+def download_polling_place_results(year, elec_id, vote_type="party", force=False, quiet=False):
     """Downloads the CSV file for an electorate and vote type and returns the
     name of the local copy of the file."""
     check_directories(year)
-    url = get_details_file_url(year, elec_id, type)
-    filename = get_filename(year, elec_id, type)
+    url = get_details_file_url(year, elec_id, vote_type)
+    filename = get_filename(year, elec_id, vote_type)
     if os.path.exists(filename) and not force:
         if not quiet:
             print("'{0}' already exists, not downloading".format(filename))

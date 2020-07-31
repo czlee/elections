@@ -152,7 +152,7 @@ class ElectorateStatistics(GeneralStatistics):
         print("Warning: [{0:d}, {1:d}] {2:s}".format(self.year, self.electorate, message))
 
     def download_files(self):
-        self.filename_party = download.download_polling_place_results(self.year, self.electorate, type="party", quiet=True)
+        self.filename_party = download.download_polling_place_results(self.year, self.electorate, vote_type="party", quiet=True)
 
     def parse_party_file(self):
         csvfile = open(self.filename_party)
@@ -201,16 +201,12 @@ class ElectorateStatistics(GeneralStatistics):
                 self.totals = VoteCounts(self, votes)
                 break # assume totals link is always last
 
-            elif location.lower() in self.SPECIAL_ROW_NAMES:
-                assert(not(hasattr(self, self.SPECIAL_ROW_NAMES[location.lower()])))
-                setattr(self, self.SPECIAL_ROW_NAMES[location.lower()], VoteCounts(self, votes))
-
-            # Some files have these rows split by area
-            elif location.lower().startswith("ordinary votes before polling day"):
-                if not hasattr(self, "ordinary_advance"):
-                    self.ordinary_advance = VoteCounts(self, votes)
-                else:
-                    self.ordinary_advance += VoteCounts(self, votes)
+            elif location.lower().split("-")[0].strip() in self.SPECIAL_ROW_NAMES:
+                row_label = location.lower().split("-")[0].strip()
+                counts = VoteCounts(self, votes)
+                if hasattr(self, self.SPECIAL_ROW_NAMES[row_label]):
+                    counts += getattr(self, self.SPECIAL_ROW_NAMES[row_label])
+                setattr(self, self.SPECIAL_ROW_NAMES[row_label], counts)
 
             else:
                 ppr = PollingPlaceResults(self, num, suburb, location, votes)
@@ -224,6 +220,7 @@ class ElectorateStatistics(GeneralStatistics):
         for name in self.SPECIAL_FIELDS:
             if not hasattr(self, name):
                 self._warn("No row found for {0!r}".format(name))
+                setattr(self, name, VoteCounts(self, [0] * len(self.parties)))
 
         # Sanity check
         if self.ordinary + self.specials != self.totals:
