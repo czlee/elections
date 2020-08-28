@@ -166,7 +166,11 @@ class ElectorateStatistics(GeneralStatistics):
             END_COLUMNS = 4
 
         else:
-            next(reader) # Header line
+            try:
+                next(reader) # Header line
+            except:
+                print(self.filename_party)
+                raise
 
             # Electorate name line
             line = next(reader)
@@ -203,10 +207,9 @@ class ElectorateStatistics(GeneralStatistics):
 
             elif location.lower().split("-")[0].strip() in self.SPECIAL_ROW_NAMES:
                 row_label = location.lower().split("-")[0].strip()
-                counts = VoteCounts(self, votes)
-                if hasattr(self, self.SPECIAL_ROW_NAMES[row_label]):
-                    counts += getattr(self, self.SPECIAL_ROW_NAMES[row_label])
-                setattr(self, self.SPECIAL_ROW_NAMES[row_label], counts)
+                existing = getattr(self, self.SPECIAL_ROW_NAMES[row_label], VoteCounts.blank(self))
+                this_row = VoteCounts(self, votes)
+                setattr(self, self.SPECIAL_ROW_NAMES[row_label], existing + this_row)
 
             else:
                 ppr = PollingPlaceResults(self, num, suburb, location, votes)
