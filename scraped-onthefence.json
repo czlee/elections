@@ -1,0 +1,710 @@
+[
+    {
+        "parties": [
+            {
+                "party": "New Zealand First",
+                "position": 0.5
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.5
+            },
+            {
+                "party": "ACT",
+                "position": 0.6
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.3
+            },
+            {
+                "party": "National",
+                "position": 0.8
+            },
+            {
+                "party": "Labour",
+                "position": 0.9
+            },
+            {
+                "party": "Green",
+                "position": 1.0
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 1.0
+            }
+        ],
+        "title": "Tax",
+        "text": "When deciding tax rates, how much should the Government focus on \u2013 keeping taxes the same for everyone vs\u00a0taxing people more the more they earn?",
+        "left-option": "Tax everyone the same",
+        "right-option": "Tax high earners more"
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 0.5
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.2
+            },
+            {
+                "party": "ACT",
+                "position": 0.8
+            },
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "Labour",
+                "position": 0.0
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.0
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            }
+        ],
+        "title": "Our Public Assets",
+        "text": "How much should the Government focus on \u2013 keeping public assets to provide long-term income vs\u00a0selling them to reduce national debt?",
+        "left-option": "Keep assets",
+        "right-option": "Sell assets"
+    },
+    {
+        "parties": [
+            {
+                "party": "ACT",
+                "position": 0.0
+            },
+            {
+                "party": "National",
+                "position": 0.4
+            },
+            {
+                "party": "Green",
+                "position": 0.5
+            },
+            {
+                "party": "Labour",
+                "position": 0.5
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.5
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.6
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.8
+            },
+            {
+                "party": "New Zealand First",
+                "position": 1.0
+            }
+        ],
+        "title": "Immigration",
+        "text": "Once New Zealand's border has re-opened, how much should the Government \u2013 encourage immigration to fill skill gaps and drive economic growth vs\u00a0limit immigration to ease pressure on the job market and infrastructure?",
+        "left-option": "Encourage immigration",
+        "right-option": "Limit immigration"
+    },
+    {
+        "parties": [
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            },
+            {
+                "party": "Labour",
+                "position": 0.2
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.3
+            },
+            {
+                "party": "National",
+                "position": 0.5
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.5
+            },
+            {
+                "party": "ACT",
+                "position": 0.6
+            }
+        ],
+        "title": "Justice",
+        "text": "To stop criminals reoffending, how much should the Government focus on \u2013 rehabilitation to help offenders back into society vs\u00a0harsher punishments to stop them doing it again?",
+        "left-option": "Rehabilitation",
+        "right-option": "Harsher punishments"
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 0.5
+            },
+            {
+                "party": "Labour",
+                "position": 0.4
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.4
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.3
+            },
+            {
+                "party": "ACT",
+                "position": 0.8
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.8
+            },
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            }
+        ],
+        "title": "Getting Around",
+        "text": "When planning transport, how much should the Government focus on \u2013 public transport, cycling and walking vs\u00a0private and commercial vehicles?",
+        "left-option": "Public transport, cycling and walking",
+        "right-option": "Private transport"
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 0.2
+            },
+            {
+                "party": "ACT",
+                "position": 0.7
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.8
+            },
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "Labour",
+                "position": 0.0
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            },
+            {
+                "party": "New Zealand First",
+                "position": 1.0
+            }
+        ],
+        "title": "Treaty of Waitangi",
+        "text": "How much should the Government view the Treaty of Waitangi as \u2013 an essential guide for our future vs\u00a0an important but largely symbolic historical document.",
+        "left-option": "Essential guide",
+        "right-option": "Symbolic document"
+    },
+    {
+        "parties": [
+            {
+                "party": "New Zealand First",
+                "position": 0.5
+            },
+            {
+                "party": "Labour",
+                "position": 0.2
+            },
+            {
+                "party": "ACT",
+                "position": 0.8
+            },
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            },
+            {
+                "party": "National",
+                "position": 0.9
+            },
+            {
+                "party": "New Conservative",
+                "position": null
+            }
+        ],
+        "title": "Climate Change",
+        "text": "How much should the Government \u2013 lead the way on climate change action vs follow international emission reduction targets?",
+        "left-option": "Be climate action leaders",
+        "right-option": "Follow international targets"
+    },
+    {
+        "parties": [
+            {
+                "party": "Green",
+                "position": 0.4
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.5
+            },
+            {
+                "party": "ACT",
+                "position": 0.2
+            },
+            {
+                "party": "Labour",
+                "position": 0.2
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.2
+            },
+            {
+                "party": "National",
+                "position": 0.1
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.7
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.0
+            }
+        ],
+        "title": "Big Data",
+        "text": "When collecting and using data, how much should the Government focus on \u2013 the privacy of individuals\u00a0vs\u00a0the collective good of New Zealand?",
+        "left-option": "Personal privacy",
+        "right-option": "What\u2019s best for all New Zealand"
+    },
+    {
+        "parties": [
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.2
+            },
+            {
+                "party": "Labour",
+                "position": 0.1
+            },
+            {
+                "party": "ACT",
+                "position": 0.5
+            },
+            {
+                "party": "National",
+                "position": 0.5
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.5
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.5
+            },
+            {
+                "party": "Green",
+                "position": 0.0
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.0
+            }
+        ],
+        "title": "Environment",
+        "text": "How much should the Government focus on \u2013 protecting our natural environment for future generations vs\u00a0boosting economic growth by making use of natural resources?",
+        "left-option": "Protect environment",
+        "right-option": "Use natural resources"
+    },
+    {
+        "parties": [
+            {
+                "party": "New Zealand First",
+                "position": 0.5
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.5
+            },
+            {
+                "party": "ACT",
+                "position": 0.4
+            },
+            {
+                "party": "National",
+                "position": 0.4
+            },
+            {
+                "party": "Labour",
+                "position": 0.7
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.7
+            },
+            {
+                "party": "Green",
+                "position": 0.8
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.2
+            }
+        ],
+        "title": "Employment Relations",
+        "text": "How much should the Government prioritise \u2013 helping employers run their businesses flexibly and efficiently vs\u00a0making sure employees have good working conditions?",
+        "left-option": "Flexibility and efficiency for employers",
+        "right-option": "Good working conditions"
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 0.2
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.2
+            },
+            {
+                "party": "ACT",
+                "position": 0.3
+            },
+            {
+                "party": "Labour",
+                "position": 0.3
+            },
+            {
+                "party": "Green",
+                "position": 0.1
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.1
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.1
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.7
+            }
+        ],
+        "title": "Education",
+        "text": "How much is tertiary education \u2013 a right that benefits the nation and should be Government funded vs\u00a0a choice that benefits the individual and should be student funded?",
+        "left-option": "Government funded",
+        "right-option": "Student funded"
+    },
+    {
+        "parties": [
+            {
+                "party": "Green",
+                "position": 0.1
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 0.1
+            },
+            {
+                "party": "Labour",
+                "position": 0.4
+            },
+            {
+                "party": "New Zealand First",
+                "position": 0.4
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 0.5
+            },
+            {
+                "party": "ACT",
+                "position": 0.8
+            },
+            {
+                "party": "National",
+                "position": 0.8
+            },
+            {
+                "party": "New Conservative",
+                "position": 0.8
+            }
+        ],
+        "title": "A place to live",
+        "text": "How much is ensuring everyone has a home to live in \u2013 the responsibility of Government vs\u00a0the responsibility of individuals, families, and developers?",
+        "left-option": "Government",
+        "right-option": "Individuals, families and developers"
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 3
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 3
+            },
+            {
+                "party": "ACT",
+                "position": 2
+            },
+            {
+                "party": "New Zealand First",
+                "position": 4
+            },
+            {
+                "party": "Green",
+                "position": 5
+            },
+            {
+                "party": "Labour",
+                "position": 5
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 5
+            },
+            {
+                "party": "New Conservative",
+                "position": 1
+            }
+        ],
+        "title": "Gun Control",
+        "text": "All firearms should be registered and it should be tougher to get a licence."
+    },
+    {
+        "parties": [
+            {
+                "party": "ACT",
+                "position": 1
+            },
+            {
+                "party": "Labour",
+                "position": 2
+            },
+            {
+                "party": "National",
+                "position": 2
+            },
+            {
+                "party": "New Conservative",
+                "position": 2
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 2
+            },
+            {
+                "party": "Green",
+                "position": 3
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 3
+            },
+            {
+                "party": "New Zealand First",
+                "position": 3
+            }
+        ],
+        "title": "Border Control",
+        "text": "New Zealand\u2019s borders should remain closed to non-citizens until a COVID-19 vaccine is found, even if that takes years."
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 4
+            },
+            {
+                "party": "New Conservative",
+                "position": 4
+            },
+            {
+                "party": "New Zealand First",
+                "position": 4
+            },
+            {
+                "party": "ACT",
+                "position": 5
+            },
+            {
+                "party": "Green",
+                "position": 5
+            },
+            {
+                "party": "Labour",
+                "position": 5
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 5
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 5
+            }
+        ],
+        "title": "Mental Health",
+        "text": "Mental health and addiction support services should remain a top priority for Government."
+    },
+    {
+        "parties": [
+            {
+                "party": "Green",
+                "position": 5
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 5
+            },
+            {
+                "party": "Labour",
+                "position": 3
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 3
+            },
+            {
+                "party": "National",
+                "position": 2
+            },
+            {
+                "party": "ACT",
+                "position": 1
+            },
+            {
+                "party": "New Conservative",
+                "position": 1
+            },
+            {
+                "party": "New Zealand First",
+                "position": 1
+            }
+        ],
+        "title": "Lowering Voting Age",
+        "text": "16-year-olds are mature enough to make informed decisions so they should be allowed to vote."
+    },
+    {
+        "parties": [
+            {
+                "party": "National",
+                "position": 3
+            },
+            {
+                "party": "Labour",
+                "position": 4
+            },
+            {
+                "party": "M\u0101ori Party",
+                "position": 4
+            },
+            {
+                "party": "New Conservative",
+                "position": 4
+            },
+            {
+                "party": "New Zealand First",
+                "position": 4
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 4
+            },
+            {
+                "party": "ACT",
+                "position": 5
+            },
+            {
+                "party": "Green",
+                "position": 5
+            }
+        ],
+        "title": "Police",
+        "text": "We expect too much of NZ\u2019s Police, and some of their work should be done by communities, mental health experts, and social services."
+    },
+    {
+        "parties": [
+            {
+                "party": "M\u0101ori Party",
+                "position": 5
+            },
+            {
+                "party": "ACT",
+                "position": 3
+            },
+            {
+                "party": "Green",
+                "position": 2
+            },
+            {
+                "party": "Labour",
+                "position": 2
+            },
+            {
+                "party": "New Zealand First",
+                "position": 2
+            },
+            {
+                "party": "The Opportunities Party",
+                "position": 2
+            },
+            {
+                "party": "National",
+                "position": 1
+            },
+            {
+                "party": "New Conservative",
+                "position": 1
+            }
+        ],
+        "title": "Health",
+        "text": "It should be compulsory for everyone in New Zealand to be vaccinated against communicable diseases."
+    }
+]
