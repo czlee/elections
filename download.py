@@ -5,6 +5,7 @@ November 2014
 """
 import urllib.request
 import os
+import time
 from config import NUM_ELECTORATES, ELECTORATE_NAMES_1999
 
 URL_2017_2020 = "https://electionresults.govt.nz/electionresults_{year:d}/statistics/csv/{type:s}-votes-by-voting-place-{elec_id:d}.csv"
@@ -55,8 +56,21 @@ def download_polling_place_results(year, elec_id, vote_type="party", force=False
     if os.path.exists(filename) and not force:
         if not quiet:
             print("'{0}' already exists, not downloading".format(filename))
+
     else:
-        urllib.request.urlretrieve(url, filename)
+        request = urllib.request.Request(url, headers={'User-Agent': 'Elections Analysis'})
+        response = urllib.request.urlopen(request)
+        content = response.read()
+        response.close()
+
+        dirname = os.path.dirname(filename)
+        if dirname:
+            os.makedirs(dirname, exist_ok=True)
+        outfile = open(filename, 'wb')
+        outfile.write(content)
+        outfile.close()
+        time.sleep(0.4)
+
     return filename
 
 if __name__ == "__main__":
