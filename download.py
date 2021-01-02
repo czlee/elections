@@ -7,7 +7,7 @@ import urllib.request
 import os
 from config import NUM_ELECTORATES, ELECTORATE_NAMES_1999
 
-URL_2017 = "https://electionresults.govt.nz/electionresults_{year:d}/statistics/csv/{type:s}-votes-by-voting-place-{elec_id:d}.csv"
+URL_2017_2020 = "https://electionresults.govt.nz/electionresults_{year:d}/statistics/csv/{type:s}-votes-by-voting-place-{elec_id:d}.csv"
 URL_2002_2014 = "http://electionresults.govt.nz/electionresults_{year:d}/e9/csv/e9_part8_{type:s}_{elec_id:d}.csv"
 URL_1999 = "http://electionresults.govt.nz/electionresults_{year:d}/e9/csv/{elec_id:02d}_{elec_name:s}_{type:s}.csv"
 RESULTS_DIR = "results"
@@ -41,10 +41,10 @@ def get_details_file_url(year, elec_id, vote_type):
                 elec_name=ELECTORATE_NAMES_1999[elec_id-1], type=vote_type[0])
     elif year >= 2002 and year <= 2014:
         return URL_2002_2014.format(year=year, elec_id=elec_id, type=vote_type)
-    elif year == 2017:
+    elif year >= 2017 and year <= 2020:
         if vote_type == "cand":
             vote_type = "candidate"
-        return URL_2017.format(year=year, elec_id=elec_id, type=vote_type)
+        return URL_2017_2020.format(year=year, elec_id=elec_id, type=vote_type)
 
 def download_polling_place_results(year, elec_id, vote_type="party", force=False, quiet=False):
     """Downloads the CSV file for an electorate and vote type and returns the

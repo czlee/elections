@@ -1,9 +1,19 @@
 # coding: utf-8
-YEARS = [1999, 2002, 2005, 2008, 2011, 2014, 2017]
+YEARS = [1999, 2002, 2005, 2008, 2011, 2014, 2017, 2020]
 
-NUM_ELECTORATES = {2002: 69, 2005: 69, 2008: 70, 2011: 70, 2014: 71, 2017: 71}
+NUM_ELECTORATES = {2002: 69, 2005: 69, 2008: 70, 2011: 70, 2014: 71, 2017: 71, 2020: 72}
 
 PARTIES = dict()
+PARTIES[2020] = [
+    "ACT New Zealand",
+    "Advance NZ",
+    "Green Party",
+    "Labour Party",
+    "Māori Party",
+    "National Party",
+    "New Conservative",
+    "New Zealand First Party",
+    "The Opportunities Party (TOP)"]
 PARTIES[2017] = [
     u"ACT New Zealand",
     u"Green Party",
