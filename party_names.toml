@@ -1,0 +1,158 @@
+# Links parties across elections. Read by parties.py.
+#
+# One table per party, keyed by a stable party_id that's kept through renames.
+# short_name is for display (tables, charts); for a renamed party it's the
+# most recent name. Under it, each election year gives the name (or a list of
+# names) the party appears under in that election's data, exactly as spelt
+# there. List several names when different sources spell it differently.
+#
+# part_of = { YEAR = "party_id" } means the party's votes counted under an
+# umbrella party in that election, so it has no votes of its own then.
+#
+# Every party name in the data must appear here; parties.py raises an error
+# otherwise, so a new election means deciding explicitly how its parties link
+# to earlier ones.
+
+[act]
+short_name = "ACT"
+2017 = "ACT New Zealand"
+2023 = "ACT New Zealand"
+2026 = "ACT New Zealand"
+
+[alcp]
+short_name = "Legalise Cannabis"
+2017 = "Aotearoa Legalise Cannabis Party"
+2023 = "Aotearoa Legalise Cannabis Party"
+2026 = "Aotearoa Legalise Cannabis Party"
+
+[alliance]
+short_name = "Alliance"
+# Re-registered (p_no 68); the Alliance didn't stand in 2017 or 2023.
+2026 = "Alliance Party"
+
+[animal-justice]
+short_name = "Animal Justice"
+2023 = "Animal Justice Party"
+2026 = "Animal Justice Party Aotearoa New Zealand"
+
+[ban1080]
+short_name = "Ban1080"
+2017 = "Ban1080"
+
+[conservative]
+short_name = "Conservative"
+# Renamed New Conservatives after 2017, then Conservative Party NZ.
+2017 = "Conservative"
+2023 = "New Conservatives"
+2026 = "Conservative Party NZ"
+
+[democracynz]
+short_name = "DemocracyNZ"
+2023 = "DemocracyNZ"
+
+[free-palestine]
+short_name = "Free Palestine"
+2026 = "Free Palestine"
+
+[freedoms-nz]
+short_name = "Freedoms NZ"
+# Umbrella party in 2023 for NZ Outdoors & Freedom, Rock the Vote NZ and
+# Vision New Zealand.
+2023 = "Freedoms NZ"
+
+[green]
+short_name = "Green"
+2017 = "Green Party"
+2023 = "Green Party"
+2026 = "Green Party"
+
+[internet]
+short_name = "Internet"
+2017 = "Internet Party"
+
+[labour]
+short_name = "Labour"
+2017 = "Labour Party"
+2023 = "Labour Party"
+2026 = "Labour Party"
+
+[leighton-baker]
+short_name = "Leighton Baker"
+2023 = ["Leighton Baker", "Leighton Baker Party"]  # official feed, preliminary overview page
+
+[mana]
+short_name = "Mana"
+2017 = "MANA"
+
+[national]
+short_name = "National"
+2017 = "National Party"
+2023 = "National Party"
+2026 = "National Party"
+
+[new-nation]
+short_name = "New Nation"
+2023 = "New Nation Party"
+
+[newzeal]
+short_name = "NewZeal"
+2023 = "NewZeal"
+
+[nz-first]
+short_name = "NZ First"
+2017 = "New Zealand First Party"
+2023 = "New Zealand First Party"
+2026 = "New Zealand First Party"
+
+[nz-loyal]
+short_name = "NZ Loyal"
+2023 = ["NZ Loyal", "New Zealand Loyal"]  # official feed, preliminary overview page
+2026 = "New Zealand Loyal"                # re-registered (p_no 54 -> 70)
+
+[nz-outdoors]
+short_name = "Outdoors & Freedom"
+2017 = "NZ Outdoors Party"
+2026 = "NZ Outdoors & Freedom Party"
+part_of = { 2023 = "freedoms-nz" }
+
+[nz-peoples]
+short_name = "NZ People's"
+2017 = "New Zealand People's Party"
+
+[rock-the-vote]
+short_name = "Rock the Vote"
+part_of = { 2023 = "freedoms-nz" }
+
+[social-credit]
+short_name = "Social Credit"
+2017 = "Democrats for Social Credit"
+
+[te-pati-maori]
+short_name = "Te Pāti Māori"
+2017 = "Māori Party"  # renamed Te Pāti Māori in 2020
+2023 = "Te Pāti Māori"
+2026 = "Te Pāti Māori"
+
+[te-tai-tokerau]
+short_name = "Te Tai Tokerau"
+2026 = "Te Tai Tokerau Party"
+
+[top]
+short_name = "Opportunity"
+2017 = "The Opportunities Party (TOP)"
+2023 = "The Opportunities Party (TOP)"
+2026 = "Opportunity Party"
+
+[united-future]
+short_name = "United Future"
+2017 = "United Future"
+
+[vision-nz]
+short_name = "Vision NZ"
+2026 = "Vision New Zealand"
+part_of = { 2023 = "freedoms-nz" }
+
+[womens-rights]
+short_name = "Women's Rights"
+2023 = "Women’s Rights Party"
+2026 = "Women’s Rights Party"

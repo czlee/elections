@@ -78,6 +78,81 @@ Machine instead (next section).
   very small parties, the largest drop being 56 votes) and 1 candidate row,
   the final count is lower than the preliminary count.
 
+### 2017 and 2020 preliminary counts from the Wayback Machine (checked 10 November 2026)
+
+- **2017: complete.** All 71 `electionresults_2017_preliminary/electorate-details-NN.html`
+  pages are archived (captured 30 September – 12 October 2017, all at 100% of
+  results counted), in the same layout as 2023, so the same parser works. Many
+  captures are under `http://...:80/` URLs; the CDX index finds them anyway.
+  Checks: candidate and party votes plus informals equal the page totals in
+  every electorate; every electorate name, party and candidate (and every
+  candidate's party) matches the 2017 official feed; and the 71 electorates'
+  valid party votes sum to **2,169,802, exactly the national preliminary total**
+  on the archived overview page (`index.html`, captured 20171011234809), with
+  National, Labour, Green, NZ First and ACT also matching exactly. Final votes
+  cast are 1.11 (Invercargill) to 1.39 (Auckland Central) times the preliminary
+  votes cast. In 27 party rows (all small parties; the largest drop is the Māori
+  Party in electorate 20, 195 → 92) and 2 candidate rows, the final count is lower.
+- 2017 also has 71 archived `statistics/csv/NN_ElectionDay.csv` files. Not
+  looked at yet; they may give the preliminary count by voting place.
+- **2020: electorate pages unusable.** All 72 electorate pages were captured
+  (178 captures, 18 October 2020 into 2021), but every capture is a 403 (162,
+  about 5–7 KB, i.e. the Cloudflare block page, which shows as a CAPTCHA) or a
+  404 (16). Captures of `electionresults_2020/electorate-details-*` from before
+  the official results (17 October – 6 November 2020) are all 403 too. The only
+  good 2020 preliminary pages are `index.html` (captured 20201103192629) and
+  `referendums-results.html`. `index.html` has the **national preliminary party
+  votes** at 100% counted: 2,383,796 valid party votes (Labour 1,171,544,
+  National 638,606, ACT 190,139, Green 180,347, NZ First 63,534, Māori Party
+  23,932). Other archives (e.g. archive.today) haven't been checked.
+- **2014 and earlier:** nothing archived under `electionresults_2014_preliminary/`,
+  and there's no official XML to match against.
+
+### Special-vote estimates in the preliminary press releases (checked 10 November 2026)
+
+- **2026** ([release](https://elections.nz/media-and-news/2026/2026-general-election-preliminary-results),
+  fetchable with curl): "The number of special votes is approximately
+  399,365 including 96,947 overseas and dictation votes", on 2,432,403
+  ordinary votes counted (including informals). **The XML's
+  `total_special_votes` (297,418) is different**: 101,947 lower, which is the
+  overseas and dictation votes plus exactly 5,000. Not explained. Use the press
+  release figure.
+- **2023** ([release](https://elections.nz/media-and-news/2023/election-night-results-for-the-2023-general-election),
+  blocked by Incapsula, so read via Wayback capture `20231021094025`): "Special
+  declaration votes still to be counted are estimated at 567,000 (20.2% of
+  total votes). This includes an estimated 80,000 overseas and dictation
+  votes." Its party table (2,244,380 total, National 875,234) was written on
+  election night, before counting finished, so it's slightly lower than the
+  100%-counted overview page below. Use the overview page.
+  - Every party is 0.2–1.0% higher on the overview page than in the release
+    (total +10,061, ratio 1.0045; Te Pāti Māori +1.0%, Labour +0.6%). So it's
+    a later snapshot, not a different definition: both are valid party votes.
+    The release's "2,244,380 ordinary votes counted" is that same valid party
+    total, though the release calls it ordinary votes. Captures of the overview
+    page on 25 October (`20231025055838`) and 26 October 2023 are identical
+    (100.0% counted).
+  - So don't mix the two: a ratio like (site valid party votes / release
+    total) comes out above 1. In 2026 the release and the feed agree (party
+    total 2,418,565; 2,432,403 votes counted including informals).
+
+### 2023 preliminary national party totals (checked 10 November 2026)
+
+- Saved from Wayback capture `20231026013849` of
+  `electionresults_2023_preliminary/index.html` to
+  `results/2023-prelim/raw/index-20231026013849.html` (table
+  `#overall-results-table`). Not yet parsed by any script. Total 2,254,441.
+- The overview uses some names that differ from the official feed's
+  `party_votes.csv`: "New Zealand Loyal" (official: "NZ Loyal") and "Leighton
+  Baker Party" (official: "Leighton Baker"). It lists Freedoms NZ's component
+  parties (NZ Outdoors & Freedom, Rock the Vote NZ, Vision New Zealand) with
+  "-", since votes for them counted under Freedoms NZ.
+- **`p_no` isn't stable across elections**, so it can't be used to link
+  parties between 2023 and 2026. Most numbers carry over (e.g. 24: "The
+  Opportunities Party (TOP)" → "Opportunity Party", 34: "New Conservatives" →
+  "Conservative Party NZ", 52: "Animal Justice Party" → "Animal Justice Party
+  Aotearoa New Zealand"), but New Zealand Loyal (54 → 70), Vision New Zealand
+  (32 → 66) and the Alliance (6 → 68) got new numbers.
+
 ### XML layout (the same for 2017, 2020, 2023 and 2026)
 
 - Top level: `election.xml`, `electorates.xml`, `parties.xml`,
@@ -181,14 +256,47 @@ Machine instead (next section).
   `--base URL`; the output defaults to `results/<election>`. It doesn't fetch
   voting-place files. Checked 10 November 2026: it runs for 2017, 2020 and 2023,
   and party votes summed over electorates match `election.xml` for each.
-- `scrape_wayback_prelim.py`: scrapes the 2023 preliminary count from the
-  Wayback Machine into `results/2023-prelim/`, writing `candidate_votes.csv` and
+- `scrape_wayback_prelim.py`: scrapes the 2023 or 2017 preliminary count
+  (`--election`, default 2023) from the Wayback Machine into
+  `results/<election>-prelim/`, writing `candidate_votes.csv` and
   `party_votes.csv` with the same columns and names as `download.py --election
-  2023`, and an `electorate_stats.csv` with different columns (the capture's
+  <election>`, and an `electorate_stats.csv` with different columns (the capture's
   timestamp, results counted, and both totals; `total_votes_cast` is the
   larger of the two). It reports any electorate whose sums don't match its
   totals, any partial count, and any candidate or party missing from the
-  official feed.
+  official feed. It doesn't scrape the national totals on `index.html`.
+  Checked 10 November 2026: it runs for 2023 and 2017 with no problems
+  reported except 2023's missing Port Waikato page.
+- `project_specials.py` (10 November 2026): national projection of the 2026
+  final party vote from 2023's preliminary-to-final changes; method in its
+  docstring. Writes `results/projection-2026/national.csv`. Reads the 2023
+  preliminary totals straight from the saved overview page. Parties new in 2026
+  get a multiplier of 1.
+- `seats.py` (10 November 2026): MMP seat allocation (5% or one electorate;
+  Sainte-Laguë over 120 less independents' electorates; overhang enlarges the
+  House; raises an error on a tie for the last seat). `python3 seats.py` checks it against
+  `election.xml`: matches 2017 (120), 2023 (122, Te Pāti Māori overhang 2) and
+  2026 preliminary (131, overhang 11). 2023's `total_electorates_final` is 72
+  but `candidate_seats` sum to 71: Port Waikato's by-election came after
+  allocation, so don't read the gap as an independent. `project_specials.py`
+  allocates seats for both the preliminary and projected party votes, with
+  electorates held at the preliminary winners.
+- `party_names.toml` + `parties.py`: links parties across elections.
+  One table per stable `party_id`, giving the name(s) it appears under in each
+  election's data (TOML rather than CSV for readability, decided with the user
+  on 10 November 2026; `tomllib` is in the standard library), and `part_of`
+  for component parties of an umbrella party (2023: Vision New
+  Zealand, NZ Outdoors & Freedom and Rock the Vote NZ were part of Freedoms NZ).
+  Every name must be listed, so a new election fails loudly until its parties
+  are added. Covers 2017, 2023 and 2026 (all datasets in `results/`). Decided
+  with the user: NZ Loyal (re-registered) is the same party in 2023 and 2026;
+  2026 Vision New Zealand and NZ Outdoors & Freedom compare against Freedoms NZ
+  in 2023. My own calls, not yet reviewed: Māori Party (2017) = Te Pāti Māori;
+  Conservative (2017) = New Conservatives = Conservative Party NZ; NZ Outdoors
+  Party (2017) = NZ Outdoors & Freedom Party; the 2026 Alliance Party isn't
+  linked to anything, since the Alliance didn't stand in 2017 or 2023. The 2023 adjustment comes out
+  at 1.0525 (596,770 valid party votes from specials vs the 567,000 estimate),
+  so it scales the 2026 estimate *up*, to about 420,333.
 - The original CSV-based code (1999 onwards: `download.py`, `electorate.py`,
   `analyse.py`, `config.py`) is in
   [czlee/elections-2020](https://github.com/czlee/elections-2020) (locally
