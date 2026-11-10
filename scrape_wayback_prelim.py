@@ -1,19 +1,21 @@
-"""Scrapes the 2023 preliminary count from the Wayback Machine's copies of the
-Electoral Commission's results pages, and writes tidy CSVs.
+"""Scrapes a preliminary count (2023 or 2017) from the Wayback Machine's copies
+of the Electoral Commission's results pages, and writes tidy CSVs.
 
-The 2023 preliminary XML feed is gone (see NOTES.md), but the Wayback Machine
-archived the HTML page for each electorate,
-electionresults_2023_preliminary/electorate-details-NN.html. These pages give
+There's no preliminary XML feed for these elections (see NOTES.md), but the
+Wayback Machine archived the HTML page for each electorate,
+electionresults_YYYY_preliminary/electorate-details-NN.html. These pages give
 electorate totals only: candidate votes, party votes, informals and totals. They
-don't give results by voting place.
+don't give results by voting place. (2020's pages were archived only as 403
+block pages, so 2020 isn't supported.)
 
 The pages don't say which party each candidate belongs to, and they use parties'
-full names. So candidates and parties are matched against the official 2023 XML
-feed (candidates.xml, parties.xml, electorates.xml), which means the CSVs use
-the same names as `download.py --election 2023` and the two can be joined.
+full names. So candidates and parties are matched against that election's
+official XML feed (candidates.xml, parties.xml, electorates.xml), which means
+the CSVs use the same names as `download.py --election YYYY` and the two can be
+joined.
 
 Raw HTML is saved under <outdir>/raw/ and CSVs are written to <outdir>/
-(default: results/2023-prelim).
+(default: results/YYYY-prelim).
 """
 import gzip
 import html
@@ -27,8 +29,13 @@ import urllib.request
 
 from download import ELECTIONS, INDEPENDENT_PARTY_NO, USER_AGENT, fetch, write_csv
 
-PRELIM_PATH = "electionresults_2023_preliminary/"
-OFFICIAL_BASE = ELECTIONS["2023"]
+# Paths of the archived preliminary-results sites. The official feed for each
+# comes from download.ELECTIONS.
+PRELIM_PATHS = {
+    "2023": "electionresults_2023_preliminary/",
+    "2017": "electionresults_2017_preliminary/",
+}
+DEFAULT_ELECTION = "2023"
 CDX_URL = "https://web.archive.org/cdx/search/cdx"
 # The Wayback Machine refuses connections for a while after more than about 15
 # requests a minute (checked 10 November 2026: 1 s spacing got blocked after 17).
@@ -63,11 +70,11 @@ def number(text):
     return int(text.replace(",", "").strip())
 
 
-def find_captures():
+def find_captures(prelim_path):
     """Returns {e_no: (timestamp, original_url)} for the latest successful
     capture of each electorate page, using the Wayback Machine's CDX index."""
     query = urllib.parse.urlencode({
-        "url": "electionresults.govt.nz/" + PRELIM_PATH + "electorate-details-*",
+        "url": "electionresults.govt.nz/" + prelim_path + "electorate-details-*",
         "output": "json", "fl": "timestamp,original", "filter": "statuscode:200",
     })
     rows = json.loads(get(CDX_URL + "?" + query))[1:]  # first row is the header
@@ -135,19 +142,20 @@ def parse_page(text):
     }
 
 
-def main(outdir, force=False):
+def main(election, outdir, force=False):
+    official_base = ELECTIONS[election]
     rawdir = os.path.join(outdir, "raw")
     officialdir = os.path.join(rawdir, "official")
     electorates = {e.get("e_no"): e.findtext("electorate_name")
-                   for e in fetch(OFFICIAL_BASE, "electorates.xml", officialdir)}
-    parties_xml = fetch(OFFICIAL_BASE, "parties.xml", officialdir)
+                   for e in fetch(official_base, "electorates.xml", officialdir)}
+    parties_xml = fetch(official_base, "parties.xml", officialdir)
     short_names = {p.findtext("party_name").strip(): p.findtext("short_name") for p in parties_xml}
     party_names = {p.get("p_no"): p.findtext("short_name") for p in parties_xml}
     party_names[INDEPENDENT_PARTY_NO] = "Independent"
     cand_party = {(c.findtext("electorate"), c.findtext("candidate_name")): party_names[c.findtext("party")]
-                  for c in fetch(OFFICIAL_BASE, "candidates.xml", officialdir)}
+                  for c in fetch(official_base, "candidates.xml", officialdir)}
 
-    captures = find_captures()
+    captures = find_captures(PRELIM_PATHS[election])
     print("found captures for {0} of {1} electorates".format(len(captures), len(electorates)))
 
     cand_rows, party_rows, stats_rows, problems = [], [], [], []
@@ -203,8 +211,10 @@ def main(outdir, force=False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("outdir", nargs="?", default=os.path.join("results", "2023-prelim"),
-                        help="output directory (default: %(default)s)")
+    parser.add_argument("outdir", nargs="?", help="output directory (default: results/<election>-prelim)")
+    parser.add_argument("-e", "--election", choices=PRELIM_PATHS, default=DEFAULT_ELECTION,
+                        help="which election's preliminary count to scrape (default: %(default)s)")
     parser.add_argument("-f", "--force", action="store_true", help="re-download files that already exist")
     args = parser.parse_args()
-    main(args.outdir, args.force)
+    outdir = args.outdir or os.path.join("results", args.election + "-prelim")
+    main(args.election, outdir, args.force)
