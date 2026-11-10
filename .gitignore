@@ -1,0 +1,4 @@
+results
+.claude/worktrees/
+__pycache__/
+venv/
