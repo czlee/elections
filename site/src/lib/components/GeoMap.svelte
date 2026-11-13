@@ -65,7 +65,7 @@
 		if (!e || !l) return null;
 		const party = l.party ? names[l.party] ?? l.party : 'independent';
 		if (e.omitted) return `${e.name}: not projected (preliminary leader ${party})`;
-		return `${e.name}: ${candidateName(l.who)} (${party}) leads by ${pct(l.margin)}${e.flips ? ' · flips with specials' : ''}`;
+		return `${e.name}: ${candidateName(l.who)} (${party}) ${view === 'projected' ? 'projected to win' : 'leads'} by ${pct(l.margin)}${e.flips ? ' · flips with specials' : ''}`;
 	});
 	const parties = $derived(
 		[...new Set(electorates.map((e) => leader(e)?.party))]
