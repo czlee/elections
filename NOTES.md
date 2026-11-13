@@ -359,8 +359,11 @@ Machine instead (next section).
   with shared borders kept. Datafinder has no clipped electorate layer (the
   user looked, 13 November 2026), so electorates are intersected with a clipped
   land layer (any `data/statsnz/*clipped*` folder, e.g. Regional Council 2025
-  Clipped); `--no-clip` skips that for testing. The Chatham Islands are dropped
-  from the map. An equal-area hex map was tried first and dropped at the user's
+  Clipped, downloaded 13 November 2026 into
+  `data/statsnz/regional-council-2025-clipped/`); `--no-clip` skips that for
+  testing. Intersection leaves line/point slivers, which are dropped (otherwise
+  mapshaper splits them into extra layers). Simplified at 250 m with islands
+  under 4 km² dropped: 163 KB. The Chatham Islands are dropped from the map. An equal-area hex map was tried first and dropped at the user's
   request (in git history: `export_hexmap.py`); population-weighted meshblock
   centres were needed there because Wellington Bays' largest polygon part is
   the Chathams (polygons include sea).

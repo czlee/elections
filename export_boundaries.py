@@ -31,7 +31,8 @@ LAYERS = {
 }
 LAND_GLOB = "*clipped*"
 CHATHAMS_X = 2200000  # NZTM easting; the Chathams are around 2.4M
-SIMPLIFY = "4%"  # mapshaper Visvalingam, share of vertices kept
+SIMPLIFY_M = 250  # mapshaper Visvalingam, tolerance in metres
+MIN_ISLAND_KM2 = 4  # islands smaller than this are dropped (unless it's an electorate's only part)
 OUTPUT = "site/src/lib/data/electorates-2025.topo.json"
 
 
@@ -67,7 +68,9 @@ def main():
             if land is not None:
                 layer["geometry"] = layer.geometry.intersection(land)
             # Drop the Chatham Islands (part of Wellington Bays and Te Tai Tonga).
+            # Keep polygons only: the intersection can leave line and point slivers.
             parts = layer.explode(index_parts=False)
+            parts = parts[parts.geom_type == "Polygon"]
             parts = parts[parts.geometry.centroid.x < CHATHAMS_X]
             layer = parts.dissolve(by="name", as_index=False)
             path = os.path.join(tmp, roll + ".geojson")
@@ -76,7 +79,9 @@ def main():
             print("{0}: {1} electorates".format(roll, len(layer)))
         # Simplify with shared borders kept, and write both layers into one TopoJSON.
         cmd = ["npx", "mapshaper", "-i", *inputs, "combine-files", "snap",
-               "-simplify", SIMPLIFY, "weighted", "keep-shapes",
+               "-simplify", "interval={0}".format(SIMPLIFY_M), "weighted", "keep-shapes",
+               "-filter-islands", "min-area={0}".format(MIN_ISLAND_KM2 * 1e6), "remove-empty",
+               "-clean",
                "-o", "format=topojson", "quantization=20000",
                os.path.abspath(args.output)]
         subprocess.run(cmd, check=True, cwd="site")
