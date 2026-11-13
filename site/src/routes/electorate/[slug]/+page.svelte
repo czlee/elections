@@ -3,7 +3,7 @@
 	import MultiplierBars from '#lib/components/MultiplierBars.svelte';
 	import { link } from '#lib/link.js';
 	import { colour } from '#lib/parties.js';
-	import { votes, pct, pp, mult, signed, candidateName } from '#lib/format.js';
+	import { votes, pct, pp, points, mult, signed, candidateName } from '#lib/format.js';
 
 	let { data } = $props();
 	const e = $derived(data.electorate);
@@ -71,7 +71,7 @@
 	<p class="verdict">
 		<span class="swatch" style:background={colour(W.party)}></span>
 		<strong>{who(W)}</strong> ({party(W.party)}) {holds ? 'holds on' : 'overtakes'},
-		projected to win by <strong>{votes(e.margin)}</strong> votes ({pct(e.margin_pct)}) over
+		projected to win by <strong>{votes(e.margin)}</strong> votes ({points(e.margin_pct)}) over
 		{who(S)} ({party(S.party)}).
 		{#if e.flips}<span class="badge flip">flips from {party(byKey[e.prelim_winner].party)}</span>{/if}
 	</p>

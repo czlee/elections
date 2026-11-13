@@ -4,7 +4,7 @@
 	import GeoMap from '#lib/components/GeoMap.svelte';
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
-	import { votes, pct, signed, candidateName } from '#lib/format.js';
+	import { votes, points, signed, candidateName } from '#lib/format.js';
 
 	let { data } = $props();
 	const nat = $derived(data.national);
@@ -125,7 +125,7 @@
 </p>
 <p class="muted small">
 	Seats with the narrowest projected margins:
-	{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({pct(e.margin_pct, 1)}){/each}.
+	{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({points(e.margin_pct, 1)}){/each}.
 </p>
 <GeoMap electorates={data.electorates} {names} {view} />
 <p class="muted small">

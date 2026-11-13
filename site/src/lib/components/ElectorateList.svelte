@@ -1,7 +1,7 @@
 <script>
 	import { link } from '#lib/link.js';
 	import { colour } from '#lib/parties.js';
-	import { votes, pct, mult, candidateName } from '#lib/format.js';
+	import { votes, points, mult, candidateName } from '#lib/format.js';
 
 	/** @type {{electorates: any[], names: Record<string, string>}} */
 	let { electorates, names } = $props();
@@ -95,10 +95,10 @@
 							<span class="muted small">{party(e.second_party)}</span>
 						</td>
 						<td class="num" title="{votes(e.prelim_margin)} votes">
-							{pct(e.prelim_margin_pct)}
+							{points(e.prelim_margin_pct)}
 							{#if e.flips}<span class="muted small">({party(e.prelim_winner_party)})</span>{/if}
 						</td>
-						<td class="num" title="{votes(e.margin)} votes">{pct(e.margin_pct)}</td>
+						<td class="num" title="{votes(e.margin)} votes">{points(e.margin_pct)}</td>
 						<td class="num">
 							{e.breakeven.needed === null ? '—' : mult(e.breakeven.needed)}
 							<span class="muted">/ {mult(e.breakeven.had)}</span>
