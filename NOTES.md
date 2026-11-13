@@ -108,6 +108,46 @@ Machine instead (next section).
 - **2014 and earlier:** nothing archived under `electionresults_2014_preliminary/`,
   and there's no official XML to match against.
 
+### 2023 Port Waikato by-election (checked 10 November 2026)
+
+- Official results feed at
+  `https://www.electionresults.govt.nz/2023_port_waikato_byelection/xml/`
+  (same layout; listing works; `updated="2023-12-15"`). Electorate vote only
+  (no party vote), 18,728 votes cast (35.7% turnout), 9 candidates: National
+  14,296, NZ First 2,864, then seven under 410. **No Labour, Green or ACT
+  candidate.** No preliminary count in the feed, and the Wayback CDX index
+  has no captures under `*port_waikato*`. The elections.nz press release on
+  its preliminary results is behind Incapsula (blocked to curl).
+- So it can't give 2023 electorate-vote special-vote multipliers for Port
+  Waikato: it's a different contest without the main left-wing parties.
+
+### Stats NZ boundary and population data (checked 10 November 2026)
+
+- Downloaded as one Datafinder zip (5 layers, GeoPackage, EPSG:2193) and
+  extracted to `data/statsnz/`. Layer IDs are in README.md. All five are
+  MultiPolygon layers. The population layer (121975) has the 2025 meshblock
+  polygons themselves (57,535 meshblocks), so no separate meshblock layer is
+  needed.
+- Electorate names in the Stats NZ layers match the Electoral Commission's
+  exactly: 2020 layers vs 2023 results (65 general + 7 Māori = 72), 2025 layers
+  vs 2026 preliminary results (64 + 7 = 71).
+- Each meshblock's representative point falls in exactly one electorate in
+  each of the four electorate layers. No 2025 meshblock has less than 99% of
+  its area in a single 2020 general electorate, so meshblocks don't cross the
+  old boundaries.
+- **Confidentialised:** counts below six (including zero, since no value is 0)
+  are shown as `-999`; all other counts are randomly rounded to base 3.
+  - General: 5,661 meshblocks suppressed. Known values sum to 4,478,964, which
+    is 3,633 *more* than the 2025 electorates' published total (4,475,331), so
+    rounding noise outweighs the suppressed counts. Treating suppressed values as
+    0 is fine.
+  - Māori: 29,966 meshblocks suppressed. Known values sum to 479,916 against a
+    published 520,005, so 40,089 (7.7%) is hidden. The gap is never negative and
+    works out at 1.10 (Te Tai Tonga) to 1.94 (Waiariki) per suppressed meshblock
+    across the 7 Māori electorates. Plan: impute each 2025 Māori electorate's gap
+    evenly over its suppressed meshblocks.
+- The 2020 layers' population fields are 2018 Census figures. Don't use them.
+
 ### Special-vote estimates in the preliminary press releases (checked 10 November 2026)
 
 - **2026** ([release](https://elections.nz/media-and-news/2026/2026-general-election-preliminary-results),
@@ -281,6 +321,27 @@ Machine instead (next section).
   allocation, so don't read the gap as an independent. `project_specials.py`
   allocates seats for both the preliminary and projected party votes, with
   electorates held at the preliminary winners.
+- `concordance.py` (10 November 2026, needs the venv): 2023 → 2026 electorate
+  concordance from 2023 Census electoral population by 2025 meshblock. Writes
+  `results/concordance/electorates_2023_2026.csv` (127 overlaps). Checks: 21
+  of the 2026 electorates are identical to a 2023 one; Wigram gets 11,373 from
+  Selwyn (Representation Commission report: 11,366); Port Waikato is unchanged
+  and no other 2026 electorate took any of it. 22 meshblocks (1,140 people,
+  mostly Hamilton East/West) straddle a 2025 general boundary and 1 a 2025
+  Māori boundary; they go wholly to the electorate holding their representative
+  point. General-roll meshblock sums differ from the published 2025 totals by
+  56 people (median absolute) to 593 (Waikato, +0.8%), mostly upwards in
+  rural seats; not explained, too small to matter.
+- `project_electorates.py` (10 November 2026): per-electorate projection of
+  both party and candidate votes; method in its docstring. Writes
+  `electorates_party.csv`, `electorates_candidate.csv` and
+  `electorates_summary.csv` in `results/projection-2026/`. My own call, not yet
+  reviewed: a candidate whose party had no 2023 candidate in the area uses that
+  party's party-vote multiplier in the same electorate (not 1). Unreviewed
+  linking questions: Te Tai Tokerau Party (Mariameno Kapa-Kingi, the 2023 Te Pāti
+  Māori winner there) and Tākuta Ferris (independent in Te Tai Tonga, the 2023
+  Te Pāti Māori winner) get a multiplier of 1. Neither affects a projected
+  winner (both are fourth).
 - `party_names.toml` + `parties.py`: links parties across elections.
   One table per stable `party_id`, giving the name(s) it appears under in each
   election's data (TOML rather than CSV for readability, decided with the user
@@ -309,5 +370,44 @@ Machine instead (next section).
 
 ## Plans
 
-None yet. This section will hold the plan for the 2026 special-votes
-projection and any refactoring.
+### Per-electorate projection (discussed 10 November 2026, not started)
+
+- Same method as `project_specials.py`, applied per electorate to both party
+  and candidate votes (candidates matched by party, since candidates differ).
+  The national 2026 estimate is spread across electorates using 2023's
+  preliminary-to-final growth per electorate.
+- Needs a 2023 → 2026 electorate concordance: the 2025 boundary review changed
+  49 general and 3 Māori electorates; 11 names were dropped and 10 added.
+  Leaning towards population-weighted meshblock overlaps (Stats NZ datafinder)
+  rather than a hand-written name mapping.
+- **Decided with the user: omit Port Waikato.** A 2026 electorate that
+  took part of 2023 Port Waikato uses its other sources, with their weights
+  rescaled; flag any where Port Waikato's share is large.
+- Weights: 2023 Census usually resident population by meshblock, not the
+  250 m population grid (see the reply to the user, 10 November 2026: meshblocks
+  line up exactly with electorate boundaries, and the 2023 Census is the
+  same year as the election and is what the Representation Commission used).
+- **Decided with the user: no adjustments for social or legal change.**
+  Just record these as limitations:
+  - 2026 specials are reportedly down about 30% because same-day enrolment and
+    enrolment changes made while voting no longer count as special votes.
+    The 2023 mix of special voters may not carry over.
+  - Population weights stand in for enrolled electors (and, for Māori
+    electorates, for the Māori roll).
+  - **Changes in which parties stand candidates.** The normalisation step
+    shares out the special votes of a 2023 candidate's party that has no
+    candidate in 2026 in proportion to everyone else. In reality those voters
+    probably lean towards a particular party (e.g. Te Pāti Māori voters
+    towards Labour). Example: Hamilton East 2023 had Te Pāti Māori
+    (multiplier 2.09) and ACT (1.09) candidates but 2026 doesn't, so
+    National's slightly higher 2023 multiplier (0.952 vs Labour's 0.919)
+    widens its projected lead (456 → 616, 1.5% → 1.7%).
+  - **Why specials can widen a National lead** (for reading the outputs, not a
+    flaw): in 2023 the electorate-vote special votes leaned towards
+    minor-party candidates (Green, Te Pāti Māori, Opportunity, ACT), so the
+    Labour candidate's multiplier was often below 1, like National's. A
+    leader's lead grows among special votes whenever (preliminary share ×
+    multiplier) is higher than the runner-up's, so in a close race the
+    runner-up needs a clearly higher multiplier to gain. Wairarapa: both 0.884
+    in 2023, so the margin grows in votes (139 → 150) but shrinks slightly as
+    a share (0.34% → 0.33%).
