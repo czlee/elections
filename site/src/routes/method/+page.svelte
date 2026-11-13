@@ -13,14 +13,14 @@
 	relative to its preliminary result, as it did in 2023. Nothing else is modelled.
 </p>
 
-<h2>National party vote</h2>
+<h2>Party vote</h2>
 <ol>
 	<li>For each party, the 2023 <strong>multiplier</strong> is its share of 2023 special votes divided by its share of the 2023 preliminary count. "Special votes" means final minus preliminary valid votes, which also includes official-count corrections to ordinary votes.</li>
 	<li>The number of 2026 specials is the Electoral Commission's estimate (399,365) times 2023's ratio of actual special party votes to its estimate (596,770 / 567,000 = 1.0525).</li>
 	<li>Each 2026 party's share of the specials is its preliminary share times its multiplier, normalised to 100%. New parties get 1; parties that were part of an umbrella party in 2023 (e.g. Freedoms NZ) use its multiplier.</li>
 	<li>Seats: Sainte-Laguë over 120 seats among parties with 5% or an electorate, plus overhang. The allocation code reproduces the official 2017, 2023 and 2026-preliminary allocations.</li>
 </ol>
-<p><a href={link('/national/')}>National working →</a></p>
+<p><a href={link('/party-vote/')}>Party vote working →</a></p>
 
 <h2>Electorates</h2>
 <ol>

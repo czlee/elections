@@ -82,18 +82,28 @@
 	{#each features as f (f.properties.name)}
 		{@const e = byName[f.properties.name]}
 		<a href={link(`/electorate/${e?.slug}/`)} aria-label={f.properties.name} {...hover(f.properties.name)}>
-			<path d={path(f)} fill={fill(f.properties.name)} class:omitted={e?.omitted} class:flip={e?.flips}
+			<path d={path(f)} fill={fill(f.properties.name)} class:omitted={e?.omitted}
 				class:hover={hovered === f.properties.name}>
 				<title>{f.properties.name}</title>
 			</path>
+			{#if e?.flips}
+				<!-- Hatched overlay: light stripes over the party colour. -->
+				<path d={path(f)} class="hatch" fill="url(#flip-hatch)" />
+			{/if}
 		</a>
 	{/each}
 {/snippet}
 
 <figure>
+	<p class="caption" class:idle={!hoveredInfo} aria-live="polite">{hoveredInfo ?? 'Hover over or tap an electorate.'}</p>
 	<div class="maps">
 		<div class="main">
 			<svg viewBox="0 0 {MAIN_W} {MAIN_H}" role="img" aria-label="Map of general electorates by {view === 'prelim' ? 'preliminary' : 'projected'} leader">
+				<defs>
+					<pattern id="flip-hatch" patternUnits="userSpaceOnUse" width="3.5" height="3.5" patternTransform="rotate(45)">
+						<rect width="1.6" height="3.5" class="hatch-stripe" />
+					</pattern>
+				</defs>
 				{@render shapes(general, main.path)}
 				{#each insets as i (i.name)}
 					<rect class="inset-box" x={i.rect.x} y={i.rect.y} width={i.rect.w} height={i.rect.h} />
@@ -111,15 +121,14 @@
 					<span class="label small">{i.name}</span>
 				</div>
 			{/each}
-			<div class="inset">
-				<svg viewBox="0 0 {MAORI_W} {MAORI_H}" role="img" aria-label="Māori electorates">
-					{@render shapes(maori, maoriMap.path)}
-				</svg>
-				<span class="label small">Māori electorates</span>
-			</div>
+		</div>
+		<div class="maori">
+			<svg viewBox="0 0 {MAORI_W} {MAORI_H}" role="img" aria-label="Māori electorates">
+				{@render shapes(maori, maoriMap.path)}
+			</svg>
+			<span class="label small">Māori electorates</span>
 		</div>
 	</div>
-	<p class="caption small" aria-live="polite">{hoveredInfo ?? 'Hover over or tap an electorate.'}</p>
 	<ul class="legend small">
 		{#each parties as p (p.id)}
 			<li><span class="swatch" style:background={colour(p.id)}></span>{p.id ? names[p.id] ?? p.id : 'Other'} {p.n}</li>
@@ -131,23 +140,40 @@
 
 <style>
 	figure { margin: 0; }
-	.maps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.6em; align-items: start; }
+	.maps {
+		display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 0.55fr);
+		grid-template-areas: 'main side maori'; gap: 0.8em; align-items: start;
+	}
+	.main { grid-area: main; }
+	.side { grid-area: side; }
+	.maori { grid-area: maori; }
+	@media (max-width: 700px) {
+		.maps { grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr); grid-template-areas: 'main maori' 'side side'; }
+	}
 	.side { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5em; }
 	.inset { position: relative; }
 	svg { width: 100%; display: block; height: auto; }
 	path { stroke: var(--surface); stroke-width: 0.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 	path.hover { stroke: var(--text); stroke-width: 2; }
 	path.omitted { opacity: 0.45; }
-	path.flip { stroke: var(--text); stroke-width: 2; stroke-dasharray: 3 2; }
+	path.hatch { stroke: none; pointer-events: none; }
+	.hatch-stripe { fill: var(--surface); opacity: 0.6; }
 	.inset-box { fill: none; stroke: var(--text-3); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
 	.frame { fill: none; stroke: var(--border); vector-effect: non-scaling-stroke; }
 	.label { color: var(--text-2); }
-	.caption { min-height: 2.6em; margin: 0.4em 0; color: var(--text); }
+	.caption {
+		max-width: none; min-height: 2.6em; margin: 0.4em 0 0.8em; padding: 0.5em 0.8em;
+		background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text);
+		display: flex; align-items: center;
+	}
+	.caption.idle { color: var(--text-2); }
 	.legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.15em 0.9em; }
 	.flip-key, .omit-key {
 		display: inline-block; width: 0.8em; height: 0.8em; margin-right: 0.35em; vertical-align: -0.05em;
 		background: var(--text-3); border-radius: 2px;
 	}
-	.flip-key { outline: 2px dashed var(--text); outline-offset: -2px; }
+	.flip-key {
+		background: repeating-linear-gradient(-45deg, var(--text-3) 0 2px, color-mix(in srgb, var(--text-3) 40%, var(--surface)) 2px 4px);
+	}
 	.omit-key { opacity: 0.45; }
 </style>

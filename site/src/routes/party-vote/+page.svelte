@@ -19,23 +19,22 @@
 		Object.entries(n.seats[v])
 			.map(([p, s]) => [p, s.total - (n.entitlement[v][p] ?? 0)])
 			.filter(([, d]) => +d > 0);
-	// Seats (party, nth seat) allocated in one count but not the other.
+	// Seats (party, nth seat) allocated in one count but not the other, judged by
+	// each party's whole Sainte-Laguë entitlement, not just the rows shown.
 	const swapped = $derived.by(() => {
-		const inSet = (/** @type {'prelim' | 'projected'} */ v) =>
-			new Set(n.ladder[v].filter((r) => r.allocated).map((r) => `${r.party}#${r.seat}`));
-		const a = inSet('prelim'), b = inSet('projected');
-		const all = [...n.ladder.prelim, ...n.ladder.projected].map((r) => `${r.party}#${r.seat}`);
-		return new Set(all.filter((k) => a.has(k) !== b.has(k)));
+		const has = (/** @type {'prelim' | 'projected'} */ v, /** @type {any} */ r) => r.seat <= (n.entitlement[v][r.party] ?? 0);
+		const rows = [...n.ladder.prelim, ...n.ladder.projected];
+		return new Set(rows.filter((r) => has('prelim', r) !== has('projected', r)).map((r) => `${r.party}#${r.seat}`));
 	});
 	const lastIn = (/** @type {any[]} */ l) => l.filter((r) => r.allocated).at(-1);
 	const firstOut = (/** @type {any[]} */ l) => l.find((r) => !r.allocated);
 </script>
 
 <svelte:head>
-	<title>National projection · 2026 special votes</title>
+	<title>Party vote projection · 2026 special votes</title>
 </svelte:head>
 
-<h1>National projection</h1>
+<h1>Party vote projection</h1>
 <p>
 	The party vote from the 2026 preliminary count, plus a projection of the special votes still
 	to be counted. Each party gets the same share of the special votes, relative to its

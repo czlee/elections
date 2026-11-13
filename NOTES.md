@@ -368,6 +368,11 @@ Machine instead (next section).
   centres were needed there because Wellington Bays' largest polygon part is
   the Chathams (polygons include sea).
 - `site/` (13 November 2026): SvelteKit 3 static site; see `site/README.md`.
+  `site/src/lib/config.js` has a `DRAFT` flag: while true, every page shows a
+  DRAFT banner and `noindex`. Candidate names come from the CSVs' candidate
+  column, not from "NAME (Party)" labels: names ("MANNING, Romana (Marnz)",
+  "SNG, Chee Khiang (CK)") and a 2023 party name ("The Opportunities Party
+  (TOP)") contain parentheses.
   Party colours were checked with the dataviz palette validator in House order;
   ACT is pink and NZ First charcoal (light grey in dark mode), as the user
   asked; NZ First's neutral fails the chroma floor by design (always labelled).

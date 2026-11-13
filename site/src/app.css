@@ -17,7 +17,7 @@
 	--party-national: #2563b8;
 	--party-act: #e0408f;
 	--party-other: #a3a29c;
-	--font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--font: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	--mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {

@@ -13,8 +13,8 @@
 	let width = $state(640);
 	const W = $derived(Math.max(300, width));
 	const LABEL = $derived(Math.min(210, Math.round(W * 0.36)));
-	// On narrow screens, surnames only.
-	const short = (/** @type {string} */ n) => (W < 520 ? n.split(' ').at(-1) : n);
+	// Surnames only on narrow screens or for long names.
+	const short = (/** @type {string} */ n) => (W < 520 || n.length > 16 ? n.split(' ').at(-1) : n);
 	const steps = $derived([
 		{ label: 'Preliminary lead', from: 0, to: lead, fill: 'var(--text-3)' },
 		{ label: `+ ${short(winner)}'s specials`, from: lead, to: lead + plus, fill: colour(winnerParty) },

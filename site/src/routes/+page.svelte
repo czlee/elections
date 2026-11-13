@@ -24,11 +24,12 @@
 	const seatCounts = $derived(
 		Object.fromEntries(rows.map((r) => [r.id, { total: r[view].total, electorate: r[view].electorate }]))
 	);
-	// Ring the seats that change: gains in the projected view, losses in the preliminary view.
-	const highlight = $derived(
-		Object.fromEntries(
-			rows.map((r) => [r.id, view === 'projected' ? Math.max(0, r.change) : Math.max(0, -r.change)])
-		)
+	// The other view's seats, so the chart can mark the seats that change hands.
+	const otherCounts = $derived(
+		Object.fromEntries(rows.map((r) => {
+			const o = r[view === 'projected' ? 'prelim' : 'projected'];
+			return [r.id, { total: o.total, electorate: o.electorate }];
+		}))
 	);
 	const majority = $derived(Math.floor(nat.house[view] / 2) + 1);
 	const flips = $derived(data.electorates.filter((e) => e.flips));
@@ -47,8 +48,12 @@
 
 <h1>Projected final result, 2026 general election</h1>
 <p class="lede">
-	Applying 2023's special-vote patterns to the 2026 preliminary count:
-	<strong>{list(gains)}; {list(losses)}</strong>.
+	This projection applies the impact of the <strong>2023 special votes</strong> to the 2026 preliminary
+	count. (By “special votes”, with a slight abuse of terminology, we mean the difference between the
+	preliminary and final counts.)
+</p>
+<p class="lede">
+	Under this projection: <strong>{list(gains)}; {list(losses)}</strong>.
 	{#each flips as f (f.slug)}
 		<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a> flips from
 		{f.prelim_winner_party ? names[f.prelim_winner_party] : 'other'} to
@@ -67,7 +72,7 @@
 	<Parliament
 		seats={seatCounts}
 		{names}
-		{highlight}
+		compare={otherCounts}
 		highlightLabel={view === 'projected' ? 'gained with specials' : 'lost with specials'}
 		{majority}
 		overhang={nat.house[view] - 120}
@@ -107,26 +112,22 @@
 		</table>
 		<p class="small muted">
 			Projected party votes: {votes(nat.prelim_total)} preliminary + {votes(nat.projected_specials)}
-			projected specials. <a href={link('/national/')}>Why these seats change →</a>
+			projected specials. <a href={link('/party-vote/')}>Why these seats change →</a>
 		</p>
 	</div>
 </div>
 
 <h2>Electorates</h2>
-<div class="map-row">
-	<GeoMap electorates={data.electorates} {names} {view} />
-	<div>
-		<p>
-			Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
-			with the toggle above). The dashed outline flips with special votes. Boxes on the main map show
-			the city insets.
-		</p>
-		<p class="muted small">
-			Seats with the narrowest projected margins:
-			{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({pct(e.margin_pct, 1)}){/each}.
-		</p>
-	</div>
-</div>
+<p>
+	Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
+	with the toggle above). The hatched electorate flips with special votes. Boxes on the main map show
+	the city insets.
+</p>
+<p class="muted small">
+	Seats with the narrowest projected margins:
+	{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({pct(e.margin_pct, 1)}){/each}.
+</p>
+<GeoMap electorates={data.electorates} {names} {view} />
 <p class="muted small">
 	Sorted by projected margin. "Needs" is the special-vote multiplier the projected runner-up
 	would have needed to tie, against the one they got from 2023. Click an electorate for its
@@ -136,6 +137,7 @@
 
 <style>
 	.lede { font-size: 1.05rem; }
+	.lede + .lede { margin-top: 0.6em; }
 	.toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 0.8em 0; }
 	.toggle button {
 		font: inherit; font-size: 0.9rem; padding: 0.35em 0.9em; border: 0; background: transparent;
@@ -144,6 +146,4 @@
 	.toggle button[aria-pressed='true'] { background: var(--text); color: var(--surface); }
 	.grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.5em; align-items: start; }
 	@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
-	.map-row { display: grid; grid-template-columns: minmax(0, 620px) minmax(0, 1fr); gap: 1.5em; align-items: start; }
-	@media (max-width: 760px) { .map-row { grid-template-columns: minmax(0, 1fr); } }
 </style>

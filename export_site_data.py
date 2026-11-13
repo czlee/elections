@@ -172,6 +172,18 @@ def national(cn, ce):
     }
 
 
+def candidate_names(filename, election, names):
+    """{(elec_id, key): candidate name}, with keys as in project_electorates.read_votes.
+    Read from the CSV columns, because names and party names can contain
+    parentheses, so labels like "NAME (Party)" can't be split reliably."""
+    out = {}
+    with open(filename, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            key = names.ids.get((election, row["party"]), ("other", row["candidate"]))
+            out[(int(row["elec_id"]), key)] = row["candidate"]
+    return out
+
+
 def rows_for(kind, elec_id, d, ce, names_2023):
     """One row per 2026 key, with every step of the projection."""
     names, labels = ce["names"], ce["labels"]
@@ -189,9 +201,8 @@ def rows_for(kind, elec_id, d, ce, names_2023):
                "special_share": d["specials"][key] / d["volume"],
                "final": final[key], "final_share": final[key] / total_final}
         if kind == "candidate":
-            label = labels[(elec_id, key)]
-            row["candidate"] = label[:label.rindex(" (")] if " (" in label else label
-            row["label"] = label
+            row["candidate"] = ce["names_2026"][(elec_id, key)]
+            row["label"] = labels[(elec_id, key)]
         else:
             row["label"] = names.short_names[key]
         if link and link != "party vote":
@@ -206,11 +217,37 @@ def rows_for(kind, elec_id, d, ce, names_2023):
     return rows
 
 
+def base_rows(kind, elec_id, d, ce, names_2023):
+    """The notional base-year count for every key in the area (including ones
+    with no 2026 counterpart), with each key's multiplier."""
+    names = ce["names"]
+    prelim_n, final_n = d["prelim_n"], d["final_n"]
+    total_p = sum(prelim_n.values())
+    total_s = sum(final_n.values()) - total_p
+    live = ce["electorates"][elec_id]["live"]
+    rows = []
+    for key in sorted(set(prelim_n) | set(final_n), key=lambda k: -final_n.get(k, 0)):
+        p, f = prelim_n.get(key, 0), final_n.get(key, 0)
+        row = {"key": key_id(key), "party": None if isinstance(key, tuple) else key,
+               "label": key[1] if isinstance(key, tuple) else names.short_names[key],
+               "prelim": p, "final": f, "specials": f - p,
+               "prelim_share": p / total_p, "special_share": (f - p) / total_s,
+               "multiplier": ((f - p) / total_s) / (p / total_p) if p > 0 else None}
+        if kind == "candidate" and not isinstance(key, tuple):
+            # Each 2023 candidate of this party in the area, with the share of the
+            # 2026 electorate's population their electorate contributes.
+            row["candidates"] = sorted(
+                ({"name": names_2023[(e, key)], "share": share_2026} for e, _, share_2026 in live
+                 if (e, key) in names_2023), key=lambda c: -c["share"])
+        rows.append(row)
+    return {"rows": rows, "prelim": total_p, "final": sum(final_n.values()), "specials": total_s}
+
+
 def electorates(ce):
     roll = read_roll()
-    # 2023 candidate names by (2023 elec_id, key), for "who was the 2023 counterpart"
-    _, _, labels_2023 = pe.read_votes(pe.FILES[("2023", "final", "candidate")], "2023", ce["names"], "candidate")
-    names_2023 = {k: v[:v.rindex(" (")] for k, v in labels_2023.items()}
+    # Candidate names by (elec_id, key), for "who was the 2023 counterpart"
+    names_2023 = candidate_names(pe.FILES[("2023", "final", "candidate")], "2023", ce["names"])
+    ce["names_2026"] = candidate_names(pe.FILES[("2026", "prelim", "candidate")], "2026", ce["names"])
     data, en23 = ce["data"], ce["elec_names"]["2023"]
     timestamps = read_timestamps()
 
@@ -245,8 +282,9 @@ def electorates(ce):
             entry["sources"].append(src)
         for kind in ["party", "candidate"]:
             d = detail[kind]
-            entry[kind] = {"ratio": d["ratio"], "volume": d["volume"],
+            entry[kind] = {"ratio": d["ratio"], "volume": d["volume"], "scale": ce["scale"],
                            "prelim_total": sum(d["prelim_2026"].values()),
+                           "base_rows": base_rows(kind, elec_id, d, ce, names_2023),
                            "rows": rows_for(kind, elec_id, d, ce, names_2023)}
         d = detail["candidate"]
         a, b = d["winner"], d["second"]

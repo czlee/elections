@@ -31,5 +31,8 @@
 	},
 	"engines": {
 		"node": ">=22"
+	},
+	"dependencies": {
+		"@fontsource/dm-sans": "^5.3.0"
 	}
 }
