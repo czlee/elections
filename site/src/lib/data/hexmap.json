@@ -1,0 +1,290 @@
+{
+ "general": {
+  "Auckland Central": [
+   6,
+   3
+  ],
+  "Banks Peninsula": [
+   -3,
+   15
+  ],
+  "Botany": [
+   6,
+   5
+  ],
+  "Christchurch Central": [
+   -2,
+   14
+  ],
+  "Christchurch East": [
+   -2,
+   13
+  ],
+  "Coromandel": [
+   7,
+   5
+  ],
+  "Dunedin": [
+   -6,
+   17
+  ],
+  "East Cape": [
+   6,
+   7
+  ],
+  "East Coast Bays": [
+   6,
+   2
+  ],
+  "Epsom": [
+   5,
+   4
+  ],
+  "Glendene": [
+   3,
+   3
+  ],
+  "Hamilton East": [
+   4,
+   6
+  ],
+  "Hamilton West": [
+   3,
+   8
+  ],
+  "Henderson": [
+   4,
+   2
+  ],
+  "Hutt South": [
+   1,
+   12
+  ],
+  "Ilam": [
+   -4,
+   14
+  ],
+  "Invercargill": [
+   -8,
+   18
+  ],
+  "Kaikōura": [
+   0,
+   12
+  ],
+  "Kaipara ki Mahurangi": [
+   5,
+   1
+  ],
+  "Kapiti": [
+   2,
+   10
+  ],
+  "Kenepuru": [
+   1,
+   10
+  ],
+  "Manurewa": [
+   4,
+   5
+  ],
+  "Maungakiekie": [
+   6,
+   4
+  ],
+  "Mt Albert": [
+   4,
+   3
+  ],
+  "Mt Maunganui": [
+   7,
+   6
+  ],
+  "Mt Roskill": [
+   3,
+   4
+  ],
+  "Māngere": [
+   3,
+   5
+  ],
+  "Napier": [
+   5,
+   8
+  ],
+  "Nelson": [
+   0,
+   11
+  ],
+  "New Plymouth": [
+   1,
+   8
+  ],
+  "North Shore": [
+   7,
+   2
+  ],
+  "Northcote": [
+   5,
+   3
+  ],
+  "Northland": [
+   5,
+   0
+  ],
+  "Pakuranga": [
+   7,
+   4
+  ],
+  "Palmerston North": [
+   3,
+   10
+  ],
+  "Papakura": [
+   5,
+   6
+  ],
+  "Port Waikato": [
+   3,
+   6
+  ],
+  "Rangitata": [
+   -5,
+   15
+  ],
+  "Rangitīkei": [
+   3,
+   9
+  ],
+  "Remutaka": [
+   2,
+   11
+  ],
+  "Rotorua": [
+   5,
+   7
+  ],
+  "Selwyn": [
+   -4,
+   15
+  ],
+  "Southland": [
+   -8,
+   17
+  ],
+  "Taieri": [
+   -7,
+   18
+  ],
+  "Takanini": [
+   5,
+   5
+  ],
+  "Taranaki-King Country": [
+   3,
+   7
+  ],
+  "Taupō": [
+   4,
+   8
+  ],
+  "Tauranga": [
+   4,
+   7
+  ],
+  "Tukituki": [
+   4,
+   9
+  ],
+  "Tāmaki": [
+   7,
+   3
+  ],
+  "Upper Harbour": [
+   5,
+   2
+  ],
+  "Waikato": [
+   6,
+   6
+  ],
+  "Waimakariri": [
+   -3,
+   13
+  ],
+  "Wairarapa": [
+   3,
+   11
+  ],
+  "Waitaki": [
+   -6,
+   16
+  ],
+  "Waitākere": [
+   2,
+   5
+  ],
+  "Wellington Bays": [
+   0,
+   13
+  ],
+  "Wellington North": [
+   1,
+   11
+  ],
+  "West Coast-Tasman": [
+   -2,
+   12
+  ],
+  "Whanganui": [
+   2,
+   9
+  ],
+  "Whangaparāoa": [
+   7,
+   1
+  ],
+  "Whangārei": [
+   6,
+   1
+  ],
+  "Wigram": [
+   -3,
+   14
+  ],
+  "Ōtāhuhu": [
+   4,
+   4
+  ]
+ },
+ "maori": {
+  "Hauraki-Waikato": [
+   0,
+   2
+  ],
+  "Ikaroa-Rāwhiti": [
+   1,
+   3
+  ],
+  "Te Tai Hauāuru": [
+   0,
+   3
+  ],
+  "Te Tai Tokerau": [
+   1,
+   0
+  ],
+  "Te Tai Tonga": [
+   -2,
+   5
+  ],
+  "Tāmaki Makaurau": [
+   1,
+   1
+  ],
+  "Waiariki": [
+   1,
+   2
+  ]
+ }
+}

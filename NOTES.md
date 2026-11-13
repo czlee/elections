@@ -353,6 +353,16 @@ Machine instead (next section).
   and 2023 official `electorate-details-NN.html`) are by analogy with the 2023
   preliminary pages and haven't been fetched (blocked to scripts); the XML links
   are the files `download.py` reads.
+- `export_hexmap.py` (13 November 2026, needs the venv): equal-area hex map
+  layout (`site/src/lib/data/hexmap.json`), general and Māori electorates laid
+  out separately. Uses population-weighted meshblock centres, because the
+  electorate polygons include sea (Wellington Bays' largest part is the
+  Chatham Islands). Points are spread apart and snapped to hex cells by an
+  optimal assignment; northing is blended 35% with its rank to even out
+  north-south density. Positions can be hand-tuned with `OVERRIDES`. A clipped
+  electorate layer doesn't exist on Datafinder (the user looked, 13 November
+  2026); a proper map would need a clipped regional council or territorial
+  authority layer as a land mask.
 - `site/` (13 November 2026): SvelteKit 3 static site; see `site/README.md`.
   Party colours were checked with the dataviz palette validator in House order;
   NZ First's neutral fails the chroma floor by design (always labelled).

@@ -1,6 +1,7 @@
 <script>
 	import Parliament from '#lib/components/Parliament.svelte';
 	import ElectorateList from '#lib/components/ElectorateList.svelte';
+	import HexMap from '#lib/components/HexMap.svelte';
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, pct, signed, candidateName } from '#lib/format.js';
@@ -111,6 +112,20 @@
 </div>
 
 <h2>Electorates</h2>
+<div class="map-row">
+	<HexMap electorates={data.electorates} {names} {view} />
+	<div>
+		<p>
+			One hexagon per electorate, all the same size, arranged roughly geographically. Colour is the
+			{view === 'prelim' ? 'preliminary' : 'projected'} leader (switch with the toggle above). The
+			outlined hexagon flips with special votes.
+		</p>
+		<p class="muted small">
+			Seats with the narrowest projected margins:
+			{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({pct(e.margin_pct, 1)}){/each}.
+		</p>
+	</div>
+</div>
 <p class="muted small">
 	Sorted by projected margin. "Needs" is the special-vote multiplier the projected runner-up
 	would have needed to tie, against the one they got from 2023. Click an electorate for its
@@ -128,4 +143,6 @@
 	.toggle button[aria-pressed='true'] { background: var(--text); color: var(--surface); }
 	.grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.5em; align-items: start; }
 	@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+	.map-row { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 1.5em; align-items: start; }
+	@media (max-width: 760px) { .map-row { grid-template-columns: minmax(0, 1fr); } }
 </style>
