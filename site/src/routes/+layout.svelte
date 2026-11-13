@@ -6,6 +6,7 @@
 	import '@fontsource/dm-sans/700.css';
 	import '../app.css';
 	import favicon from '#lib/assets/favicon.svg';
+	import appleTouchIcon from '#lib/assets/apple-touch-icon.png';
 	import { DRAFT } from '#lib/config.js';
 	import { link } from '#lib/link.js';
 	import { page } from '$app/state';
@@ -21,7 +22,8 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={favicon} type="image/svg+xml" />
+	<link rel="apple-touch-icon" href={appleTouchIcon} />
 	{#if DRAFT}<meta name="robots" content="noindex, nofollow" />{/if}
 </svelte:head>
 
