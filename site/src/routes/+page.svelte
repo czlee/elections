@@ -22,7 +22,7 @@
 			}))
 	);
 	const seatCounts = $derived(
-		Object.fromEntries(rows.map((r) => [r.id, r[view].total]))
+		Object.fromEntries(rows.map((r) => [r.id, { total: r[view].total, electorate: r[view].electorate }]))
 	);
 	// Ring the seats that change: gains in the projected view, losses in the preliminary view.
 	const highlight = $derived(
@@ -70,6 +70,7 @@
 		{highlight}
 		highlightLabel={view === 'projected' ? 'gained with specials' : 'lost with specials'}
 		{majority}
+		overhang={nat.house[view] - 120}
 	/>
 	<div class="table-wrap">
 		<table>
