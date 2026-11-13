@@ -1,7 +1,7 @@
 <script>
 	import Parliament from '#lib/components/Parliament.svelte';
 	import ElectorateList from '#lib/components/ElectorateList.svelte';
-	import HexMap from '#lib/components/HexMap.svelte';
+	import GeoMap from '#lib/components/GeoMap.svelte';
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, pct, signed, candidateName } from '#lib/format.js';
@@ -114,12 +114,12 @@
 
 <h2>Electorates</h2>
 <div class="map-row">
-	<HexMap electorates={data.electorates} {names} {view} />
+	<GeoMap electorates={data.electorates} {names} {view} />
 	<div>
 		<p>
-			One hexagon per electorate, all the same size, arranged roughly geographically. Colour is the
-			{view === 'prelim' ? 'preliminary' : 'projected'} leader (switch with the toggle above). The
-			outlined hexagon flips with special votes.
+			Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
+			with the toggle above). The dashed outline flips with special votes. Boxes on the main map show
+			the city insets.
 		</p>
 		<p class="muted small">
 			Seats with the narrowest projected margins:
@@ -144,6 +144,6 @@
 	.toggle button[aria-pressed='true'] { background: var(--text); color: var(--surface); }
 	.grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.5em; align-items: start; }
 	@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
-	.map-row { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 1.5em; align-items: start; }
+	.map-row { display: grid; grid-template-columns: minmax(0, 620px) minmax(0, 1fr); gap: 1.5em; align-items: start; }
 	@media (max-width: 760px) { .map-row { grid-template-columns: minmax(0, 1fr); } }
 </style>

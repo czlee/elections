@@ -48,7 +48,7 @@ python3 project_specials.py                  # national projection
 venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
 python3 project_electorates.py               # per-electorate projection
 python3 export_site_data.py                  # JSON for the site (site/src/lib/data/)
-venv/bin/python export_hexmap.py             # hex map layout for the site (needs data/statsnz/)
+venv/bin/python export_boundaries.py         # map boundaries for the site (needs data/statsnz/ and site/ npm install)
 ```
 
 The visualisation site is in `site/` (see `site/README.md`); it's deployed to

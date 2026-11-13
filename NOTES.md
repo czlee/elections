@@ -353,19 +353,21 @@ Machine instead (next section).
   and 2023 official `electorate-details-NN.html`) are by analogy with the 2023
   preliminary pages and haven't been fetched (blocked to scripts); the XML links
   are the files `download.py` reads.
-- `export_hexmap.py` (13 November 2026, needs the venv): equal-area hex map
-  layout (`site/src/lib/data/hexmap.json`), general and Māori electorates laid
-  out separately. Uses population-weighted meshblock centres, because the
-  electorate polygons include sea (Wellington Bays' largest part is the
-  Chatham Islands). Points are spread apart and snapped to hex cells by an
-  optimal assignment; northing is blended 35% with its rank to even out
-  north-south density. Positions can be hand-tuned with `OVERRIDES`. A clipped
-  electorate layer doesn't exist on Datafinder (the user looked, 13 November
-  2026); a proper map would need a clipped regional council or territorial
-  authority layer as a land mask.
+- `export_boundaries.py` (13 November 2026, needs the venv and the site's
+  npm packages): 2025 electorate boundaries for the site's map
+  (`site/src/lib/data/electorates-2025.topo.json`), simplified by mapshaper
+  with shared borders kept. Datafinder has no clipped electorate layer (the
+  user looked, 13 November 2026), so electorates are intersected with a clipped
+  land layer (any `data/statsnz/*clipped*` folder, e.g. Regional Council 2025
+  Clipped); `--no-clip` skips that for testing. The Chatham Islands are dropped
+  from the map. An equal-area hex map was tried first and dropped at the user's
+  request (in git history: `export_hexmap.py`); population-weighted meshblock
+  centres were needed there because Wellington Bays' largest polygon part is
+  the Chathams (polygons include sea).
 - `site/` (13 November 2026): SvelteKit 3 static site; see `site/README.md`.
   Party colours were checked with the dataviz palette validator in House order;
-  NZ First's neutral fails the chroma floor by design (always labelled).
+  ACT is pink and NZ First charcoal (light grey in dark mode), as the user
+  asked; NZ First's neutral fails the chroma floor by design (always labelled).
 - `party_names.toml` + `parties.py`: links parties across elections.
   One table per stable `party_id`, giving the name(s) it appears under in each
   election's data (TOML rather than CSV for readability, decided with the user
