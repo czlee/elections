@@ -1,0 +1,57 @@
+# Builds the projection site (site/) and deploys it to GitHub Pages. The
+# user site's custom domain (czlee.nz) covers this repo's project page, so
+# this serves https://czlee.nz/elections/2026-projection/.
+#
+# The site's data (site/src/lib/data/) is committed: CI doesn't rerun the
+# Python pipeline, which needs Stats NZ data and a slow Wayback scrape.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths: [site/**, .github/workflows/pages.yml, .nvmrc]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+        working-directory: site
+      - run: npm run build
+        working-directory: site
+        env:
+          BASE_PATH: /elections/2026-projection
+      - name: Assemble Pages tree
+        run: |
+          mkdir -p _site
+          cp -r site/build _site/2026-projection
+          cp site/static-root/index.html _site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

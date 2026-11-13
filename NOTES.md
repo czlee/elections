@@ -342,6 +342,20 @@ Machine instead (next section).
   Māori winner there) and Tākuta Ferris (independent in Te Tai Tonga, the 2023
   Te Pāti Māori winner) get a multiplier of 1. Neither affects a projected
   winner (both are fourth).
+- `export_site_data.py` (13 November 2026): writes the site's JSON
+  (`site/src/lib/data/2023/`) from `project_specials.compute()` and
+  `project_electorates.compute()` (both scripts were refactored to expose their
+  intermediates; their CSV and console output are unchanged, checked by diff).
+  Adds each electorate's break-even multiplier for the projected runner-up
+  (closed form, checked by substituting back), margin bridges, Sainte-Laguë
+  ladders (`seats.quotient_ladder()`), entitlements and source links. It asserts
+  agreement with the CSVs. The results site's HTML page links (2026 preliminary
+  and 2023 official `electorate-details-NN.html`) are by analogy with the 2023
+  preliminary pages and haven't been fetched (blocked to scripts); the XML links
+  are the files `download.py` reads.
+- `site/` (13 November 2026): SvelteKit 3 static site; see `site/README.md`.
+  Party colours were checked with the dataviz palette validator in House order;
+  NZ First's neutral fails the chroma floor by design (always labelled).
 - `party_names.toml` + `parties.py`: links parties across elections.
   One table per stable `party_id`, giving the name(s) it appears under in each
   election's data (TOML rather than CSV for readability, decided with the user

@@ -47,7 +47,11 @@ python3 scrape_wayback_prelim.py             # 2023 preliminary count (slow: Way
 python3 project_specials.py                  # national projection
 venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
 python3 project_electorates.py               # per-electorate projection
+python3 export_site_data.py                  # JSON for the site (site/src/lib/data/)
 ```
+
+The visualisation site is in `site/` (see `site/README.md`); it's deployed to
+https://czlee.nz/elections/2026-projection/ by GitHub Actions on pushes to `main`.
 
 Outputs are in `results/` (gitignored). `project_electorates.py` reads the
 national projection's party votes for seat allocation, so run

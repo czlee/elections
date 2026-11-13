@@ -147,11 +147,16 @@ def winner(votes):
     return ranked[0], ranked[1]
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--outdir", default="results/projection-2026")
-    args = parser.parse_args()
-
+def compute():
+    """Runs the projection. Returns a dict with the inputs (`data`, `labels`,
+    `sources`, ...), the national scale factor, and `electorates`: {2026
+    elec_id: detail}, where detail has the electorate's live 2023 sources,
+    omitted share and, for "party" and "candidate", the 2026 preliminary
+    votes, notional 2023 preliminary and final votes, volume, ratio,
+    multipliers, links, projected special votes and projected final votes.
+    Candidate details also have the preliminary and projected winner and
+    runner-up. Electorates with no live sources (Port Waikato) are in
+    `omitted` instead."""
     names = PartyNames()
     data, elec_names, labels = {}, {}, {}
     for (election, stage, kind), filename in FILES.items():
@@ -194,20 +199,60 @@ def main():
             projected.append((elec_id, live, omitted_share))
     scale = target / unscaled
 
-    party_rows, candidate_rows, summary = [], [], []
-    winners_prelim, winners_final = {}, {}
+    details, winners_prelim, winners_final = {}, {}, {}
     for elec_id, live, omitted_share in projected:
-        name = elec_names["2026"][elec_id]
-        for kind, rows in [("party", party_rows), ("candidate", candidate_rows)]:
+        detail = {"name": elec_names["2026"][elec_id], "live": live, "omitted_share": omitted_share}
+        for kind in ["party", "candidate"]:
             prelim_2026 = data[("2026", "prelim", kind)][elec_id]
             prelim_n = notional(live, data[("2023", "prelim", kind)])
             final_n = notional(live, data[("2023", "final", kind)])
             volume = sum(prelim_2026.values()) * ratios[elec_id][kind] * scale
             specials, multipliers, links = project(prelim_2026, prelim_n, final_n, names, volume,
-                                                   party_multipliers if kind == "candidate" else None)
-            if kind == "party":
-                party_multipliers = multipliers
+                                                   detail["party"]["multipliers"] if kind == "candidate" else None)
             final = {k: prelim_2026[k] + specials[k] for k in prelim_2026}
+            detail[kind] = {"prelim_2026": prelim_2026, "prelim_n": prelim_n, "final_n": final_n,
+                            "ratio": ratios[elec_id][kind], "volume": volume, "specials": specials,
+                            "multipliers": multipliers, "links": links, "final": final}
+        cand = detail["candidate"]
+        cand["prelim_winner"], cand["prelim_second"] = winner(cand["prelim_2026"])
+        cand["winner"], cand["second"] = winner(cand["final"])
+        winners_prelim[elec_id], winners_final[elec_id] = cand["prelim_winner"], cand["winner"]
+        details[elec_id] = detail
+    for elec_id in omitted:  # held at the preliminary winner
+        p1, _ = winner(data[("2026", "prelim", "candidate")][elec_id])
+        winners_prelim[elec_id] = winners_final[elec_id] = p1
+
+    return {"names": names, "data": data, "elec_names": elec_names, "labels": labels, "sources": sources,
+            "national_ratio": national_ratio, "target": target, "scale": scale, "ratios": ratios,
+            "electorates": details, "omitted": omitted,
+            "winners_prelim": winners_prelim, "winners_final": winners_final}
+
+
+def seats_from(party_votes, won):
+    """Allocates seats from {party_id: votes} and {elec_id: winning key}.
+    Returns (seats, other electorates)."""
+    electorates = Counter(k for k in won.values() if not isinstance(k, tuple) and k in party_votes)
+    other = sum(1 for k in won.values() if isinstance(k, tuple) or k not in party_votes)
+    return allocate(party_votes, electorates, other), other
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--outdir", default="results/projection-2026")
+    args = parser.parse_args()
+
+    c = compute()
+    names, labels, data, elec_names = c["names"], c["labels"], c["data"], c["elec_names"]
+    omitted, scale, target, national_ratio = c["omitted"], c["scale"], c["target"], c["national_ratio"]
+    winners_prelim, winners_final = c["winners_prelim"], c["winners_final"]
+
+    party_rows, candidate_rows, summary = [], [], []
+    for elec_id, detail in c["electorates"].items():
+        name = detail["name"]
+        for kind, rows in [("party", party_rows), ("candidate", candidate_rows)]:
+            d = detail[kind]
+            prelim_2026, multipliers, links = d["prelim_2026"], d["multipliers"], d["links"]
+            specials, final, volume = d["specials"], d["final"], d["volume"]
             total_final = sum(final.values())
             for key in sorted(prelim_2026, key=lambda k: -final[k]):
                 label = labels[(elec_id, key)] if kind == "candidate" else names.short_names[key]
@@ -219,20 +264,15 @@ def main():
                 notable = [labels[(elec_id, k)] + ("" if links[k] is None else " [party-vote multiplier {0:.3f}]".format(
                                multipliers[k])) for k in prelim_2026
                            if links[k] in (None, "party vote") and final[k] / total_final > NOTABLE_SHARE]
-                p1, p2 = winner(prelim_2026)
-                f1, f2 = winner(final)
-                winners_prelim[elec_id], winners_final[elec_id] = p1, f1
+                p1, p2, f1, f2 = d["prelim_winner"], d["prelim_second"], d["winner"], d["second"]
                 summary.append({
-                    "elec_id": elec_id, "name": name, "omitted_share": omitted_share,
+                    "elec_id": elec_id, "name": name, "omitted_share": detail["omitted_share"],
                     "prelim_winner": labels[(elec_id, p1)], "prelim_margin": prelim_2026[p1] - prelim_2026[p2],
                     "prelim_margin_pct": (prelim_2026[p1] - prelim_2026[p2]) / sum(prelim_2026.values()),
                     "projected_winner": labels[(elec_id, f1)], "projected_second": labels[(elec_id, f2)],
                     "projected_margin": final[f1] - final[f2],
                     "projected_margin_pct": (final[f1] - final[f2]) / total_final,
                     "projected_specials": volume, "flips": p1 != f1, "no_2023_counterpart": "; ".join(notable)})
-    for elec_id in omitted:  # held at the preliminary winner
-        p1, _ = winner(data[("2026", "prelim", "candidate")][elec_id])
-        winners_prelim[elec_id] = winners_final[elec_id] = p1
 
     os.makedirs(args.outdir, exist_ok=True)
     header = ["elec_id", "elec_name", "party_id", "name", "party_id_2023", "prelim_votes", "multiplier",
@@ -284,9 +324,7 @@ def main():
         party_votes = {row["party_id"]: float(row["projected_final_votes"]) for row in csv.DictReader(f)}
     print()
     for label, won in [("preliminary electorates", winners_prelim), ("projected electorates", winners_final)]:
-        electorates = Counter(k for k in won.values() if not isinstance(k, tuple) and k in party_votes)
-        other = sum(1 for k in won.values() if isinstance(k, tuple) or k not in party_votes)
-        seats = allocate(party_votes, electorates, other)
+        seats, other = seats_from(party_votes, won)
         house = sum(s[2] for s in seats.values()) + other
         print("projected party vote, {0}: {1} seats (overhang {2}, majority {3}): {4}".format(
             label, house, house - TOTAL_SEATS, house // 2 + 1, ", ".join(

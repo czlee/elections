@@ -1,0 +1,113 @@
+:root {
+	color-scheme: light;
+	--surface: #fcfcfb;
+	--surface-2: #f3f2ef;
+	--border: #dddcd7;
+	--grid: #e8e7e3;
+	--text: #0b0b0b;
+	--text-2: #52514e;
+	--text-3: #75746f;
+	--link: #1c5cab;
+	--accent: #2a78d6;
+	--party-te-pati-maori: #9c2343;
+	--party-green: #4cb35f;
+	--party-labour: #b8141b;
+	--party-top: #26a69a;
+	--party-nz-first: #6b5b4b;
+	--party-national: #2563b8;
+	--party-act: #d4a300;
+	--party-other: #a3a29c;
+	--font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+		--surface: #1a1a19;
+		--surface-2: #242422;
+		--border: #3a3a37;
+		--grid: #2e2e2b;
+		--text: #f0efec;
+		--text-2: #c3c2b7;
+		--text-3: #9a998f;
+		--link: #86b6ef;
+		--accent: #3987e5;
+		--party-te-pati-maori: #c2405a;
+		--party-green: #45ab59;
+		--party-labour: #b0241f;
+		--party-top: #24a99c;
+		--party-nz-first: #73675a;
+		--party-national: #4a8ae0;
+		--party-act: #b38a00;
+		--party-other: #6a6964;
+	}
+}
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--surface: #1a1a19;
+	--surface-2: #242422;
+	--border: #3a3a37;
+	--grid: #2e2e2b;
+	--text: #f0efec;
+	--text-2: #c3c2b7;
+	--text-3: #9a998f;
+	--link: #86b6ef;
+	--accent: #3987e5;
+	--party-te-pati-maori: #c2405a;
+	--party-green: #45ab59;
+	--party-labour: #b0241f;
+	--party-top: #24a99c;
+	--party-nz-first: #73675a;
+	--party-national: #4a8ae0;
+	--party-act: #b38a00;
+	--party-other: #6a6964;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--surface); }
+body {
+	margin: 0;
+	background: var(--surface);
+	color: var(--text);
+	font: 15px/1.5 var(--font);
+	-webkit-text-size-adjust: 100%;
+}
+a { color: var(--link); }
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+h1 { font-size: 1.7rem; margin: 0.4em 0 0.3em; }
+h2 { font-size: 1.25rem; margin: 2em 0 0.4em; }
+h3 { font-size: 1.05rem; margin: 1.4em 0 0.3em; }
+p { margin: 0.5em 0; max-width: 72ch; }
+.muted { color: var(--text-2); }
+.small { font-size: 0.85rem; }
+.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+.table-wrap { overflow-x: auto; margin: 0.6em 0; }
+table { border-collapse: collapse; font-size: 0.9rem; min-width: 100%; }
+th, td { padding: 0.3em 0.6em; border-bottom: 1px solid var(--grid); vertical-align: baseline; }
+th { text-align: left; font-weight: 600; color: var(--text-2); border-bottom-color: var(--border); }
+th.num { text-align: right; }
+tbody tr:hover { background: var(--surface-2); }
+tfoot td { font-weight: 600; border-top: 1px solid var(--border); }
+
+.swatch {
+	display: inline-block; width: 0.7em; height: 0.7em; border-radius: 2px;
+	margin-right: 0.35em; vertical-align: baseline;
+}
+.badge {
+	display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 0 0.45em;
+	border-radius: 3px; border: 1px solid currentColor; color: var(--text-2);
+}
+.callout {
+	border-left: 3px solid var(--accent); background: var(--surface-2);
+	padding: 0.6em 0.9em; margin: 1em 0; max-width: 72ch;
+}
+.sources { font-size: 0.82rem; color: var(--text-2); }
+.sources a { white-space: nowrap; }
+svg text { fill: var(--text-2); font-family: var(--font); }
+
+td:first-child, th:first-child { min-width: 8em; }
+@media (max-width: 600px) {
+	svg text { font-size: 11px; }
+	.wide-first td:first-child { min-width: 12em; }
+}

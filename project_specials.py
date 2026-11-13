@@ -114,11 +114,11 @@ def shares(totals):
     return {party: votes / total for party, votes in totals.items()}
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--output", default="results/projection-2026/national.csv")
-    args = parser.parse_args()
-
+def compute():
+    """Runs the projection. Returns a dict of its inputs and intermediates:
+    2023 totals, multipliers, the adjustment, 2026 shares, projected special
+    and final votes ({party_id: value}), and seats ({party_id: (electorate,
+    list, total)}) for the preliminary and projected party votes."""
     names = PartyNames()
     prelim_2023 = names.to_ids("2023", read_overview(PRELIM_2023_OVERVIEW))
     final_2023 = names.to_ids("2023", read_party_totals(FINAL_2023_PARTY_VOTES))
@@ -134,41 +134,67 @@ def main():
     specials_2023 = Counter({p: final_2023[p] - prelim_2023[p] for p in final_2023})
     prelim_share_2023 = shares(prelim_2023)
     special_share_2023 = shares(specials_2023)
-    multipliers = {p: special_share_2023[p] / prelim_share_2023[p] for p in final_2023}
+    multipliers_2023 = {p: special_share_2023[p] / prelim_share_2023[p] for p in final_2023}
     adjustment = sum(specials_2023.values()) / SPECIAL_ESTIMATE_2023
     projected_specials_total = SPECIAL_ESTIMATE_2026 * adjustment
 
     # Step 2: projected 2026 special-vote shares
     prelim_share_2026 = shares(prelim_2026)
     links = {p: names.counterpart(p, "2023", final_2023) for p in prelim_2026}
-    unnormalised = {p: prelim_share_2026[p] * (multipliers[links[p]] if links[p] else 1.0) for p in prelim_2026}
+    multipliers = {p: multipliers_2023[links[p]] if links[p] else 1.0 for p in prelim_2026}
+    unnormalised = {p: prelim_share_2026[p] * multipliers[p] for p in prelim_2026}
     norm = sum(unnormalised.values())
     special_share_2026 = {p: s / norm for p, s in unnormalised.items()}
+
+    # Step 4: projected final count
+    specials_2026 = {p: special_share_2026[p] * projected_specials_total for p in prelim_2026}
+    final_2026 = {p: prelim_2026[p] + specials_2026[p] for p in prelim_2026}
 
     # Step 5: seats
     electorates, other_electorates = electorate_winners(PRELIM_2026_CANDIDATE_VOTES, "2026", names, prelim_2026)
     prelim_seats = allocate(prelim_2026, electorates, other_electorates)
+    final_seats = allocate(final_2026, electorates, other_electorates)
 
-    # Step 4: projected final count
+    return {
+        "names": names, "display_names": display_names,
+        "prelim_2023": prelim_2023, "final_2023": final_2023, "specials_2023": specials_2023,
+        "prelim_share_2023": prelim_share_2023, "special_share_2023": special_share_2023,
+        "multipliers_2023": multipliers_2023, "adjustment": adjustment,
+        "estimate_2023": SPECIAL_ESTIMATE_2023, "estimate_2026": SPECIAL_ESTIMATE_2026,
+        "projected_specials_total": projected_specials_total,
+        "prelim_2026": prelim_2026, "prelim_share_2026": prelim_share_2026, "links": links,
+        "multipliers": multipliers, "special_share_2026": special_share_2026,
+        "specials_2026": specials_2026, "final_2026": final_2026,
+        "electorates": electorates, "other_electorates": other_electorates,
+        "prelim_seats": prelim_seats, "final_seats": final_seats,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--output", default="results/projection-2026/national.csv")
+    args = parser.parse_args()
+
+    c = compute()
+    names, links, prelim_2026 = c["names"], c["links"], c["prelim_2026"]
+    prelim_seats, final_seats = c["prelim_seats"], c["final_seats"]
+    other_electorates, display_names = c["other_electorates"], c["display_names"]
+    final_total = sum(c["final_2026"].values())
+
     rows = []
     parties = sorted(prelim_2026, key=lambda p: -prelim_2026[p])
-    final_total = sum(prelim_2026.values()) + projected_specials_total
     for party in parties:
-        specials = special_share_2026[party] * projected_specials_total
-        final = prelim_2026[party] + specials
-        multiplier = multipliers[links[party]] if links[party] else 1.0
-        rows.append([names.short_names[party], links[party] or "", prelim_2026[party], 100 * prelim_share_2026[party],
-                     multiplier, 100 * special_share_2026[party], specials, final, 100 * final / final_total])
-    projected_final = {party: r[7] for party, r in zip(parties, rows)}
-    final_seats = allocate(projected_final, electorates, other_electorates)
-    for party, r in zip(parties, rows):
-        r.extend([prelim_seats[party][2], final_seats[party][0], final_seats[party][1], final_seats[party][2]])
+        rows.append([names.short_names[party], links[party] or "", prelim_2026[party],
+                     100 * c["prelim_share_2026"][party], c["multipliers"][party],
+                     100 * c["special_share_2026"][party], c["specials_2026"][party], c["final_2026"][party],
+                     100 * c["final_2026"][party] / final_total,
+                     prelim_seats[party][2], final_seats[party][0], final_seats[party][1], final_seats[party][2]])
 
     print("2023: preliminary {0:,}, final {1:,}, special votes {2:,}, estimate {3:,}, adjustment {4:.4f}".format(
-        sum(prelim_2023.values()), sum(final_2023.values()), sum(specials_2023.values()),
-        SPECIAL_ESTIMATE_2023, adjustment))
+        sum(c["prelim_2023"].values()), sum(c["final_2023"].values()), sum(c["specials_2023"].values()),
+        SPECIAL_ESTIMATE_2023, c["adjustment"]))
     print("2026: preliminary {0:,}, estimate {1:,}, projected special votes {2:,.0f}, projected final {3:,.0f}".format(
-        sum(prelim_2026.values()), SPECIAL_ESTIMATE_2026, projected_specials_total, final_total))
+        sum(prelim_2026.values()), SPECIAL_ESTIMATE_2026, c["projected_specials_total"], final_total))
     print()
     print("{0:<20} {1:>9} {2:>7} {3:>6} {4:>7} {5:>8} {6:>9} {7:>7}  {8:>6} {9:>4} {10:>4} {11:>5}".format(
         "party", "prelim", "prel%", "mult", "spec%", "specials", "final", "final%",

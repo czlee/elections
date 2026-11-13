@@ -28,6 +28,32 @@ class TieError(Exception):
     pass
 
 
+def _quotients(votes, electorates, other_electorates, total_seats, threshold):
+    """Returns (qualified parties, seats to allocate, [(quotient, party, s)]
+    sorted highest first), where quotient = votes / (2s + 1)."""
+    total_votes = sum(votes.values())
+    qualified = [p for p in votes if votes[p] >= threshold * total_votes or electorates.get(p, 0) > 0]
+    to_allocate = total_seats - other_electorates
+    # Sainte-Laguë: the to_allocate highest quotients among qualified parties.
+    quotients = sorted(((votes[p] / (2 * s + 1), p, s) for p in qualified for s in range(to_allocate)),
+                       reverse=True)
+    return qualified, to_allocate, quotients
+
+
+def quotient_ladder(votes, electorates, other_electorates=0, before=10, after=10, total_seats=TOTAL_SEATS,
+                    threshold=THRESHOLD):
+    """The Sainte-Laguë quotients ranked around the cutoff: the last `before`
+    seats allocated and the next `after` quotients that miss out. Returns a
+    list of {"rank", "party", "seat" (the party's nth seat), "quotient",
+    "allocated"}, and the number of seats allocated by Sainte-Laguë."""
+    _, to_allocate, quotients = _quotients(votes, electorates, other_electorates, total_seats, threshold)
+    ladder = []
+    for rank in range(max(0, to_allocate - before), min(len(quotients), to_allocate + after)):
+        q, p, s = quotients[rank]
+        ladder.append({"rank": rank + 1, "party": p, "seat": s + 1, "quotient": q, "allocated": rank < to_allocate})
+    return ladder, to_allocate
+
+
 def allocate(votes, electorates, other_electorates=0, total_seats=TOTAL_SEATS, threshold=THRESHOLD):
     """Allocates seats.
 
@@ -39,18 +65,12 @@ def allocate(votes, electorates, other_electorates=0, total_seats=TOTAL_SEATS, t
     Returns {party: (electorate_seats, list_seats, total_seats)} for every
     party in `votes` or `electorates`.
     """
-    total_votes = sum(votes.values())
-    qualified = [p for p in votes if votes[p] >= threshold * total_votes or electorates.get(p, 0) > 0]
-    to_allocate = total_seats - other_electorates
-
-    # Sainte-Laguë: the to_allocate highest quotients among qualified parties.
-    quotients = sorted(((votes[p] / (2 * s + 1), p) for p in qualified for s in range(to_allocate)),
-                       reverse=True)
+    qualified, to_allocate, quotients = _quotients(votes, electorates, other_electorates, total_seats, threshold)
     if len(quotients) > to_allocate and quotients[to_allocate - 1][0] == quotients[to_allocate][0]:
-        tied = sorted(p for q, p in quotients if q == quotients[to_allocate][0])
+        tied = sorted(p for q, p, _ in quotients if q == quotients[to_allocate][0])
         raise TieError("tie for the last seat between {0}".format(", ".join(map(str, tied))))
     entitlement = {p: 0 for p in qualified}
-    for q, p in quotients[:to_allocate]:
+    for q, p, _ in quotients[:to_allocate]:
         entitlement[p] += 1
 
     result = {}
