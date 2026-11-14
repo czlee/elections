@@ -16,12 +16,18 @@
 [act]
 short_name = "ACT"
 2017 = "ACT New Zealand"
+2020 = "ACT New Zealand"
 2023 = "ACT New Zealand"
 2026 = "ACT New Zealand"
+
+[advance-nz]
+short_name = "Advance NZ"
+2020 = "Advance NZ"
 
 [alcp]
 short_name = "Legalise Cannabis"
 2017 = "Aotearoa Legalise Cannabis Party"
+2020 = "Aotearoa Legalise Cannabis Party"
 2023 = "Aotearoa Legalise Cannabis Party"
 2026 = "Aotearoa Legalise Cannabis Party"
 
@@ -41,8 +47,9 @@ short_name = "Ban1080"
 
 [conservative]
 short_name = "Conservative"
-# Renamed New Conservatives after 2017, then Conservative Party NZ.
+# Renamed New Conservative(s) after 2017, then Conservative Party NZ.
 2017 = "Conservative"
+2020 = "New Conservative"
 2023 = "New Conservatives"
 2026 = "Conservative Party NZ"
 
@@ -63,8 +70,13 @@ short_name = "Freedoms NZ"
 [green]
 short_name = "Green"
 2017 = "Green Party"
+2020 = "Green Party"
 2023 = "Green Party"
 2026 = "Green Party"
+
+[heartland]
+short_name = "HeartlandNZ"
+2020 = "HeartlandNZ"
 
 [internet]
 short_name = "Internet"
@@ -73,6 +85,7 @@ short_name = "Internet"
 [labour]
 short_name = "Labour"
 2017 = "Labour Party"
+2020 = "Labour Party"
 2023 = "Labour Party"
 2026 = "Labour Party"
 
@@ -87,6 +100,7 @@ short_name = "Mana"
 [national]
 short_name = "National"
 2017 = "National Party"
+2020 = "National Party"
 2023 = "National Party"
 2026 = "National Party"
 
@@ -101,6 +115,7 @@ short_name = "NewZeal"
 [nz-first]
 short_name = "NZ First"
 2017 = "New Zealand First Party"
+2020 = "New Zealand First Party"
 2023 = "New Zealand First Party"
 2026 = "New Zealand First Party"
 
@@ -112,12 +127,17 @@ short_name = "NZ Loyal"
 [nz-outdoors]
 short_name = "Outdoors & Freedom"
 2017 = "NZ Outdoors Party"
+2020 = "NZ Outdoors Party"
 2026 = "NZ Outdoors & Freedom Party"
 part_of = { 2023 = "freedoms-nz" }
 
 [nz-peoples]
 short_name = "NZ People’s"
 2017 = "New Zealand People's Party"
+
+[one]
+short_name = "ONE"
+2020 = "ONE Party"
 
 [rock-the-vote]
 short_name = "Rock the Vote"
@@ -126,10 +146,20 @@ part_of = { 2023 = "freedoms-nz" }
 [social-credit]
 short_name = "Social Credit"
 2017 = "Democrats for Social Credit"
+2020 = "Social Credit"
+
+[sustainable-nz]
+short_name = "Sustainable NZ"
+2020 = "Sustainable New Zealand Party"
+
+[tea]
+short_name = "TEA"
+2020 = "TEA Party"
 
 [te-pati-maori]
 short_name = "Te Pāti Māori"
-2017 = "Māori Party"  # renamed Te Pāti Māori in 2020
+2017 = "Māori Party"
+2020 = "Māori Party"  # renamed Te Pāti Māori after the 2020 election
 2023 = "Te Pāti Māori"
 2026 = "Te Pāti Māori"
 
@@ -140,6 +170,7 @@ short_name = "Te Tai Tokerau"
 [top]
 short_name = "Opportunity"
 2017 = "The Opportunities Party (TOP)"
+2020 = "The Opportunities Party (TOP)"
 2023 = "The Opportunities Party (TOP)"
 2026 = "Opportunity Party"
 
@@ -149,6 +180,7 @@ short_name = "United Future"
 
 [vision-nz]
 short_name = "Vision NZ"
+2020 = "Vision New Zealand"
 2026 = "Vision New Zealand"
 part_of = { 2023 = "freedoms-nz" }
 

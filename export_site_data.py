@@ -1,15 +1,19 @@
 """Exports the 2026 projection, with its intermediate numbers, as JSON for the
-visualisation site (site/). Runs project_specials.compute() and
-project_electorates.compute(), so it needs the same inputs, and
-results/projection-2026/*.csv to check against (run both scripts first).
+visualisation site (site/). Runs project_specials.compute() and, for a base
+with electorate projections, project_electorates.compute(), so it needs the
+same inputs, and results/projection-2026/*.csv to check against (run the
+scripts first, with the same --base).
 
 Writes, in site/src/lib/data/<base>/:
   national.json     the national projection, Sainte-Laguë ladders and seats
   electorates.json  one entry per 2026 electorate: candidate and party votes
-                    at every step, its 2023 sources and the break-even
-                    multiplier for the projected runner-up
+                    at every step, its base-year sources and the break-even
+                    multiplier for the projected runner-up (only for bases
+                    in ELECTORATE_BASES)
 
-Only the 2023 base is implemented so far.
+Only 2023 has electorate projections so far. For the other bases, both
+counts' seats hold electorates at the 2026 preliminary winners, as
+project_specials.py does.
 """
 import argparse
 import csv
@@ -33,19 +37,44 @@ PRELIM_2023_STATS = "results/2023-prelim/electorate_stats.csv"
 # fetched; the XML links are the files download.py reads.
 RESULTS = "https://www.electionresults.govt.nz/"
 WAYBACK = "https://web.archive.org/web/{0}/" + RESULTS + "{1}"
-NATIONAL_SOURCES = {
+RELEASES = "https://elections.nz/media-and-news/"
+ELECTORATE_BASES = {"2023"}
+SOURCES_2026 = {
     "release_2026": {"label": "Electoral Commission, 2026 preliminary results press release",
-                     "url": "https://elections.nz/media-and-news/2026/2026-general-election-preliminary-results"},
-    "release_2023": {"label": "Electoral Commission, 2023 election night press release (Wayback Machine)",
-                     "url": "https://web.archive.org/web/20231021094025/https://elections.nz/media-and-news/2023/"
-                            "election-night-results-for-the-2023-general-election"},
-    "prelim_2023": {"label": "2023 preliminary count, overview page (Wayback Machine, 26 Oct 2023)",
-                    "url": WAYBACK.format("20231026013849", "electionresults_2023_preliminary/index.html")},
-    "final_2023": {"label": "2023 official results", "url": RESULTS + "electionresults_2023/",
-                   "xml": RESULTS + "electionresults_2023/xml/election.xml"},
+                     "url": RELEASES + "2026/2026-general-election-preliminary-results"},
     "prelim_2026": {"label": "2026 preliminary count", "url": RESULTS + "electionresults_2026_preliminary/",
                     "xml": RESULTS + "electionresults_2026_preliminary/xml/election.xml"},
 }
+# The base election's press release and preliminary count. The 2017 and 2020
+# releases are blocked to scripts (the user saved copies, NOTES.md); 2023's
+# is read via the Wayback Machine.
+BASE_SOURCES = {
+    "2017": {
+        "release_base": {"label": "Electoral Commission, 2017 preliminary results press release",
+                         "url": RELEASES + "2017/preliminary-results-for-the-2017-general-election"},
+        "prelim_base": {"label": "2017 preliminary count, overview page (Wayback Machine, 11 Oct 2017)",
+                        "url": WAYBACK.format("20171011234809", "electionresults_2017_preliminary/index.html")},
+    },
+    "2020": {
+        "release_base": {"label": "Electoral Commission, 2020 election night press release",
+                         "url": RELEASES + "2020/preliminary-results-for-the-2020-general-election"},
+        "prelim_base": {"label": "2020 preliminary count, overview page (Wayback Machine, 3 Nov 2020)",
+                        "url": WAYBACK.format("20201103192629", "electionresults_2020_preliminary/index.html")},
+    },
+    "2023": {
+        "release_base": {"label": "Electoral Commission, 2023 election night press release (Wayback Machine)",
+                         "url": "https://web.archive.org/web/20231021094025/" + RELEASES + "2023/"
+                                "election-night-results-for-the-2023-general-election"},
+        "prelim_base": {"label": "2023 preliminary count, overview page (Wayback Machine, 26 Oct 2023)",
+                        "url": WAYBACK.format("20231026013849", "electionresults_2023_preliminary/index.html")},
+    },
+}
+
+
+def national_sources(base):
+    final = {"label": "{0} official results".format(base), "url": RESULTS + "electionresults_{0}/".format(base),
+             "xml": RESULTS + "electionresults_{0}/xml/election.xml".format(base)}
+    return dict(SOURCES_2026, final_base=final, **BASE_SOURCES[base])
 
 
 def electorate_links_2026(elec_id):
@@ -73,7 +102,10 @@ def slugify(name):
 
 
 def seats_json(seats, party_votes):
-    return {p: {"electorate": e, "list": l, "total": t} for p, (e, l, t) in seats.items()
+    # Most seats first, then by party_id, so the order doesn't depend on set
+    # iteration order in seats.py.
+    return {p: {"electorate": e, "list": l, "total": t}
+            for p, (e, l, t) in sorted(seats.items(), key=lambda x: (-x[1][2], x[0]))
             if t > 0 or p in party_votes}
 
 
@@ -112,14 +144,21 @@ def read_roll():
     return roll
 
 
-def national(cn, ce):
-    names = cn["names"]
+def national(cn, ce=None):
+    """`ce` is project_electorates.compute()'s output, or None for a base
+    without electorate projections."""
+    names, base = cn["names"], cn["base"]
     final_2026 = cn["final_2026"]
-    # Seats as the site shows them: preliminary votes with preliminary
-    # electorate winners, and projected votes with projected winners.
-    prelim_seats, prelim_other = pe.seats_from(cn["prelim_2026"], ce["winners_prelim"])
-    final_seats, final_other = pe.seats_from(final_2026, ce["winners_final"])
-    assert prelim_seats == cn["prelim_seats"]
+    if ce:
+        # Seats as the site shows them: preliminary votes with preliminary
+        # electorate winners, and projected votes with projected winners.
+        prelim_seats, prelim_other = pe.seats_from(cn["prelim_2026"], ce["winners_prelim"])
+        final_seats, final_other = pe.seats_from(final_2026, ce["winners_final"])
+        assert prelim_seats == cn["prelim_seats"]
+    else:
+        # Electorates held at the preliminary winners in both counts.
+        prelim_seats, final_seats = cn["prelim_seats"], cn["final_seats"]
+        prelim_other = final_other = cn["other_electorates"]
     prelim_ladder, n_prelim = quotient_ladder(cn["prelim_2026"], {p: s[0] for p, s in prelim_seats.items()},
                                               prelim_other, LADDER_BEFORE, LADDER_AFTER)
     final_ladder, n_final = quotient_ladder(final_2026, {p: s[0] for p, s in final_seats.items()},
@@ -147,26 +186,26 @@ def national(cn, ce):
             "final_share": final_2026[p] / sum(final_2026.values()),
         })
     base_parties = []
-    for p in sorted(cn["final_2023"], key=lambda p: -cn["final_2023"][p]):
+    for p in sorted(cn["final_base"], key=lambda p: -cn["final_base"][p]):
         base_parties.append({
-            "id": p, "short": names.short_names[p], "prelim": cn["prelim_2023"][p], "final": cn["final_2023"][p],
-            "specials": cn["specials_2023"][p], "prelim_share": cn["prelim_share_2023"][p],
-            "special_share": cn["special_share_2023"][p], "multiplier": cn["multipliers_2023"][p],
+            "id": p, "short": names.short_names[p], "prelim": cn["prelim_base"][p], "final": cn["final_base"][p],
+            "specials": cn["specials_base"][p], "prelim_share": cn["prelim_share_base"][p],
+            "special_share": cn["special_share_base"][p], "multiplier": cn["multipliers_base"][p],
         })
     house = {k: sum(s[2] for s in seats.values()) + other
              for k, seats, other in [("prelim", prelim_seats, prelim_other), ("projected", final_seats, final_other)]}
     return {
-        "base": "2023", "generated": date.today().isoformat(),
-        "estimate_base": cn["estimate_2023"], "estimate_2026": cn["estimate_2026"],
+        "base": base, "has_electorates": ce is not None, "generated": date.today().isoformat(),
+        "estimate_base": cn["estimate_base"], "estimate_2026": cn["estimate_2026"],
         "adjustment": cn["adjustment"], "projected_specials": cn["projected_specials_total"],
-        "base_totals": {"prelim": sum(cn["prelim_2023"].values()), "final": sum(cn["final_2023"].values()),
-                        "specials": sum(cn["specials_2023"].values())},
+        "base_totals": {"prelim": sum(cn["prelim_base"].values()), "final": sum(cn["final_base"].values()),
+                        "specials": sum(cn["specials_base"].values())},
         "prelim_total": sum(cn["prelim_2026"].values()), "final_total": sum(final_2026.values()),
         "parties": parties, "base_parties": base_parties,
         "seats": {"prelim": seats_json(prelim_seats, final_2026), "projected": seats_json(final_seats, final_2026)},
         "other_electorates": {"prelim": prelim_other, "projected": final_other},
         "house": house, "list_pool": TOTAL_SEATS, "entitlement": entitlement,
-        "sources": NATIONAL_SOURCES,
+        "sources": national_sources(base),
         "ladder": {"prelim": prelim_ladder, "projected": final_ladder,
                    "allocated": {"prelim": n_prelim, "projected": n_final}},
     }
@@ -226,7 +265,8 @@ def base_rows(kind, elec_id, d, ce, names_2023):
     total_s = sum(final_n.values()) - total_p
     live = ce["electorates"][elec_id]["live"]
     rows = []
-    for key in sorted(set(prelim_n) | set(final_n), key=lambda k: -final_n.get(k, 0)):
+    # Ties broken by key, so the order doesn't depend on set iteration order.
+    for key in sorted(set(prelim_n) | set(final_n), key=lambda k: (-final_n.get(k, 0), key_id(k))):
         p, f = prelim_n.get(key, 0), final_n.get(key, 0)
         row = {"key": key_id(key), "party": None if isinstance(key, tuple) else key,
                "label": key[1] if isinstance(key, tuple) else names.short_names[key],
@@ -278,7 +318,8 @@ def electorates(ce):
                 for kind in ["party", "candidate"]:
                     p, f = data[("2023", "prelim", kind)][e23], data[("2023", "final", kind)][e23]
                     src[kind] = {"prelim": sum(p.values()), "final": sum(f.values()),
-                                 "by_key": {key_id(k): [p.get(k, 0), f.get(k, 0)] for k in set(p) | set(f)}}
+                                 "by_key": {key_id(k): [p.get(k, 0), f.get(k, 0)]
+                                            for k in sorted(set(p) | set(f), key=key_id)}}
             entry["sources"].append(src)
         for kind in ["party", "candidate"]:
             d = detail[kind]
@@ -313,12 +354,14 @@ def electorates(ce):
 
 def check(nat, elecs):
     """Checks the export against the CSVs written by the projection scripts."""
-    assert nat["house"]["projected"] == nat["house"]["prelim"] == 131, nat["house"]
-    with open(os.path.join(CSV_DIR, "national.csv"), newline="", encoding="utf-8") as f:
+    with open(ps.default_output(nat["base"]), newline="", encoding="utf-8") as f:
         csv_nat = {r["party_id"]: r for r in csv.DictReader(f)}
     for p in nat["parties"]:
         assert "{0:.0f}".format(p["final"]) == csv_nat[p["id"]]["projected_final_votes"], p["id"]
         assert nat["seats"]["projected"][p["id"]]["total"] == int(csv_nat[p["id"]]["projected_seats"]), p["id"]
+    if elecs is None:
+        return
+    assert nat["house"]["projected"] == nat["house"]["prelim"] == 131, nat["house"]
     with open(os.path.join(CSV_DIR, "electorates_summary.csv"), newline="", encoding="utf-8") as f:
         csv_sum = {int(r["elec_id"]): r for r in csv.DictReader(f)}
     with open(os.path.join(CSV_DIR, "electorates_candidate.csv"), newline="", encoding="utf-8") as f:
@@ -342,15 +385,21 @@ def check(nat, elecs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--base", choices=sorted(ps.BASES), default=ps.DEFAULT_BASE)
     parser.add_argument("--outdir", default=OUTDIR)
     args = parser.parse_args()
 
-    cn, ce = ps.compute(), pe.compute()
-    nat, elecs = national(cn, ce), electorates(ce)
+    cn = ps.compute(args.base)
+    if args.base in ELECTORATE_BASES:
+        ce = pe.compute()
+        nat, elecs = national(cn, ce), electorates(ce)
+    else:
+        nat, elecs = national(cn), None
     check(nat, elecs)
     outdir = os.path.join(args.outdir, nat["base"])
     os.makedirs(outdir, exist_ok=True)
-    for filename, obj in [("national.json", nat), ("electorates.json", elecs)]:
+    outputs = [("national.json", nat)] + ([("electorates.json", elecs)] if elecs is not None else [])
+    for filename, obj in outputs:
         path = os.path.join(outdir, filename)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(compact(obj), f, ensure_ascii=False, separators=(",", ":"))

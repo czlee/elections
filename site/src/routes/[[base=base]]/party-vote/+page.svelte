@@ -64,7 +64,7 @@
 	count is of valid party votes, so the ratio also absorbs special votes that were disallowed or
 	informal.
 </p>
-<Sources items={[src.release_2026, src.release_2023, src.prelim_2023, src.final_2023]} />
+<Sources items={[src.release_2026, src.release_base, src.prelim_base, src.final_base]} />
 
 <h2>2. Each party’s {n.base} multiplier</h2>
 <p>
@@ -111,7 +111,7 @@
 			</tfoot>
 		</table>
 	</div>
-	<Sources items={[src.prelim_2023, src.final_2023]} />
+	<Sources items={[src.prelim_base, src.final_base]} />
 </details>
 
 <h2>3. Sharing out the 2026 specials</h2>
@@ -205,8 +205,14 @@
 	fit:
 	{#each overhang('projected') as [p, d], i (p)}{i > 0 ? '; ' : ''}{names[p]} wins
 		{n.seats.projected[p].electorate} electorates against a Sainte-Laguë share of
-		{n.entitlement.projected[p]} (+{d}){/each}. So the House has {n.house.projected} seats in both
-	counts. Electorate winners here are the projected ones; see the <a href={link('/electorates/')}>electorate pages</a>.
+		{n.entitlement.projected[p]} (+{d}){/each}.
+	{#if n.house.projected === n.house.prelim}So the House has {n.house.projected} seats in both counts.
+	{:else}So the House has {n.house.prelim} seats in the preliminary count and {n.house.projected} in the
+		projected final.{/if}
+	{#if n.has_electorates}Electorate winners here are the projected ones; see the
+		<a href={link('/electorates/')}>electorate pages</a>.
+	{:else}Electorates aren’t projected from {n.base}, so both counts use the preliminary count’s
+		electorate winners.{/if}
 </p>
 
 <style>

@@ -11,14 +11,24 @@
 	import { link } from '#lib/link.js';
 	import { page } from '$app/state';
 
-	/** @type {{children: import('svelte').Snippet}} */
-	let { children } = $props();
+	/** @type {{children: import('svelte').Snippet, data: any}} */
+	let { children, data } = $props();
 
-	const nav = [
-		{ href: '/', route: '/', label: 'Projection' },
-		{ href: '/party-vote/', route: '/party-vote', label: 'Party vote' },
-		{ href: '/electorates/', route: '/electorates', label: 'Electorates' }
-	];
+	const R = '/[[base=base]]';
+	const nav = $derived([
+		{ href: '/', route: R, label: 'Projection' },
+		{ href: '/party-vote/', route: `${R}/party-vote`, label: 'Party vote' },
+		...(data.hasElectorates ? [{ href: '/electorates/', route: `${R}/electorates`, label: 'Electorates' }] : [])
+	]);
+	/** This page under another base year, or that base's landing page if it has no such page. */
+	function switchTo(/** @type {{base: string, hasElectorates: boolean}} */ b) {
+		const route = page.route.id ?? R;
+		if (route === `${R}/party-vote`) return link('/party-vote/', b.base);
+		if (!b.hasElectorates) return link('/', b.base);
+		if (route === `${R}/electorates`) return link('/electorates/', b.base);
+		if (route === `${R}/electorate/[slug]`) return link(`/electorate/${page.params.slug}/`, b.base);
+		return link('/', b.base);
+	}
 </script>
 
 <svelte:head>
@@ -41,6 +51,12 @@
 				>{item.label}</a
 			>
 		{/each}
+		<span class="bases" role="group" aria-label="Base year">
+			<span class="bases-label">Using specials from</span>
+			{#each data.bases as b (b.base)}
+				<a href={switchTo(b)} aria-current={b.base === data.base ? 'true' : undefined}>{b.base}</a>
+			{/each}
+		</span>
 	</nav>
 </header>
 
@@ -50,7 +66,7 @@
 
 <footer>
 	<p>
-		Projection by Chuan-Zheng Lee. Not an official result. Based on 2023’s special votes; see the
+		Projection by Chuan-Zheng Lee. Not an official result. Based on {data.base}’s special votes; see the
 		<a href={link('/#limitations')}>limitations</a>.
 	</p>
 	<p>
@@ -59,10 +75,10 @@
 		direction.
 	</p>
 	<p>
-		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> (2023 and 2026
-		results), <a href="https://web.archive.org/">Internet Archive</a> (2023 preliminary count),
-		<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population and
-		2025 electorate boundaries, CC BY 4.0). Code:
+		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> ({data.base} and 2026
+		results), <a href="https://web.archive.org/">Internet Archive</a> ({data.base} preliminary count){#if data.hasElectorates},
+			<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population and
+			2025 electorate boundaries, CC BY 4.0){/if}. Code:
 		<a href="https://github.com/czlee/elections">czlee/elections</a>.
 	</p>
 </footer>
@@ -81,6 +97,10 @@
 	nav a { color: var(--text-2); text-decoration: none; }
 	nav a[aria-current='page'] { color: var(--text); font-weight: 600; }
 	nav .brand { color: var(--text); font-weight: 700; margin-right: auto; }
+	.bases { display: inline-flex; gap: 0.15em; align-items: baseline; font-size: 0.85rem; margin-left: 0.6em; }
+	.bases-label { color: var(--text-3); margin-right: 0.35em; }
+	.bases a { padding: 0.05em 0.4em; border-radius: 4px; border: 1px solid transparent; }
+	.bases a[aria-current='true'] { color: var(--text); font-weight: 600; border-color: var(--border); }
 	main { padding-bottom: 3em; }
 	footer { border-top: 1px solid var(--border); color: var(--text-3); font-size: 0.8rem; padding-block: 1em 2em; }
 	footer a { color: var(--text-2); }

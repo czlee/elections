@@ -8,6 +8,9 @@
 
 	let { data } = $props();
 	const nat = $derived(data.national);
+	const base = $derived(nat.base);
+	/** A base year with electorate projections, to point to from one without. */
+	const electorateBase = $derived(data.bases.find((/** @type {any} */ b) => b.hasElectorates)?.base);
 	let view = $state(/** @type {'prelim' | 'projected'} */ ('projected'));
 	// The footer links to #limitations; open the box when arriving that way.
 	let limitsOpen = $state(false);
@@ -49,16 +52,17 @@
 </script>
 
 <svelte:head>
-	<title>2026 special votes projection</title>
-	<meta name="description" content="Projecting New Zealand’s 2026 final election result from the preliminary count, using 2023’s special votes, with every step shown." />
+	<title>2026 special votes projection{data.base === '2023' ? '' : ` from ${base}`}</title>
+	<meta name="description" content="Projecting New Zealand’s 2026 final election result from the preliminary count, using {base}’s special votes, with every step shown." />
 </svelte:head>
 
 <h1>Projected final result, 2026 general election</h1>
 <p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">
-	This projection applies the impact of the <strong>2023
+	This projection applies the impact of the <strong>{base}
 	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
 	to the 2026 preliminary count.
+	{#if !data.hasElectorates}Party vote only: electorates aren’t projected from {base}.{/if}
 </p>
 <p class="lede">
 	Under this projection:
@@ -82,17 +86,29 @@
 		<li><strong>This is a mechanical projection, not a forecast.</strong></li>
 		<li>
 			Same-day enrolment and enrolment changes while voting no longer count as special votes in
-			2026, which reportedly cut specials by about 30%. The 2023 mix of special voters may not carry
+			2026, which reportedly cut specials by about 30%. The {base} mix of special voters may not carry
 			over.
 		</li>
 		<li>
-			When a 2023 party has no candidate in 2026, its special votes are effectively shared among
-			everyone else in proportion, though in reality they’d lean to particular parties.
+			{#if data.hasElectorates}
+				When a {base} party has no candidate in 2026, its special votes are effectively shared among
+				everyone else in proportion, though in reality they’d lean to particular parties.
+			{:else}
+				When a {base} party isn’t standing in 2026, its special votes are effectively shared among
+				everyone else in proportion, though in reality they’d lean to particular parties.
+			{/if}
 		</li>
-		<li>
-			Electorates are on new boundaries, so their 2023 results are rebuilt from population weights.
-			These stand in for enrolled electors (and, for Māori electorates, for the Māori roll).
-		</li>
+		{#if data.hasElectorates}
+			<li>
+				Electorates are on new boundaries, so their {base} results are rebuilt from population weights.
+				These stand in for enrolled electors (and, for Māori electorates, for the Māori roll).
+			</li>
+		{:else}
+			<li>
+				Electorates aren’t projected from {base}: every electorate keeps its preliminary leader, which
+				can affect the overhang.
+			</li>
+		{/if}
 	</ul>
 </details>
 
@@ -150,20 +166,28 @@
 	</div>
 </div>
 
-<h2>Electorates</h2>
-<p>
-	Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
-	with the toggle above). The hatched electorate flips with special votes. Boxes on the main map show
-	the city insets.
-</p>
-<p class="muted small">
-	Seats with the narrowest projected margins:
-	{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({points(e.margin_pct, 1)}){/each}.
-</p>
-<GeoMap electorates={data.electorates} {names} {view} />
-<p class="muted small">
-	Click an electorate for its working, or <a href={link('/electorates/')}>see all electorates in a table →</a>
-</p>
+{#if data.hasElectorates}
+	<h2>Electorates</h2>
+	<p>
+		Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
+		with the toggle above). The hatched electorate flips with special votes. Boxes on the main map show
+		the city insets.
+	</p>
+	<p class="muted small">
+		Seats with the narrowest projected margins:
+		{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({points(e.margin_pct, 1)}){/each}.
+	</p>
+	<GeoMap electorates={data.electorates} {names} {view} />
+	<p class="muted small">
+		Click an electorate for its working, or <a href={link('/electorates/')}>see all electorates in a table →</a>
+	</p>
+{:else if electorateBase}
+	<h2>Electorates</h2>
+	<p>
+		Electorates aren’t projected from {base}’s special votes. For electorate projections, see the
+		<a href={link('/', electorateBase)}>projection from {electorateBase}</a>.
+	</p>
+{/if}
 
 <style>
 	.byline { margin-top: -0.4em; color: var(--text-2); font-size: 0.9rem; }

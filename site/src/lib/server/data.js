@@ -1,15 +1,32 @@
 // Build-time data access. Only server load functions import this, so each
 // prerendered page gets just the data it needs, not the whole JSON.
-import nationalJson from '#lib/data/2023/national.json';
-import electoratesJson from '#lib/data/2023/electorates.json';
+import { BASES } from '#lib/bases.js';
 
-/** @type {any} */
-export const national = nationalJson;
-/** @type {any[]} */
-export const electorates = electoratesJson;
+/** @type {Record<string, any>} */
+const nationalFiles = import.meta.glob('../data/*/national.json', { eager: true, import: 'default' });
+/** @type {Record<string, any>} */
+const electorateFiles = import.meta.glob('../data/*/electorates.json', { eager: true, import: 'default' });
+
+for (const base of BASES) {
+	if (!nationalFiles[`../data/${base}/national.json`]) throw new Error(`no data/${base}/national.json`);
+}
+
+/** The national projection for a base year. */
+export function national(/** @type {string} */ base) {
+	return nationalFiles[`../data/${base}/national.json`];
+}
+
+/** The electorate projections for a base year ([] if it has none). @returns {any[]} */
+export function electorates(/** @type {string} */ base) {
+	return electorateFiles[`../data/${base}/electorates.json`] ?? [];
+}
+
+/** Base years with electorate projections. */
+export const electorateBases = BASES.filter((b) => national(b).has_electorates);
+
 /** One row per electorate for the landing page's list. */
-export function summaries() {
-	return electorates.map((/** @type {any} */ e) => {
+export function summaries(/** @type {string} */ base) {
+	return electorates(base).map((/** @type {any} */ e) => {
 		if (e.omitted) {
 			return {
 				slug: e.slug, name: e.name, roll: e.roll, omitted: true,
