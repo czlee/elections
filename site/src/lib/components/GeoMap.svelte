@@ -64,8 +64,8 @@
 		const l = leader(e);
 		if (!e || !l) return null;
 		const party = l.party ? names[l.party] ?? l.party : 'independent';
-		if (e.omitted) return `${e.name}: not projected (preliminary leader ${party})`;
-		return `${e.name}: ${candidateName(l.who)} (${party}) ${view === 'projected' ? 'projected to win' : 'leads'} by ${points(l.margin)}${e.flips ? ' · flips with specials' : ''}`;
+		if (e.omitted) return { name: e.name, text: ` not projected (preliminary leader ${party})` };
+		return { name: e.name, text: ` ${candidateName(l.who)} (${party}) ${view === 'projected' ? 'projected to win' : 'leads'} by ${points(l.margin)}${e.flips ? ' · flips with specials' : ''}` };
 	});
 	const parties = $derived(
 		[...new Set(electorates.map((e) => leader(e)?.party))]
@@ -95,7 +95,7 @@
 {/snippet}
 
 <figure>
-	<p class="caption" class:idle={!hoveredInfo} aria-live="polite">{hoveredInfo ?? 'Hover over or tap an electorate.'}</p>
+	<p class="caption" class:idle={!hoveredInfo} aria-live="polite">{#if hoveredInfo}<span><strong>{hoveredInfo.name}:</strong>{hoveredInfo.text}</span>{:else}Hover over or tap an electorate.{/if}</p>
 	<div class="maps">
 		<div class="main">
 			<svg viewBox="0 0 {MAIN_W} {MAIN_H}" role="img" aria-label="Map of general electorates by {view === 'prelim' ? 'preliminary' : 'projected'} leader">
@@ -167,6 +167,7 @@
 		display: flex; align-items: center;
 	}
 	.caption.idle { color: var(--text-2); }
+	.caption strong { color: var(--text-2); }
 	.legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.15em 0.9em; }
 	.flip-key, .omit-key {
 		display: inline-block; width: 0.8em; height: 0.8em; margin-right: 0.35em; vertical-align: -0.05em;
