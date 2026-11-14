@@ -6,8 +6,6 @@
 	const names = $derived(Object.fromEntries(data.parties.map((p) => [p.id, p.short])));
 </script>
 
-<svelte:head><title>Electorates · 2026 special votes</title></svelte:head>
-
 <h1>Electorates</h1>
 <p class="muted small">
 	“Needs” is the special-vote

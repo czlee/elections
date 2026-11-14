@@ -71,11 +71,6 @@
 		govt.reduce((a, p) => a + (nat.seats[v][p]?.total ?? 0), 0);
 </script>
 
-<svelte:head>
-	<title>2026 special votes projection{data.base === '2023' ? '' : ` from ${base}`}</title>
-	<meta name="description" content="Projecting New Zealand’s 2026 final election result from the preliminary count, using {base}’s special votes, with every step shown." />
-</svelte:head>
-
 <h1>Projected final result, 2026 general election</h1>
 <p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">

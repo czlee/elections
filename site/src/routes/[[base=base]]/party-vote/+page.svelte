@@ -34,10 +34,6 @@
 	const firstOut = (/** @type {any[]} */ l) => l.find((r) => !r.allocated);
 </script>
 
-<svelte:head>
-	<title>Party vote projection · 2026 special votes</title>
-</svelte:head>
-
 <h1>Party vote projection</h1>
 <p>
 	The party vote from the 2026 preliminary count, plus a projection of the special votes still

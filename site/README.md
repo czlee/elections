@@ -23,6 +23,16 @@ python3 project_electorates.py --base 2017   # after concordance.py --base 2017 
 python3 export_site_data.py --base 2017
 ```
 
+## Social previews
+
+Every page has Open Graph/Twitter tags (set in `src/routes/+layout.svelte` from
+`src/lib/server/og.js`) and a 1200×630 card at `og.png` next to it, which is
+prerendered by an `og.png/+server.js` endpoint: an SVG drawn with the same
+horseshoe component, converted to PNG with resvg using the Fontsource DM Sans
+files. The image URL carries a hash of the card's data, so social platforms
+refetch it when the numbers change. To see a card, build and open
+`build/og.png` or `build/electorate/<slug>/og.png`.
+
 ## Develop
 
 Node version is in `../.nvmrc` (`fnm use` or `nvm use`).
