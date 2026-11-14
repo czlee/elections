@@ -2,8 +2,8 @@
 // that og:image points to. Each page's card is prerendered by an og.png
 // endpoint next to it; the page's meta and its card come from the same
 // cardData(), so the description and the image always agree, and the image
-// URL carries a hash of that data so social platforms refetch it when the
-// numbers change.
+// URL carries a hash of that data and of the code that draws the card, so
+// social platforms refetch it when the numbers or the design change.
 import { createHash } from 'node:crypto';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -17,6 +17,8 @@ import { HOUSE_ORDER } from '#lib/parties.js';
 import { votes, points, candidateName } from '#lib/format.js';
 import { national, electorates } from '#lib/server/data.js';
 import appCss from '../../app.css?raw';
+import ogSource from './og.js?raw';
+import parliamentSource from '#lib/components/Parliament.svelte?raw';
 
 export const SITE_NAME = '2026 special votes projection';
 /** Where the site is served; og:url and og:image must be absolute. */
@@ -117,6 +119,9 @@ export function cardData(routeId, base, slug) {
 	return (routeId === `${R}/electorate/[slug]` && slug && electorateData(base, slug)) || homeData(base);
 }
 
+/** Everything that draws a card, so a design change gives it a new URL too. */
+const LAYOUT = ogSource + parliamentSource + appCss;
+
 /**
  * Title, description and image version for a page.
  * @param {string | null} routeId @param {string} base @param {string | undefined} slug
@@ -125,7 +130,7 @@ export function pageMeta(routeId, base, slug) {
 	const from = base === DEFAULT_BASE ? '' : ` from ${base}`;
 	const using = `using ${base}’s special votes`;
 	const data = cardData(routeId, base, slug);
-	const version = createHash('sha1').update(JSON.stringify(data)).digest('hex').slice(0, 10);
+	const version = createHash('sha1').update(JSON.stringify(data)).update(LAYOUT).digest('hex').slice(0, 10);
 	/** @type {{title: string, description: string}} */
 	let m;
 	if (data.kind === 'electorate') {
