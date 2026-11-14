@@ -30,7 +30,7 @@
 	const live = $derived(e.omitted ? [] : e.sources.filter((/** @type {any} */ s) => !s.omitted));
 	/** Where a row's multiplier came from, in words. */
 	function source(/** @type {any} */ r) {
-		if (r.link === 'party vote') return `no ${base} ${party(r.party)} candidate here: uses ${party(r.party)}'s party-vote multiplier`;
+		if (r.link === 'party vote') return `no ${base} ${party(r.party)} candidate here: uses ${party(r.party)}’s party-vote multiplier`;
 		if (!r.link) return `no ${base} counterpart: multiplier 1`;
 		if (r.base?.candidates?.length) return `${base}: ${r.base.candidates.map(candidateName).join(', ')}`;
 		return r.link !== r.party ? `as ${party(r.link)} in ${base}` : '';
@@ -81,18 +81,18 @@
 			<strong>Why.</strong>
 			In the preliminary count {e.bridge.prelim_lead >= 0 ? who(W) : who(S)} leads by
 			{votes(Math.abs(e.bridge.prelim_lead))}. About {votes(e.candidate.volume)} electorate-vote
-			specials are projected here. From {base}, {who(W)}'s multiplier is
-			{mult(W.multiplier)} and {who(S)}'s is {mult(S.multiplier)}. Specials are shared in proportion to
+			specials are projected here. From {base}, {who(W)}’s multiplier is
+			{mult(W.multiplier)} and {who(S)}’s is {mult(S.multiplier)}. Specials are shared in proportion to
 			preliminary share × multiplier, so {who(W)} gets {votes(e.bridge.specials_winner)} and
 			{who(S)} {votes(e.bridge.specials_second)}: a net {signed(e.bridge.specials_winner - e.bridge.specials_second)}
 			for {who(W)}.
 		</p>
 		<p>
 			{#if e.breakeven.needed === null}
-				{who(S)} couldn't catch up even with every special vote.
+				{who(S)} couldn’t catch up even with every special vote.
 			{:else}
 				To tie, {who(S)} would have needed a multiplier of <strong>{mult(e.breakeven.needed)}</strong>
-				(with everyone else's unchanged); they got {mult(e.breakeven.had)}, which is
+				(with everyone else’s unchanged); they got {mult(e.breakeven.had)}, which is
 				{(e.breakeven.needed / e.breakeven.had).toFixed(2)}× short.
 			{/if}
 		</p>
@@ -121,10 +121,10 @@
 	<h2>1. Notional {base} {e.name}</h2>
 	<p>
 		{e.name} is on 2025 boundaries. Its {base} numbers are built from the {base} electorates that
-		overlap it. Each {base} electorate's votes are multiplied by its <strong>weight</strong>: the share
+		overlap it. Each {base} electorate’s votes are multiplied by its <strong>weight</strong>: the share
 		of its 2023 Census electoral population that falls inside {e.name}, worked out meshblock by
-		meshblock. This assumes each {base} electorate's votes were spread evenly across its population.
-		(<strong>% of {e.name}</strong> is the other way round: how much of {e.name}'s population came
+		meshblock. This assumes each {base} electorate’s votes were spread evenly across its population.
+		(<strong>% of {e.name}</strong> is the other way round: how much of {e.name}’s population came
 		from that electorate.)
 		{#if e.omitted_share > 0}{pct(e.omitted_share, 1)} of its population was in Port Waikato,
 			which is left out.{/if}
@@ -134,8 +134,8 @@
 			<thead>
 				<tr>
 					<th>{base} electorate</th>
-					<th class="num" title="Share of {e.name}'s population that came from this {base} electorate">% of {e.name}</th>
-					<th class="num" title="Share of this {base} electorate's population that's inside {e.name}: its votes are multiplied by this">Weight</th>
+					<th class="num" title="Share of {e.name}’s population that came from this {base} electorate">% of {e.name}</th>
+					<th class="num" title="Share of this {base} electorate’s population that’s inside {e.name}: its votes are multiplied by this">Weight</th>
 					<th class="num">Preliminary</th>
 					<th class="num">Final</th>
 					<th class="num">Weighted prelim</th>
@@ -175,11 +175,11 @@
 		</table>
 	</div>
 	<p class="small muted">
-		Valid {kindWord} votes. Each party's{tab === 'candidate' ? ' candidate' : ''} votes are weighted the
+		Valid {kindWord} votes. Each party’s{tab === 'candidate' ? ' candidate' : ''} votes are weighted the
 		same way. The {base} preliminary pages are Wayback Machine captures.
 	</p>
 
-	<h2>2. Each party's {base} multiplier ({kindWord} vote)</h2>
+	<h2>2. Each party’s {base} multiplier ({kindWord} vote)</h2>
 	<p>
 		Special votes = final − preliminary. Multiplier = share of the specials ÷ share of the
 		preliminary count. Above 1, special voters here liked them more than election-night voters did.
@@ -210,7 +210,7 @@
 							{#if r.candidates?.length}
 								<div class="small note">
 									{#each r.candidates as c, i (c.name)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
-											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of {e.name}'s population"
+											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of {e.name}’s population"
 											>{candidateName(c.name)}</span>{/each}
 								</div>
 							{/if}
@@ -239,14 +239,14 @@
 		<p class="small muted">
 			Candidates are matched to 2026 by party. Where several names are shown, the area took in parts of
 			several {base} electorates; names in lighter text are from electorates that make up less than
-			{pct(MINOR, 0)} of {e.name}'s population.
+			{pct(MINOR, 0)} of {e.name}’s population.
 		</p>
 		{#if fallback.length}
 			<h3>Party-vote multipliers, for candidates with no {base} counterpart</h3>
 			<p>
 				{fallback.map((/** @type {any} */ r) => r.label).join(', ')}
 				had no {base} candidate here, so
-				{fallback.length === 1 ? 'its candidate uses' : 'their candidates use'} the party's
+				{fallback.length === 1 ? 'its candidate uses' : 'their candidates use'} the party’s
 				<em>party-vote</em> multiplier in this area, worked out the same way from the notional {base}
 				party vote:
 			</p>
@@ -289,7 +289,7 @@
 			</div>
 			<p class="small muted">
 				A party new in 2026 has no {base} party vote either, so it gets 1. A party that was part of
-				an umbrella party in {base} uses the umbrella's multiplier.
+				an umbrella party in {base} uses the umbrella’s multiplier.
 			</p>
 		{/if}
 	{/if}
@@ -297,9 +297,9 @@
 	<h2>3. How many special votes</h2>
 	<p>
 		In {base}, there were {votes(k.base_rows.specials)} specials here on {votes(k.base_rows.prelim)}
-		preliminary votes, a ratio of <strong>{pct(k.ratio, 1)}</strong>. Every electorate's ratio is
+		preliminary votes, a ratio of <strong>{pct(k.ratio, 1)}</strong>. Every electorate’s ratio is
 		multiplied by the same national factor, <strong>{k.scale.toFixed(3)}</strong>, so that the
-		electorates' party-vote specials add up to the <a href={link('/party-vote/')}>national
+		electorates’ party-vote specials add up to the <a href={link('/party-vote/')}>national
 		projection</a> (fewer specials are expected in 2026). So:
 		{votes(k.prelim_total)} preliminary × {pct(k.ratio, 1)} × {k.scale.toFixed(3)} =
 		<strong>{votes(k.volume)}</strong> projected {kindWord}-vote specials.
@@ -307,8 +307,8 @@
 
 	<h2>4. Sharing out the 2026 specials</h2>
 	<p>
-		Each {tab === 'candidate' ? 'candidate' : 'party'}'s weight is their 2026 preliminary share × their
-		party's {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
+		Each {tab === 'candidate' ? 'candidate' : 'party'}’s weight is their 2026 preliminary share × their
+		party’s {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
 		weight ({weightSum.toFixed(4)}).{#if tab === 'candidate'} Independent candidates get a
 			multiplier of 1.{/if}
 	</p>

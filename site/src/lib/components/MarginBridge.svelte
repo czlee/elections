@@ -17,8 +17,8 @@
 	const short = (/** @type {string} */ n) => (W < 520 || n.length > 16 ? n.split(' ').at(-1) : n);
 	const steps = $derived([
 		{ label: 'Preliminary lead', from: 0, to: lead, fill: 'var(--text-3)' },
-		{ label: `+ ${short(winner)}'s specials`, from: lead, to: lead + plus, fill: colour(winnerParty) },
-		{ label: `− ${short(second)}'s specials`, from: lead + plus, to: lead + plus - minus, fill: colour(secondParty) },
+		{ label: `+ ${short(winner)}’s specials`, from: lead, to: lead + plus, fill: colour(winnerParty) },
+		{ label: `− ${short(second)}’s specials`, from: lead + plus, to: lead + plus - minus, fill: colour(secondParty) },
 		{ label: 'Projected margin', from: 0, to: lead + plus - minus, fill: 'var(--text)' }
 	]);
 	const all = $derived(steps.flatMap((s) => [s.from, s.to]));

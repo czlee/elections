@@ -59,16 +59,16 @@
 	projected special party votes.
 </p>
 <p class="small muted">
-	"Special votes" here means final minus preliminary valid party votes, which also picks up any
+	“Special votes” here means final minus preliminary valid party votes, which also picks up any
 	changes to ordinary votes in the official count. The estimate is of special votes cast; the
 	count is of valid party votes, so the ratio also absorbs special votes that were disallowed or
 	informal.
 </p>
 <Sources items={[src.release_2026, src.release_2023, src.prelim_2023, src.final_2023]} />
 
-<h2>2. Each party's {n.base} multiplier</h2>
+<h2>2. Each party’s {n.base} multiplier</h2>
 <p>
-	A party's multiplier is its share of the {n.base} special votes divided by its share of the
+	A party’s multiplier is its share of the {n.base} special votes divided by its share of the
 	{n.base} preliminary count. Above 1, it did better among special voters.
 </p>
 <MultiplierBars rows={baseMajor.map((p) => ({ id: p.id, label: p.short, value: p.multiplier }))} />
@@ -116,9 +116,9 @@
 
 <h2>3. Sharing out the 2026 specials</h2>
 <p>
-	Each 2026 party's share of the projected specials is its preliminary share times its multiplier,
+	Each 2026 party’s share of the projected specials is its preliminary share times its multiplier,
 	scaled so the shares add up to 100%. Parties that are new in 2026 get a multiplier of 1; a party
-	that was part of an umbrella party in {n.base} uses the umbrella's multiplier.
+	that was part of an umbrella party in {n.base} uses the umbrella’s multiplier.
 </p>
 <DeltaBars rows={major.map((p) => ({ id: p.id, label: p.short, from: p.prelim_share, to: p.final_share }))} />
 <div class="table-wrap">

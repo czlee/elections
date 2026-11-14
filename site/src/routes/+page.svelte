@@ -50,13 +50,13 @@
 
 <svelte:head>
 	<title>2026 special votes projection</title>
-	<meta name="description" content="Projecting New Zealand's 2026 final election result from the preliminary count, using 2023's special votes, with every step shown." />
+	<meta name="description" content="Projecting New Zealand’s 2026 final election result from the preliminary count, using 2023’s special votes, with every step shown." />
 </svelte:head>
 
 <h1>Projected final result, 2026 general election</h1>
 <p class="lede">
 	This projection applies the impact of the <strong>2023
-	<Term tip="In a slight abuse of terminology, we're using &quot;special votes&quot; to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
+	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
 	to the 2026 preliminary count.
 </p>
 <p class="lede">
@@ -76,10 +76,9 @@
 </p>
 
 <details class="limits" id="limitations" bind:open={limitsOpen}>
-	<summary><strong>Before you believe this</strong></summary>
-	<p>Reasons this might not work (a.k.a. limitations):</p>
+	<summary><strong>Before you believe this:</strong> Reasons this might not work (a.k.a. limitations)</summary>
 	<ul>
-		<li><strong>This is a mechanical projection, not a forecast.</strong> There are no uncertainty ranges.</li>
+		<li><strong>This is a mechanical projection, not a forecast.</strong></li>
 		<li>
 			Same-day enrolment and enrolment changes while voting no longer count as special votes in
 			2026, which reportedly cut specials by about 30%. The 2023 mix of special voters may not carry
@@ -87,7 +86,7 @@
 		</li>
 		<li>
 			When a 2023 party has no candidate in 2026, its special votes are effectively shared among
-			everyone else in proportion, though in reality they'd lean to particular parties.
+			everyone else in proportion, though in reality they’d lean to particular parties.
 		</li>
 		<li>
 			Electorates are on new boundaries, so their 2023 results are rebuilt from population weights.

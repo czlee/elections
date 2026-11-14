@@ -50,7 +50,7 @@
 
 <footer>
 	<p>
-		Projection by Chuan-Zheng Lee. Not an official result. Based on 2023's special votes; see the
+		Projection by Chuan-Zheng Lee. Not an official result. Based on 2023’s special votes; see the
 		<a href={link('/#limitations')}>limitations</a>.
 	</p>
 	<p>

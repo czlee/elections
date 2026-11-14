@@ -10,7 +10,7 @@
 
 <h1>Electorates</h1>
 <p class="muted small">
-	"Needs" is the special-vote
+	“Needs” is the special-vote
 	<Term tip="How they did in the special votes compared with the preliminary count: share of specials ÷ share of preliminary votes. Above 1, specials helped.">multiplier</Term>
 	the projected runner-up would have needed to tie, against the one they got from 2023. Click an
 	electorate for its working.

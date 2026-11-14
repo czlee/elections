@@ -116,7 +116,7 @@ short_name = "Outdoors & Freedom"
 part_of = { 2023 = "freedoms-nz" }
 
 [nz-peoples]
-short_name = "NZ People's"
+short_name = "NZ People’s"
 2017 = "New Zealand People's Party"
 
 [rock-the-vote]
@@ -153,6 +153,6 @@ short_name = "Vision NZ"
 part_of = { 2023 = "freedoms-nz" }
 
 [womens-rights]
-short_name = "Women's Rights"
+short_name = "Women’s Rights"
 2023 = "Women’s Rights Party"
 2026 = "Women’s Rights Party"
