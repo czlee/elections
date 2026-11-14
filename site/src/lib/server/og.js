@@ -261,18 +261,22 @@ function horseshoe(/** @type {ReturnType<typeof homeData>} */ d) {
 
 const kicker = (/** @type {string} */ s, y = 92) =>
 	text(72, y, s.toUpperCase(), { size: 22, weight: 600, fill: T('text-3'), spacing: 2 });
-const footer = (/** @type {string} */ base) =>
+const footer = () =>
 	text(72, 572, 'czlee.nz/elections/2026-projection', { size: 24, weight: 600, fill: T('text-2') }) +
-	text(1128, 572, `Using ${base}’s special votes · not an official result`, { size: 22, fill: T('text-3'), anchor: 'end' });
+	text(1128, 572, 'Not an official result', { size: 22, fill: T('text-3'), anchor: 'end' });
+/** "Using 2023’s special votes", in the accent colour, so it's clear what the projection comes from. */
+const usingLine = (/** @type {number} */ x, /** @type {number} */ y, /** @type {string} */ base, size = 34) =>
+	text(x, y, `Using ${base}’s special votes`, { size: fit(`Using ${base}’s special votes`, size, 1128 - x, 0.5), weight: 700, fill: T('accent') });
 
 function homeSvg(/** @type {ReturnType<typeof homeData>} */ d) {
-	const out = [kicker('New Zealand general election')];
-	out.push(text(72, 168, '2026 special votes', { size: 66, weight: 700 }));
-	out.push(text(72, 240, 'projection', { size: 66, weight: 700 }));
-	let y = 318;
+	const out = [kicker('New Zealand general election', 82)];
+	out.push(text(72, 152, '2026 special votes', { size: 64, weight: 700 }));
+	out.push(text(72, 222, 'projection', { size: 64, weight: 700 }));
+	out.push(usingLine(72, 276, d.base));
+	let y = 342;
 	// Up to four rows fit at full size; more get squeezed.
 	const changes = d.changes.slice(0, 6);
-	const [step, size] = changes.length > 4 ? [32, 26] : [50, 36];
+	const [step, size] = changes.length > 4 ? [30, 24] : [44, 34];
 	if (!changes.length) out.push(text(72, y, 'No seat changes', { size: 36, weight: 600 }));
 	changes.forEach((c, i) => {
 		const cy = y + i * step;
@@ -287,11 +291,11 @@ function homeSvg(/** @type {ReturnType<typeof homeData>} */ d) {
 	else if (d.flips.length) notes.push(`${d.flips.length} electorates flip`);
 	if (d.house.prelim !== d.house.projected) notes.push(`${d.house.projected}-seat House`);
 	if (!d.hasElectorates) notes.push('Party vote only');
-	if (notes.length) out.push(text(72, y + 54, notes.join(' · '), { size: 28, fill: T('text-2') }));
+	if (notes.length) out.push(text(72, y + 50, notes.join(' · '), { size: 28, fill: T('text-2') }));
 	// The chart, on the right, as tall as the space allows.
 	out.push(`<svg class="hs" x="660" y="56" width="480" height="440">${horseshoe(d)}</svg>`);
 	out.push(text(900, 530, 'Projected seats · ringed: gained with specials', { size: 20, fill: T('text-3'), anchor: 'middle' }));
-	out.push(footer(d.base));
+	out.push(footer());
 	return out.join('');
 }
 
@@ -308,6 +312,7 @@ function electorateSvg(/** @type {NonNullable<ReturnType<typeof electorateData>>
 		const bw = Math.round(badge.length * 0.5 * 28) + 48;
 		out.push(`<rect x="72" y="214" width="${bw}" height="50" rx="25" fill="${d.flips ? partyColour(b.leader.id) : T('surface-2')}"/>`);
 		out.push(text(96, 248, badge, { size: 28, weight: 600, fill: d.flips ? '#ffffff' : T('text') }));
+		out.push(usingLine(72 + bw + 28, 249, d.base, 28));
 		const panel = (/** @type {number} */ x, /** @type {string} */ label, /** @type {any} */ r, strong = false) => [
 			`<rect x="${x}" y="300" width="500" height="210" rx="14" fill="${strong ? '#ffffff' : T('surface-2')}" stroke="${T('border')}"/>`,
 			`<rect x="${x}" y="300" width="10" height="210" rx="5" fill="${partyColour(r.leader.id)}"/>`,
@@ -320,7 +325,7 @@ function electorateSvg(/** @type {NonNullable<ReturnType<typeof electorateData>>
 		out.push(`<path d="M586 405h22m-9-10l10 10-10 10" fill="none" stroke="${T('text-3')}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`);
 		out.push(panel(628, 'Projected final', b, true));
 	}
-	out.push(footer(d.base));
+	out.push(footer());
 	return out.join('');
 }
 
