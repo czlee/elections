@@ -124,8 +124,8 @@
 			</li>
 		{:else}
 			<li>
-				Electorates aren’t projected from {base}: every electorate keeps its preliminary leader, which
-				can affect the overhang.
+				<strong>Electorates aren’t projected from {base}:</strong> every electorate keeps its preliminary
+				leader, which can affect the overhang.
 			</li>
 		{/if}
 	</ul>
