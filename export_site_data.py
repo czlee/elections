@@ -255,10 +255,6 @@ def rows_for(kind, elec_id, d, ce, names_2023):
             np_, nf = d["prelim_n"][link], d["final_n"].get(link, 0)
             row["base"] = {"key": link, "prelim": np_, "final": nf, "specials": nf - np_,
                            "prelim_share": np_ / n_prelim_total, "special_share": (nf - np_) / n_specials_total}
-            if kind == "candidate":
-                row["base"]["candidates"] = sorted(
-                    {names_2023[(e, link)] for e, _, _ in ce["electorates"][elec_id]["live"]
-                     if (e, link) in names_2023})
         rows.append(row)
     return rows
 

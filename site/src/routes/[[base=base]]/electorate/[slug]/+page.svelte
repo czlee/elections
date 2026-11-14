@@ -1,6 +1,7 @@
 <script>
 	import MarginBridge from '#lib/components/MarginBridge.svelte';
 	import MultiplierBars from '#lib/components/MultiplierBars.svelte';
+	import Term from '#lib/components/Term.svelte';
 	import { link } from '#lib/link.js';
 	import { colour } from '#lib/parties.js';
 	import { votes, pct, pp, points, mult, signed, candidateName } from '#lib/format.js';
@@ -11,7 +12,8 @@
 	const base = $derived(data.base);
 	/** 2023 sources making up less than this share of the 2026 electorate are shown faded. */
 	const MINOR = 0.2;
-	let tab = $state(/** @type {'candidate' | 'party'} */ ('candidate'));
+	/** Which vote the step 1 table shows; everything else is the electorate vote. */
+	let step1 = $state(/** @type {'candidate' | 'party'} */ ('candidate'));
 
 	const byKey = $derived(e.omitted ? {} : Object.fromEntries(e.candidate.rows.map((/** @type {any} */ r) => [r.key, r])));
 	const W = $derived(byKey[e.winner]);
@@ -30,10 +32,9 @@
 	const live = $derived(e.omitted ? [] : e.sources.filter((/** @type {any} */ s) => !s.omitted));
 	/** Where a row's multiplier came from, in words. */
 	function source(/** @type {any} */ r) {
-		if (r.link === 'party vote') return `no ${base} ${party(r.party)} candidate here: uses ${party(r.party)}’s party-vote multiplier`;
-		if (!r.link) return `no ${base} counterpart: multiplier 1`;
-		if (r.base?.candidates?.length) return `${base}: ${r.base.candidates.map(candidateName).join(', ')}`;
-		return r.link !== r.party ? `as ${party(r.link)} in ${base}` : '';
+		if (r.link === 'party vote') return `No ${base} candidate, uses party-vote multiplier`;
+		if (!r.link) return r.party ? `No ${base} counterpart, uses multiplier 1` : 'Independent, uses multiplier 1';
+		return r.link !== r.party ? `As ${party(r.link)} in ${base}` : '';
 	}
 	const srcLinks = (/** @type {any} */ s) => [
 		s.links.prelim_base && { label: 'prelim', url: s.links.prelim_base.url },
@@ -109,13 +110,7 @@
 		secondParty={S.party}
 	/>
 
-	<div class="toggle" role="group" aria-label="Vote">
-		<button aria-pressed={tab === 'candidate'} onclick={() => (tab = 'candidate')}>Electorate vote</button>
-		<button aria-pressed={tab === 'party'} onclick={() => (tab = 'party')}>Party vote</button>
-	</div>
-
-	{@const k = e[tab]}
-	{@const kindWord = tab === 'candidate' ? 'electorate' : 'party'}
+	{@const k = e.candidate}
 	{@const weightSum = k.rows.reduce((/** @type {number} */ a, /** @type {any} */ r) => a + r.prelim_share * r.multiplier, 0)}
 
 	<h2>1. Notional {base} {e.name}</h2>
@@ -128,7 +123,12 @@
 		how much of the 2026 {e.name}’s population came from that {base} electorate.)
 		{#if e.omitted_share > 0}{pct(e.omitted_share, 1)} of its population was in Port Waikato,
 			which is left out.{/if}
+		The party vote is needed too, for the step 2 fallback and the step 3 scale factor.
 	</p>
+	<div class="toggle" role="group" aria-label="Votes shown in this table">
+		<button aria-pressed={step1 === 'candidate'} onclick={() => (step1 = 'candidate')}>Electorate vote</button>
+		<button aria-pressed={step1 === 'party'} onclick={() => (step1 = 'party')}>Party vote</button>
+	</div>
 	<div class="table-wrap">
 		<table>
 			<thead>
@@ -152,10 +152,10 @@
 						{#if s.omitted}
 							<td colspan="4" class="muted">left out (no {base} electorate vote)</td>
 						{:else}
-							<td class="num">{votes(s[tab].prelim)}</td>
-							<td class="num">{votes(s[tab].final)}</td>
-							<td class="num">{votes(s[tab].prelim * s.share_of_base)}</td>
-							<td class="num">{votes(s[tab].final * s.share_of_base)}</td>
+							<td class="num">{votes(s[step1].prelim)}</td>
+							<td class="num">{votes(s[step1].final)}</td>
+							<td class="num">{votes(s[step1].prelim * s.share_of_base)}</td>
+							<td class="num">{votes(s[step1].final * s.share_of_base)}</td>
 						{/if}
 						<td class="sources">
 							{#each srcLinks(s) as l, i (l.label)}{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a>{/each}
@@ -167,19 +167,19 @@
 				<tr>
 					<td>Notional {e.name}</td>
 					<td colspan="4"></td>
-					<td class="num">{votes(k.base_rows.prelim)}</td>
-					<td class="num">{votes(k.base_rows.final)}</td>
+					<td class="num">{votes(e[step1].base_rows.prelim)}</td>
+					<td class="num">{votes(e[step1].base_rows.final)}</td>
 					<td></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
 	<p class="small muted">
-		Valid {kindWord} votes. Each party’s{tab === 'candidate' ? ' candidate' : ''} votes are weighted the
+		Valid {step1 === 'candidate' ? 'electorate' : 'party'} votes. Each party’s{step1 === 'candidate' ? ' candidate' : ''} votes are weighted the
 		same way. The {base} preliminary pages are Wayback Machine captures.
 	</p>
 
-	<h2>2. Each party’s {base} multiplier ({kindWord} vote)</h2>
+	<h2>2. Each party’s {base} multiplier (electorate vote)</h2>
 	<p>
 		Special votes = final − preliminary. Multiplier = share of the specials ÷ share of the
 		preliminary count. Above 1, special voters here liked them more than election-night voters did.
@@ -193,7 +193,7 @@
 		<table class="wide-first">
 			<thead>
 				<tr>
-					<th>{tab === 'candidate' ? `${base} candidate` : `${base} party`}</th>
+					<th>{base} candidate</th>
 					<th class="num">Preliminary</th>
 					<th class="num">Final</th>
 					<th class="num">Specials</th>
@@ -235,63 +235,61 @@
 			</tfoot>
 		</table>
 	</div>
-	{#if tab === 'candidate'}
-		<p class="small muted">
-			Candidates are matched to 2026 by party. Where several names are shown, the area took in parts of
-			several {base} electorates; names in lighter text are from electorates that make up less than
-			{pct(MINOR, 0)} of the 2026 {e.name}’s population.
+	<p class="small muted">
+		Candidates are matched to 2026 by party. Where several names are shown, the area took in parts of
+		several {base} electorates; names in lighter text are from electorates that make up less than
+		{pct(MINOR, 0)} of the 2026 {e.name}’s population.
+	</p>
+	{#if fallback.length}
+		<h3>Party-vote multipliers, for candidates with no {base} counterpart</h3>
+		<p>
+			{fallback.map((/** @type {any} */ r) => r.label).join(', ')}
+			had no {base} candidate here, so
+			{fallback.length === 1 ? 'its candidate uses' : 'their candidates use'} the party’s
+			<em>party-vote</em> multiplier in this area, worked out the same way from the notional {base}
+			party vote:
 		</p>
-		{#if fallback.length}
-			<h3>Party-vote multipliers, for candidates with no {base} counterpart</h3>
-			<p>
-				{fallback.map((/** @type {any} */ r) => r.label).join(', ')}
-				had no {base} candidate here, so
-				{fallback.length === 1 ? 'its candidate uses' : 'their candidates use'} the party’s
-				<em>party-vote</em> multiplier in this area, worked out the same way from the notional {base}
-				party vote:
-			</p>
-			<div class="table-wrap">
-				<table class="wide-first">
-					<thead>
+		<div class="table-wrap">
+			<table class="wide-first">
+				<thead>
+					<tr>
+						<th>{base} party (party vote)</th>
+						<th class="num">Preliminary</th>
+						<th class="num">Final</th>
+						<th class="num">Specials</th>
+						<th class="num">Prelim share</th>
+						<th class="num">Special share</th>
+						<th class="num">Multiplier</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each fallback as r (r.key)}
 						<tr>
-							<th>{base} party (party vote)</th>
-							<th class="num">Preliminary</th>
-							<th class="num">Final</th>
-							<th class="num">Specials</th>
-							<th class="num">Prelim share</th>
-							<th class="num">Special share</th>
-							<th class="num">Multiplier</th>
+							<td><span class="swatch" style:background={colour(r.party)}></span>{r.label}</td>
+							<td class="num">{votes(r.prelim)}</td>
+							<td class="num">{votes(r.final)}</td>
+							<td class="num">{signed(r.specials)}</td>
+							<td class="num">{pct(r.prelim_share)}</td>
+							<td class="num">{pct(r.special_share)}</td>
+							<td class="num"><strong>{r.multiplier === null ? '—' : mult(r.multiplier)}</strong></td>
 						</tr>
-					</thead>
-					<tbody>
-						{#each fallback as r (r.key)}
-							<tr>
-								<td><span class="swatch" style:background={colour(r.party)}></span>{r.label}</td>
-								<td class="num">{votes(r.prelim)}</td>
-								<td class="num">{votes(r.final)}</td>
-								<td class="num">{signed(r.specials)}</td>
-								<td class="num">{pct(r.prelim_share)}</td>
-								<td class="num">{pct(r.special_share)}</td>
-								<td class="num"><strong>{r.multiplier === null ? '—' : mult(r.multiplier)}</strong></td>
-							</tr>
-						{/each}
-					</tbody>
-					<tfoot>
-						<tr>
-							<td>All parties (party vote)</td>
-							<td class="num">{votes(e.party.base_rows.prelim)}</td>
-							<td class="num">{votes(e.party.base_rows.final)}</td>
-							<td class="num">{signed(e.party.base_rows.specials)}</td>
-							<td colspan="3"></td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-			<p class="small muted">
-				A party new in 2026 has no {base} party vote either, so it gets 1. A party that was part of
-				an umbrella party in {base} uses the umbrella’s multiplier.
-			</p>
-		{/if}
+					{/each}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td>All parties (party vote)</td>
+						<td class="num">{votes(e.party.base_rows.prelim)}</td>
+						<td class="num">{votes(e.party.base_rows.final)}</td>
+						<td class="num">{signed(e.party.base_rows.specials)}</td>
+						<td colspan="3"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<p class="small muted">
+			A party new in 2026 has no {base} party vote either, so it gets 1. A party that was part of
+			an umbrella party in {base} uses the umbrella’s multiplier.
+		</p>
 	{/if}
 
 	<h2>3. How many special votes</h2>
@@ -302,21 +300,20 @@
 		electorates’ party-vote specials add up to the <a href={link('/party-vote/')}>national
 		projection</a> (fewer specials are expected in 2026). So:
 		{votes(k.prelim_total)} preliminary × {pct(k.ratio, 1)} × {k.scale.toFixed(3)} =
-		<strong>{votes(k.volume)}</strong> projected {kindWord}-vote specials.
+		<strong>{votes(k.volume)}</strong> projected electorate-vote specials.
 	</p>
 
 	<h2>4. Sharing out the 2026 specials</h2>
 	<p>
-		Each {tab === 'candidate' ? 'candidate' : 'party'}’s weight is their 2026 preliminary share × their
+		Each candidate’s weight is their 2026 preliminary share × their
 		party’s {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
 		weight ({weightSum.toFixed(4)}).
-		{#if tab === 'candidate'}Independent candidates get a multiplier of 1.{/if}
 	</p>
 	<div class="table-wrap">
 		<table class="wide-first">
 			<thead>
 				<tr>
-					<th>{tab === 'candidate' ? 'Candidate' : 'Party'}</th>
+					<th>Candidate</th>
 					<th class="num">Preliminary</th>
 					<th class="num">Share</th>
 					<th class="num">× multiplier</th>
@@ -331,13 +328,12 @@
 				{#each k.rows as r (r.key)}
 					<tr>
 						<td>
-							<span class="swatch" style:background={colour(r.party)}></span>{tab === 'candidate' ? who(r) : r.label}
-							{#if tab === 'candidate'}<span class="muted small">{party(r.party)}</span>{/if}
-							{#if source(r)}<div class="muted small note">{source(r)}</div>{/if}
+							<span class="swatch" style:background={colour(r.party)}></span>{who(r)}
+							<span class="muted small">{party(r.party)}</span>
 						</td>
 						<td class="num">{votes(r.prelim)}</td>
 						<td class="num">{pct(r.prelim_share)}</td>
-						<td class="num">{mult(r.multiplier)}</td>
+						<td class="num">{#if source(r)}<Term tip={source(r)}>{mult(r.multiplier)}</Term>{:else}{mult(r.multiplier)}{/if}</td>
 						<td class="num">{(r.prelim_share * r.multiplier).toFixed(4)}</td>
 						<td class="num">{pct(r.special_share)}</td>
 						<td class="num">{signed(r.specials)}</td>
@@ -371,7 +367,7 @@
 	.flip { color: var(--text); margin-left: 0.4em; }
 	.note { max-width: 32ch; white-space: normal; color: var(--text-2); }
 	.note .minor { color: var(--text-3); opacity: 0.75; }
-	.toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 1.6em 0 0; }
+	.toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 0 0 0.6em; }
 	.toggle button {
 		font: inherit; font-size: 0.9rem; padding: 0.35em 0.9em; border: 0; background: transparent;
 		color: var(--text-2); cursor: pointer;
