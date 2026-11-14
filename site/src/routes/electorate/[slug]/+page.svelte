@@ -46,7 +46,7 @@
 	<title>{e.name} · 2026 special votes projection</title>
 </svelte:head>
 
-<p class="small"><a href={link('/')}>← All electorates</a></p>
+<p class="small"><a href={link('/electorates/')}>← All electorates</a></p>
 <h1>{e.name} <span class="muted small">{e.roll === 'maori' ? 'Māori' : 'general'} electorate</span></h1>
 
 {#if e.omitted}

@@ -1,6 +1,5 @@
 <script>
 	import Parliament from '#lib/components/Parliament.svelte';
-	import ElectorateList from '#lib/components/ElectorateList.svelte';
 	import GeoMap from '#lib/components/GeoMap.svelte';
 	import Term from '#lib/components/Term.svelte';
 	import { colour } from '#lib/parties.js';
@@ -57,7 +56,7 @@
 <h1>Projected final result, 2026 general election</h1>
 <p class="lede">
 	This projection applies the impact of the <strong>2023
-	<Term tip="With a slight abuse of terminology: the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
+	<Term tip="In a slight abuse of terminology, we're using &quot;special votes&quot; to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
 	to the 2026 preliminary count.
 </p>
 <p class="lede">
@@ -163,13 +162,8 @@
 </p>
 <GeoMap electorates={data.electorates} {names} {view} />
 <p class="muted small">
-	"Needs" is the special-vote
-	<Term tip="How they did in the special votes compared with the preliminary count: share of specials ÷ share of preliminary votes. Above 1, specials helped.">multiplier</Term>
-	the projected runner-up
-	would have needed to tie, against the one they got from 2023. Click an electorate for its
-	working.
+	Click an electorate for its working, or <a href={link('/electorates/')}>see all electorates in a table →</a>
 </p>
-<ElectorateList electorates={data.electorates} {names} />
 
 <style>
 	.lede { font-size: 1.05rem; }

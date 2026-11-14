@@ -3,6 +3,7 @@
 	import MultiplierBars from '#lib/components/MultiplierBars.svelte';
 	import Sources from '#lib/components/Sources.svelte';
 	import { colour } from '#lib/parties.js';
+	import { link } from '#lib/link.js';
 	import { votes, pct, pp, mult, signed } from '#lib/format.js';
 
 	let { data } = $props();
@@ -205,7 +206,7 @@
 	{#each overhang('projected') as [p, d], i (p)}{i > 0 ? '; ' : ''}{names[p]} wins
 		{n.seats.projected[p].electorate} electorates against a Sainte-Laguë share of
 		{n.entitlement.projected[p]} (+{d}){/each}. So the House has {n.house.projected} seats in both
-	counts. Electorate winners here are the projected ones; see the electorate pages.
+	counts. Electorate winners here are the projected ones; see the <a href={link('/electorates/')}>electorate pages</a>.
 </p>
 
 <style>

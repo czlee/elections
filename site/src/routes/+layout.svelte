@@ -16,7 +16,8 @@
 
 	const nav = [
 		{ href: '/', route: '/', label: 'Projection' },
-		{ href: '/party-vote/', route: '/party-vote', label: 'Party vote' }
+		{ href: '/party-vote/', route: '/party-vote', label: 'Party vote' },
+		{ href: '/electorates/', route: '/electorates', label: 'Electorates' }
 	];
 </script>
 
