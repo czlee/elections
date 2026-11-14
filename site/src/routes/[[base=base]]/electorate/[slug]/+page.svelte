@@ -120,12 +120,12 @@
 
 	<h2>1. Notional {base} {e.name}</h2>
 	<p>
-		{e.name} is on 2025 boundaries. Its {base} numbers are built from the {base} electorates that
-		overlap it. Each {base} electorate’s votes are multiplied by its <strong>weight</strong>: the share
-		of its 2023 Census electoral population that falls inside {e.name}, worked out meshblock by
-		meshblock. This assumes each {base} electorate’s votes were spread evenly across its population.
-		(<strong>% of {e.name}</strong> is the other way round: how much of {e.name}’s population came
-		from that electorate.)
+		The 2026 {e.name} electorate is on 2025 boundaries. Its {base} numbers are built from the {base}
+		electorates that overlap it. Each {base} electorate’s votes are multiplied by its
+		<strong>weight</strong>: the share of its 2023 Census electoral population that falls inside the
+		2026 {e.name}, worked out meshblock by meshblock. This assumes each {base} electorate’s votes were
+		spread evenly across its population. (<strong>% of 2026 {e.name}</strong> is the other way round:
+		how much of the 2026 {e.name}’s population came from that {base} electorate.)
 		{#if e.omitted_share > 0}{pct(e.omitted_share, 1)} of its population was in Port Waikato,
 			which is left out.{/if}
 	</p>
@@ -134,8 +134,8 @@
 			<thead>
 				<tr>
 					<th>{base} electorate</th>
-					<th class="num" title="Share of {e.name}’s population that came from this {base} electorate">% of {e.name}</th>
-					<th class="num" title="Share of this {base} electorate’s population that’s inside {e.name}: its votes are multiplied by this">Weight</th>
+					<th class="num" title="Share of the 2026 {e.name}’s population that came from this {base} electorate">% of 2026 {e.name}</th>
+					<th class="num" title="Share of this {base} electorate’s population that’s inside the 2026 {e.name}: its votes are multiplied by this">Weight</th>
 					<th class="num">Preliminary</th>
 					<th class="num">Final</th>
 					<th class="num">Weighted prelim</th>
@@ -210,7 +210,7 @@
 							{#if r.candidates?.length}
 								<div class="small note">
 									{#each r.candidates as c, i (c.name)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
-											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of {e.name}’s population"
+											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of the 2026 {e.name}’s population"
 											>{candidateName(c.name)}</span>{/each}
 								</div>
 							{/if}
@@ -239,7 +239,7 @@
 		<p class="small muted">
 			Candidates are matched to 2026 by party. Where several names are shown, the area took in parts of
 			several {base} electorates; names in lighter text are from electorates that make up less than
-			{pct(MINOR, 0)} of {e.name}’s population.
+			{pct(MINOR, 0)} of the 2026 {e.name}’s population.
 		</p>
 		{#if fallback.length}
 			<h3>Party-vote multipliers, for candidates with no {base} counterpart</h3>

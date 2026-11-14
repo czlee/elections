@@ -5,7 +5,7 @@
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, pct, pp, mult, signed } from '#lib/format.js';
-	import { absorbedByOverhang } from '#lib/seats.js';
+	import { overhangParties, overhangSentence, slChanges } from '#lib/seats.js';
 
 	let { data } = $props();
 	const n = $derived(data.national);
@@ -28,7 +28,8 @@
 		const rows = [...n.ladder.prelim, ...n.ladder.projected];
 		return new Set(rows.filter((r) => has('prelim', r) !== has('projected', r)).map((r) => `${r.party}#${r.seat}`));
 	});
-	const absorbed = $derived(absorbedByOverhang(n));
+	const sl = $derived(slChanges(n));
+	const overhangNotes = $derived(overhangParties(n).map((a) => overhangSentence(a, names[a.id])));
 	const lastIn =(/** @type {any[]} */ l) => l.filter((r) => r.allocated).at(-1);
 	const firstOut = (/** @type {any[]} */ l) => l.find((r) => !r.allocated);
 </script>
@@ -165,16 +166,10 @@
 <p>
 	The 120 seats are shared out by Sainte-Laguë among parties over 5% or with an electorate: each
 	seat goes to the highest remaining quotient, votes ÷ (2s + 1), where s is the seats the party
-	already has. Seat changes are decided at the margin, by which quotients land just above or below
-	seat 120. Bold rows are seats that cross the line:
-	{#each changed as p, i (p.id)}{i > 0 ? ', ' : ''}{p.short} {signed(
-			n.seats.projected[p.id].total - n.seats.prelim[p.id].total
-		)}{/each}.
-	{#each absorbed as a (a.id)}
-		{names[a.id]} also {a.to < a.from ? 'loses' : 'gains'} a seat under Sainte-Laguë ({a.from} → {a.to}),
-		but that doesn’t change its seats: it won {a.electorates} electorates, more than its share either
-		way, so the overhang {a.to < a.from ? 'grows' : 'shrinks'} by one instead (see below).
-	{/each}
+	already has. Changes are decided at the margin, by which quotients land just above or below seat
+	120. This step is only about the 120 Sainte-Laguë seats; electorates come in under
+	<a href="#overhang">Overhang</a>, below. Bold rows are the Sainte-Laguë seats that change hands:
+	{sl.map(([p, d]) => `${names[p]} ${signed(d)}`).join(', ')}.
 </p>
 <div class="ladders">
 	{#each [['prelim', 'Preliminary count'], ['projected', 'Projected final']] as [key, title] (key)}
@@ -206,16 +201,21 @@
 		</div>
 	{/each}
 </div>
-<h3>Overhang</h3>
+<h3 id="overhang">Overhang</h3>
 <p>
 	A party keeps every electorate it wins, even beyond its share of the 120, and the House grows to
-	fit:
-	{#each overhang('projected') as [p, d], i (p)}{i > 0 ? '; ' : ''}{names[p]} wins
-		{n.seats.projected[p].electorate} electorates against a Sainte-Laguë share of
-		{n.entitlement.projected[p]} (+{d}){/each}.
+	fit. In the projected final,
+	{overhang('projected').map(([p, d]) => `${names[p]} wins ${n.seats.projected[p].electorate} electorates against a Sainte-Laguë share of ${n.entitlement.projected[p]} (+${d})`).join('; ')}.
+	{overhangNotes.join(' ')}
 	{#if n.house.projected === n.house.prelim}So the House has {n.house.projected} seats in both counts.
 	{:else}So the House has {n.house.prelim} seats in the preliminary count and {n.house.projected} in the
 		projected final.{/if}
+	Net seat changes:
+	{changed
+		.map((p) => /** @type {[string, number]} */ ([p.short, n.seats.projected[p.id].total - n.seats.prelim[p.id].total]))
+		.toSorted((a, b) => b[1] - a[1])
+		.map(([s, d]) => `${s} ${signed(d)}`)
+		.join(', ')}.
 	{#if n.has_electorates}Electorate winners here are the projected ones; see the
 		<a href={link('/electorates/')}>electorate pages</a>.
 	{:else}Electorates aren’t projected from {n.base}, so both counts use the preliminary count’s

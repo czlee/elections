@@ -14,9 +14,10 @@
 	 *   majority: number,
 	 *   overhang?: number
 	 * }}
-	 * compare: the other view's seats. Positions held by a different party
-	 * there are marked (the seats that change hands between views). Only used
-	 * when both views have the same number of seats, so positions line up.
+	 * compare: the other view's seats. A party with n more seats here than
+	 * there has n of its seats marked (electorate seats first if it has more
+	 * electorates here, then list seats), so this works whatever the two
+	 * House sizes.
 	 */
 	let { seats, names, compare = {}, highlightLabel = '', majority, overhang = 0 } = $props();
 
@@ -30,37 +31,27 @@
 	const R = 6.6; // seat radius
 	const R0 = 2.6 * P; // inner arch radius
 
-	const fullOrder = (/** @type {string} */ p) => {
-		const known = [...LEFT, ...MIDDLE, ...RIGHT];
-		const i = known.indexOf(p);
-		return i < 0 ? LEFT.length + MIDDLE.length - 0.5 : i; // others sit between the middle and the right
-	};
 	const order = $derived([
 		...LEFT, ...MIDDLE,
 		...Object.keys(seats).filter((p) => ![...LEFT, ...MIDDLE, ...RIGHT].includes(p)),
 		...RIGHT
 	].filter((p) => seats[p]?.total));
 	const total = $derived(order.reduce((a, p) => a + seats[p].total, 0));
-	/** Party at each position round the horseshoe, for a seats map (same party order). */
-	const owners = (/** @type {Record<string, {total: number}>} */ m) =>
-		order.concat(Object.keys(m).filter((p) => !order.includes(p) && m[p]?.total))
-			.sort((a, b) => fullOrder(a) - fullOrder(b))
-			.flatMap((p) => Array(m[p]?.total ?? 0).fill(p));
-	const otherOwners = $derived.by(() => {
-		const o = owners(compare);
-		return o.length === total ? o : null;
-	});
+	const comparing = $derived(Object.keys(compare).length > 0);
 
 	/** Seat positions in order round the horseshoe, for n seats. */
 	function layout(n) {
 		const radii = Array.from({ length: LANES }, (_, i) => R0 + i * P);
 		const arch = radii.map((r) => Math.round((Math.PI * r) / P));
 		let archTotal = arch.reduce((a, b) => a + b, 0);
-		const legRows = Math.max(0, Math.floor((n - archTotal) / (2 * LANES)));
-		// Absorb any remainder into the arch, outer lanes first.
-		for (let extra = n - archTotal - 2 * LANES * legRows, i = LANES - 1; extra > 0; extra--, i = (i - 1 + LANES) % LANES) {
-			arch[i]++;
-			archTotal++;
+		// Nearest whole number of leg rows, so House sizes either side of a full row
+		// (130, 131, 132) get legs of the same height.
+		const legRows = Math.max(0, Math.round((n - archTotal) / (2 * LANES)));
+		// The arch absorbs the remainder, which may be negative, outer lanes first.
+		const remainder = n - archTotal - 2 * LANES * legRows;
+		for (let k = 0, i = LANES - 1; k < Math.abs(remainder); k++, i = (i - 1 + LANES) % LANES) {
+			arch[i] += Math.sign(remainder);
+			archTotal += Math.sign(remainder);
 		}
 		const outer = radii[LANES - 1];
 		const cx = outer + P, cy = outer + P; // arch centre; legs hang below it
@@ -109,13 +100,30 @@
 				const k = (total - (start + n)) % LANES ? LANES - ((total - (start + n)) % LANES) : 0;
 				if (k && n - electorate >= k && start + n - k - electorate >= total - leg) shift = k;
 			}
+			const block = [];
 			for (let j = 0; j < n; j++) {
 				const isElectorate = leftHalf
 					? j >= shift && j < shift + electorate
 					: j >= n - shift - electorate && j < n - shift;
-				const marked = otherOwners !== null && otherOwners[i] !== p;
-				out.push({ ...geometry.pts[i++], party: p, electorate: isElectorate, marked });
+				block.push({ ...geometry.pts[i++], party: p, electorate: isElectorate, marked: false });
 			}
+			// Mark the seats this party has here but not in the other view: electorate
+			// seats for any extra electorates, then list seats, nearest the top centre.
+			const extra = comparing ? n - (compare[p]?.total ?? 0) : 0;
+			if (extra > 0) {
+				const extraElectorates = Math.min(extra, Math.max(0, electorate - (compare[p]?.electorate ?? 0)));
+				const fromEnd = leftHalf ? block.toReversed() : block; // top-centre end first
+				const pick = (/** @type {boolean} */ isElectorate, /** @type {number} */ k) => {
+					for (const d of fromEnd) {
+						if (k <= 0) break;
+						if (d.electorate === isElectorate && !d.marked) { d.marked = true; k--; }
+					}
+					return k;
+				};
+				const leftOver = pick(true, extraElectorates);
+				pick(true, pick(false, extra - extraElectorates + leftOver));
+			}
+			out.push(...block);
 		}
 		return out;
 	});

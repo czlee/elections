@@ -32,11 +32,16 @@ gives one folder per layer:
 
 | Dataset | Datafinder layer |
 |---|---|
+| General Electoral District 2014 (for 2017) | [104062](https://datafinder.stats.govt.nz/layer/104062-general-electoral-district-2014/) |
+| Māori Electoral District 2014 (for 2017) | [104063](https://datafinder.stats.govt.nz/layer/104063-maori-electoral-district-2014/) |
 | General Electorates 2020 | [104580](https://datafinder.stats.govt.nz/layer/104580-general-electorates-2020/) |
 | Māori Electorates 2020 | [104579](https://datafinder.stats.govt.nz/layer/104579-maori-electorates-2020/) |
 | General Electorates 2025 | [122741](https://datafinder.stats.govt.nz/layer/122741-general-electorates-2025/) |
 | Māori Electorates 2025 | [122742](https://datafinder.stats.govt.nz/layer/122742-maori-electorates-2025/) |
 | 2023 Census electoral population at meshblock level (2025 Meshblock) | [121975](https://datafinder.stats.govt.nz/layer/121975-2023-census-electoral-population-at-meshblock-level-2025-meshblock/) |
+| Regional Council 2025 Clipped (map coastline only; `export_boundaries.py`) | [120945](https://datafinder.stats.govt.nz/layer/120945-regional-council-2025-clipped/) |
+
+All are CC BY 4.0, credited in the site's footer.
 
 ## Running the 2026 projections
 

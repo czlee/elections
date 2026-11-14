@@ -7,6 +7,20 @@ export const DEFAULT_BASE = '2023';
 export const BASES = ['2023', '2020', '2017'];
 export const OTHER_BASES = BASES.filter((b) => b !== DEFAULT_BASE);
 
+/** The electorate boundaries each base election was held on (Stats NZ layers, credited in the footer). */
+export const BOUNDARIES = /** @type {Record<string, string>} */ ({ '2017': '2014', '2020': '2020', '2023': '2020' });
+
+/**
+ * How late people could enrol or update their enrolment (and so vote by
+ * special vote) in each base election. Election-day enrolment started in
+ * 2020; in 2017 enrolment closed the day before election day.
+ */
+export const ENROLMENT_UNTIL = /** @type {Record<string, string>} */ ({
+	'2017': 'up to the day before election day',
+	'2020': 'right up to and including election day',
+	'2023': 'right up to and including election day'
+});
+
 /** Why a base year has no electorate projections, completing "because …". */
 export const NO_ELECTORATES_REASON = /** @type {Record<string, string>} */ ({
 	'2020':

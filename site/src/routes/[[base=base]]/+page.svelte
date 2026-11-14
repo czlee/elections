@@ -5,14 +5,22 @@
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, points, signed, candidateName } from '#lib/format.js';
-	import { absorbedByOverhang } from '#lib/seats.js';
-	import { NO_ELECTORATES_REASON } from '#lib/bases.js';
+	import { overhangParties, overhangSentence } from '#lib/seats.js';
+	import { ENROLMENT_UNTIL, NO_ELECTORATES_REASON } from '#lib/bases.js';
 
 	let { data } = $props();
 	const nat = $derived(data.national);
 	const base = $derived(nat.base);
 	/** A base year with electorate projections, to point to from one without. */
-	const electorateBase = $derived(data.bases.find((/** @type {any} */ b) => b.hasElectorates)?.base);
+	const electorateBases = $derived(
+		data.bases.filter((/** @type {any} */ b) => b.hasElectorates).map((/** @type {any} */ b) => b.base)
+	);
+	// The Electoral Commission's election-night special-vote estimates, 2026 vs the base year.
+	const specialsComparison = $derived.by(() => {
+		const change = Math.round((100 * (nat.estimate_2026 - nat.estimate_base)) / nat.estimate_base);
+		const size = Math.abs(change) === 0 ? 'about the same as' : `about ${Math.abs(change)}% ${change < 0 ? 'lower' : 'higher'} than`;
+		return `Estimated special votes were ${size} in ${base} (${votes(nat.estimate_2026)} against ${votes(nat.estimate_base)}).`;
+	});
 	let view = $state(/** @type {'prelim' | 'projected'} */ ('projected'));
 	// The footer links to #limitations; open the box when arriving that way.
 	let limitsOpen = $state(false);
@@ -34,6 +42,10 @@
 				change: nat.seats.projected[p.id].total - nat.seats.prelim[p.id].total
 			}))
 	);
+	// The seat table: most projected seats first, then most preliminary seats (then vote order).
+	const tableRows = $derived(
+		rows.toSorted((a, b) => b.projected.total - a.projected.total || b.prelim.total - a.prelim.total)
+	);
 	const seatCounts = $derived(
 		Object.fromEntries(rows.map((r) => [r.id, { total: r[view].total, electorate: r[view].electorate }]))
 	);
@@ -48,7 +60,12 @@
 	const flips = $derived(data.electorates.filter((e) => e.flips));
 	const gains = $derived(rows.filter((r) => r.change > 0));
 	const losses = $derived(rows.filter((r) => r.change < 0));
-	const absorbed = $derived(absorbedByOverhang(nat));
+	const overhangNotes = $derived([
+		...overhangParties(nat).map((a) => overhangSentence(a, names[a.id])),
+		...(nat.house.prelim !== nat.house.projected
+			? [`The House goes from ${nat.house.prelim} to ${nat.house.projected} seats.`]
+			: [])
+	]);
 	const govt = ['national', 'act', 'nz-first'];
 	const govtSeats = (/** @type {'prelim' | 'projected'} */ v) =>
 		govt.reduce((a, p) => a + (nat.seats[v][p]?.total ?? 0), 0);
@@ -78,12 +95,7 @@
 		{f.prelim_winner_party ? names[f.prelim_winner_party] : 'other'} to
 		{f.winner_party ? names[f.winner_party] : 'other'}.
 	{/each}
-	{#each absorbed as a (a.id)}
-		{names[a.id]}’s Sainte-Laguë share {a.to < a.from ? 'drops' : 'rises'} from {a.from} to {a.to}, but
-		it keeps its {a.seats} seats because it won {a.electorates} electorates: the overhang
-		{a.to < a.from ? 'grows' : 'shrinks'} instead{#if nat.house.prelim !== nat.house.projected}, and
-			the House goes from {nat.house.prelim} to {nat.house.projected} seats{/if}.
-	{/each}
+	{overhangNotes.join(' ')}
 	National, ACT and NZ First go from {govtSeats('prelim')}{nat.house.prelim !== nat.house.projected
 		? ` of ${nat.house.prelim}`
 		: ''} to {govtSeats('projected')} of {nat.house.projected}
@@ -95,9 +107,9 @@
 	<ul>
 		<li><strong>This is a mechanical projection, not a forecast.</strong></li>
 		<li>
-			Same-day enrolment and enrolment changes while voting no longer count as special votes in
-			2026, which reportedly cut specials by about 30%. The {base} mix of special voters may not carry
-			over.
+			In {base}, people could enrol or update their enrolment {ENROLMENT_UNTIL[base]}, voting by
+			special vote. In 2026, enrolment closed 13 days before election day. {specialsComparison} The
+			{base} mix of special voters may not carry over.
 		</li>
 		<li>
 			{#if data.hasElectorates}
@@ -151,7 +163,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each rows as r (r.id)}
+				{#each tableRows as r (r.id)}
 					<tr>
 						<td><span class="swatch" style:background={colour(r.id)}></span>{r.short}</td>
 						<td class="num">{r.prelim.total}</td>
@@ -193,12 +205,12 @@
 	<p class="muted small">
 		Click an electorate for its working, or <a href={link('/electorates/')}>see all electorates in a table →</a>
 	</p>
-{:else if electorateBase}
+{:else if electorateBases.length}
 	<h2>Electorates</h2>
 	<p>
 		Electorates aren’t projected from {base}’s special votes{#if NO_ELECTORATES_REASON[base]}, because
 			{NO_ELECTORATES_REASON[base]}{/if}. For electorate projections, see the
-		<a href={link('/', electorateBase)}>projection from {electorateBase}</a>.
+		{#each electorateBases as b, i (b)}{i > 0 ? (i === electorateBases.length - 1 ? ' or the ' : ', the ') : ''}<a href={link('/', b)}>projection from {b}</a>{/each}.
 	</p>
 {/if}
 

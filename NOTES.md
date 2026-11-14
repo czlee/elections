@@ -380,10 +380,10 @@ Machine instead (next section).
 - `project_electorates.py` (10 November 2026): per-electorate projection of
   both party and candidate votes; method in its docstring. Writes
   `electorates_party.csv`, `electorates_candidate.csv` and
-  `electorates_summary.csv` in `results/projection-2026/`. My own call, not yet
-  reviewed: a candidate whose party had no 2023 candidate in the area uses that
-  party's party-vote multiplier in the same electorate (not 1). Unreviewed
-  linking questions: Te Tai Tokerau Party (Mariameno Kapa-Kingi, the 2023 Te Pāti
+  `electorates_summary.csv` in `results/projection-2026/`. Confirmed by the
+  user (14 November 2026): a candidate whose party had no base-year candidate
+  in the area uses that party's party-vote multiplier in the same electorate
+  (not 1); Te Tai Tokerau Party (Mariameno Kapa-Kingi, the 2023 Te Pāti
   Māori winner there) and Tākuta Ferris (independent in Te Tai Tonga, the 2023
   Te Pāti Māori winner) get a multiplier of 1. Neither affects a projected
   winner (both are fourth).
@@ -391,10 +391,8 @@ Machine instead (next section).
     nothing is omitted (2017 had no by-election gap). The 2023 output is
     byte-identical. 2017 flips Hamilton East and Wairarapa (National →
     Labour) as well as Wellington Bays (Labour → Green): 130 seats, National
-    40, National + ACT + NZ First 64 (majority 66). Three party rows get small
-    negative specials (2017 parties whose final count was below their
-    preliminary in the area): Outdoors & Freedom in Dunedin (−7) and Tukituki
-    (−4), Te Pāti Māori in Kaikōura (−16); no projected count goes negative.
+    40, National + ACT + NZ First 64 (majority 66). Negative 2017 specials
+    (final below preliminary) are listed under "Needs the user's review".
     2017's small-party multipliers are noisy (e.g. East Cape ACT candidate,
     party-vote multiplier 0.174), since ACT had 0.5% in 2017.
 - `export_site_data.py` (13 November 2026): writes the site's JSON
@@ -450,12 +448,19 @@ Machine instead (next section).
     projections hide the Electorates link, the map and the electorate pages,
     and say why (`NO_ELECTORATES_REASON`). Decided with the user: 2020 gets no
     electorate projection (the Wayback Machine has no 2020 preliminary results
-    by electorate); 2017 has one. When a party's Sainte-Laguë share changes
-    but its seats don't because of its electorates (2020: National 35 → 34,
-    overhang +1), the landing and party-vote pages say so
-    (`lib/seats.js`), as the user asked. The horseshoe's "gained/lost with
-    specials" rings only show when both views have the same House size
-    (positions don't line up otherwise); not changed.
+    by electorate); 2017 has one. When an overhang party's Sainte-Laguë share
+    or electorates change (2020: National 35 → 34 with 42 electorates both
+    times; 2017: 35 → 34 and electorates 42 → 40), the landing page and the
+    party-vote page's overhang paragraph explain it (`lib/seats.js`), as the
+    user asked. Party-vote step 4 is only about the 120 Sainte-Laguë seats
+    (its "Bold rows" list is entitlement changes, not seat changes); net seat
+    changes and electorate effects are in the overhang paragraph (the user's
+    call). The horseshoe's "gained/lost with specials" rings are now per
+    party (the user's call): a party with n more seats in this view gets n
+    seats ringed, electorate seats first if it gained electorates, nearest the
+    top centre. So it works when the House size changes (2017, 2020), and on
+    2023 the Green ring moved from a list seat to an electorate seat
+    (Wellington Bays).
 - `party_names.toml` + `parties.py`: links parties across elections.
   One table per stable `party_id`, giving the name(s) it appears under in each
   election's data (TOML rather than CSV for readability, decided with the user
@@ -492,6 +497,27 @@ Machine instead (next section).
 - Moved to this repo on 10 November 2026. The `results/` data (2023, 2023-prelim,
   2026-prelim) was copied over too; it's gitignored.
 
+## Needs the user's review (kept up to date; 14 November 2026)
+
+- The limitation's new specials sentence ("Estimated special votes were
+  about 30% lower than in 2023 (399,365 against 567,000)"; 2020: 17% lower;
+  2017: 4% higher), which replaces "which reportedly cut specials", at the
+  user's request, to avoid implying cause. It compares the Electoral
+  Commission's election-night estimates (2026 vs the base year).
+- The divider between the nav links and "Using specials from".
+
+Reviewed and accepted by the user (14 November 2026): the 2017 and 2020
+results (2017: Hamilton East, Wairarapa and Wellington Bays flip, House 130,
+National + ACT + NZ First 64 of 130; 2020: 66 of 132); the 2017 negative
+specials (27 party rows across 7 parties, the largest the Māori Party in
+Kaikōura, 195 → 92, and 2 independents, Adrian Graamans and Vin Tomar; only
+NZ Outdoors and the Māori Party carry into 2026 rows, and no projected count
+is negative); noisy 2017 small-party multipliers (e.g. East Cape ACT
+candidate 0.174); 2017 population weights from the 2023 Census; the
+Sainte-Laguë/overhang explanations; the "2026 <name>" wording; the base
+switcher; and the per-party horseshoe rings (not quite what the user had in
+mind, but fine as it's consistent across bases).
+
 ## Plans
 
 ### Per-electorate projection (discussed 10 November 2026, not started)
@@ -513,9 +539,16 @@ Machine instead (next section).
   same year as the election and is what the Representation Commission used).
 - **Decided with the user: no adjustments for social or legal change.**
   Just record these as limitations:
-  - 2026 specials are reportedly down about 30% because same-day enrolment and
-    enrolment changes made while voting no longer count as special votes.
-    The 2023 mix of special voters may not carry over.
+  - 2026 specials are reportedly down about 30% because of enrolment
+    changes. The 2023 mix of special voters may not carry over. Corrected
+    14 November 2026 (checked by web search after the user queried 2017):
+    the Electoral Amendment Act 2025 closed enrolment for 2026 **13 days
+    before election day**, so late enrolment didn't happen at all (rather
+    than no longer counting as special votes). Election-day enrolment was
+    allowed only in 2020 and 2023; in 2017 enrolment closed the day before
+    election day (22 September 2017), though people could still enrol at
+    advance voting places and vote by special vote. The site's limitation
+    gives each base year's rule (`ENROLMENT_UNTIL` in `site/src/lib/bases.js`).
   - Population weights stand in for enrolled electors (and, for Māori
     electorates, for the Māori roll).
   - **Changes in which parties stand candidates.** The normalisation step

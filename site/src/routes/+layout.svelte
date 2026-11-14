@@ -10,6 +10,7 @@
 	import { DRAFT } from '#lib/config.js';
 	import { link } from '#lib/link.js';
 	import { page } from '$app/state';
+	import { BOUNDARIES } from '#lib/bases.js';
 
 	/** @type {{children: import('svelte').Snippet, data: any}} */
 	let { children, data } = $props();
@@ -77,8 +78,9 @@
 	<p>
 		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> ({data.base} and 2026
 		results), <a href="https://web.archive.org/">Internet Archive</a> ({data.base} preliminary count){#if data.hasElectorates},
-			<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population and
-			2025 electorate boundaries, CC BY 4.0){/if}. Code:
+			<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population,
+			{BOUNDARIES[data.base]} and 2025 electorate boundaries, and 2025 regional council boundaries
+			for the coastline, CC BY 4.0){/if}. Code:
 		<a href="https://github.com/czlee/elections">czlee/elections</a>.
 	</p>
 </footer>
@@ -97,7 +99,10 @@
 	nav a { color: var(--text-2); text-decoration: none; }
 	nav a[aria-current='page'] { color: var(--text); font-weight: 600; }
 	nav .brand { color: var(--text); font-weight: 700; margin-right: auto; }
-	.bases { display: inline-flex; gap: 0.15em; align-items: baseline; font-size: 0.85rem; margin-left: 0.6em; }
+	.bases {
+		display: inline-flex; gap: 0.15em; align-items: baseline; font-size: 0.85rem;
+		margin-left: 0.2em; padding-left: 1em; border-left: 1px solid var(--border);
+	}
 	.bases-label { color: var(--text-3); margin-right: 0.35em; }
 	.bases a { padding: 0.05em 0.4em; border-radius: 4px; border: 1px solid transparent; }
 	.bases a[aria-current='true'] { color: var(--text); font-weight: 600; border-color: var(--border); }
