@@ -11,7 +11,7 @@ Writes, in site/src/lib/data/<base>/:
                     multiplier for the projected runner-up (only for bases
                     in ELECTORATE_BASES)
 
-Only 2023 has electorate projections so far. For the other bases, both
+2017 and 2023 have electorate projections. For the other base (2020), both
 counts' seats hold electorates at the 2026 preliminary winners, as
 project_specials.py does.
 """
@@ -30,7 +30,6 @@ from seats import TOTAL_SEATS, allocate, quotient_ladder
 OUTDIR = "site/src/lib/data"
 CSV_DIR = "results/projection-2026"
 LADDER_BEFORE, LADDER_AFTER = 12, 8
-PRELIM_2023_STATS = "results/2023-prelim/electorate_stats.csv"
 
 # Links to the raw data, for the site to cite. The results website's HTML
 # pages are blocked to scripts (NOTES.md), so the page links haven't been
@@ -38,7 +37,12 @@ PRELIM_2023_STATS = "results/2023-prelim/electorate_stats.csv"
 RESULTS = "https://www.electionresults.govt.nz/"
 WAYBACK = "https://web.archive.org/web/{0}/" + RESULTS + "{1}"
 RELEASES = "https://elections.nz/media-and-news/"
-ELECTORATE_BASES = {"2023"}
+ELECTORATE_BASES = {"2017", "2023"}
+# Regression guards for check(): ((preliminary House, projected House), flips).
+EXPECTED = {
+    "2017": ((131, 130), ["Hamilton East", "Wairarapa", "Wellington Bays"]),
+    "2023": ((131, 131), ["Wellington Bays"]),
+}
 SOURCES_2026 = {
     "release_2026": {"label": "Electoral Commission, 2026 preliminary results press release",
                      "url": RELEASES + "2026/2026-general-election-preliminary-results"},
@@ -82,17 +86,20 @@ def electorate_links_2026(elec_id):
                             "xml": RESULTS + "electionresults_2026_preliminary/xml/e{0:02d}/e{0:02d}.xml".format(elec_id)}}
 
 
-def electorate_links_2023(elec_id, timestamps):
-    links = {"final_2023": {"url": RESULTS + "electionresults_2023/electorate-details-{0:02d}.html".format(elec_id),
-                            "xml": RESULTS + "electionresults_2023/xml/e{0:02d}/e{0:02d}.xml".format(elec_id)}}
+def electorate_links_base(base, elec_id, timestamps):
+    links = {"final_base": {
+        "url": RESULTS + "electionresults_{0}/electorate-details-{1:02d}.html".format(base, elec_id),
+        "xml": RESULTS + "electionresults_{0}/xml/e{1:02d}/e{1:02d}.xml".format(base, elec_id)}}
     if elec_id in timestamps:
-        links["prelim_2023"] = {"url": WAYBACK.format(
-            timestamps[elec_id], "electionresults_2023_preliminary/electorate-details-{0:02d}.html".format(elec_id))}
+        links["prelim_base"] = {"url": WAYBACK.format(
+            timestamps[elec_id], "electionresults_{0}_preliminary/electorate-details-{1:02d}.html".format(
+                base, elec_id))}
     return links
 
 
-def read_timestamps():
-    with open(PRELIM_2023_STATS, newline="", encoding="utf-8") as f:
+def read_timestamps(base):
+    """{elec_id: Wayback timestamp} of the scraped base-year preliminary pages."""
+    with open("results/{0}-prelim/electorate_stats.csv".format(base), newline="", encoding="utf-8") as f:
         return {int(r["elec_id"]): r["wayback_timestamp"] for r in csv.DictReader(f)}
 
 
@@ -136,9 +143,9 @@ def key_id(key):
     return "other:" + key[1] if isinstance(key, tuple) else key
 
 
-def read_roll():
+def read_roll(base):
     roll = {}
-    with open(pe.CONCORDANCE, newline="", encoding="utf-8") as f:
+    with open(pe.concordance_file(base), newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             roll[int(row["elec_id_2026"])] = row["roll"]
     return roll
@@ -284,12 +291,13 @@ def base_rows(kind, elec_id, d, ce, names_2023):
 
 
 def electorates(ce):
-    roll = read_roll()
-    # Candidate names by (elec_id, key), for "who was the 2023 counterpart"
-    names_2023 = candidate_names(pe.FILES[("2023", "final", "candidate")], "2023", ce["names"])
+    roll = read_roll(ce["base"])
+    base = ce["base"]
+    # Candidate names by (elec_id, key), for "who was the base-year counterpart"
+    names_2023 = candidate_names(ce["files"][(base, "final", "candidate")], base, ce["names"])
     ce["names_2026"] = candidate_names(pe.FILES[("2026", "prelim", "candidate")], "2026", ce["names"])
-    data, en23 = ce["data"], ce["elec_names"]["2023"]
-    timestamps = read_timestamps()
+    data, en23 = ce["data"], ce["elec_names"][base]
+    timestamps = read_timestamps(base)
 
     out = []
     for elec_id in sorted(ce["sources"]):
@@ -312,11 +320,11 @@ def electorates(ce):
         entry["omitted_share"] = detail["omitted_share"]
         entry["sources"] = []
         for e23, share_of_2023, share_of_2026 in ce["sources"][elec_id]:
-            src = {"id": e23, "name": en23[e23], "share_of_2023": share_of_2023, "share_of_2026": share_of_2026,
-                   "omitted": e23 in pe.OMITTED_2023, "links": electorate_links_2023(e23, timestamps)}
+            src = {"id": e23, "name": en23[e23], "share_of_base": share_of_2023, "share_of_2026": share_of_2026,
+                   "omitted": e23 in ce["omitted_base"], "links": electorate_links_base(base, e23, timestamps)}
             if not src["omitted"]:
                 for kind in ["party", "candidate"]:
-                    p, f = data[("2023", "prelim", kind)][e23], data[("2023", "final", kind)][e23]
+                    p, f = data[(base, "prelim", kind)][e23], data[(base, "final", kind)][e23]
                     src[kind] = {"prelim": sum(p.values()), "final": sum(f.values()),
                                  "by_key": {key_id(k): [p.get(k, 0), f.get(k, 0)]
                                             for k in sorted(set(p) | set(f), key=key_id)}}
@@ -356,15 +364,22 @@ def check(nat, elecs):
     """Checks the export against the CSVs written by the projection scripts."""
     with open(ps.default_output(nat["base"]), newline="", encoding="utf-8") as f:
         csv_nat = {r["party_id"]: r for r in csv.DictReader(f)}
+    base = nat["base"]
     for p in nat["parties"]:
         assert "{0:.0f}".format(p["final"]) == csv_nat[p["id"]]["projected_final_votes"], p["id"]
-        assert nat["seats"]["projected"][p["id"]]["total"] == int(csv_nat[p["id"]]["projected_seats"]), p["id"]
+        if elecs is None:
+            # The CSV's seats hold electorates at the preliminary winners, as
+            # the export does without electorate projections.
+            assert nat["seats"]["projected"][p["id"]]["total"] == int(csv_nat[p["id"]]["projected_seats"]), p["id"]
     if elecs is None:
         return
-    assert nat["house"]["projected"] == nat["house"]["prelim"] == 131, nat["house"]
-    with open(os.path.join(CSV_DIR, "electorates_summary.csv"), newline="", encoding="utf-8") as f:
+    house, expected_flips = EXPECTED[base]
+    assert (nat["house"]["prelim"], nat["house"]["projected"]) == house, nat["house"]
+    with open(os.path.join(CSV_DIR, pe.output_name("electorates_summary.csv", base)), newline="",
+              encoding="utf-8") as f:
         csv_sum = {int(r["elec_id"]): r for r in csv.DictReader(f)}
-    with open(os.path.join(CSV_DIR, "electorates_candidate.csv"), newline="", encoding="utf-8") as f:
+    with open(os.path.join(CSV_DIR, pe.output_name("electorates_candidate.csv", base)), newline="",
+              encoding="utf-8") as f:
         csv_cand = {}
         for r in csv.DictReader(f):
             csv_cand[(int(r["elec_id"]), r["name"])] = r
@@ -379,7 +394,7 @@ def check(nat, elecs):
         for r in e["candidate"]["rows"]:
             assert "{0:.0f}".format(r["final"]) == csv_cand[(e["id"], r["label"])]["projected_final_votes"]
     flips = [e["name"] for e in elecs if e.get("flips")]
-    assert flips == ["Wellington Bays"], flips
+    assert flips == expected_flips, flips
     assert len({e["slug"] for e in elecs}) == len(elecs) == 71
 
 
@@ -391,7 +406,7 @@ def main():
 
     cn = ps.compute(args.base)
     if args.base in ELECTORATE_BASES:
-        ce = pe.compute()
+        ce = pe.compute(args.base)
         nat, elecs = national(cn, ce), electorates(ce)
     else:
         nat, elecs = national(cn), None

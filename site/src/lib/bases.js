@@ -7,6 +7,12 @@ export const DEFAULT_BASE = '2023';
 export const BASES = ['2023', '2020', '2017'];
 export const OTHER_BASES = BASES.filter((b) => b !== DEFAULT_BASE);
 
+/** Why a base year has no electorate projections, completing "because …". */
+export const NO_ELECTORATES_REASON = /** @type {Record<string, string>} */ ({
+	'2020':
+		'the Wayback Machine doesn’t have the 2020 preliminary results by electorate (only the national totals)'
+});
+
 /** The base year for a route's (optional) base param. */
 export const baseOf = (/** @type {string | undefined} */ param) => param ?? DEFAULT_BASE;
 

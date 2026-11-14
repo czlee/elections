@@ -16,10 +16,11 @@ changing the projection, from the repository root:
 python3 project_specials.py
 python3 project_electorates.py
 python3 export_site_data.py
-for base in 2020 2017; do
-    python3 project_specials.py --base $base
-    python3 export_site_data.py --base $base
-done
+python3 project_specials.py --base 2020
+python3 export_site_data.py --base 2020
+python3 project_specials.py --base 2017
+python3 project_electorates.py --base 2017   # after concordance.py --base 2017 (venv)
+python3 export_site_data.py --base 2017
 ```
 
 ## Develop

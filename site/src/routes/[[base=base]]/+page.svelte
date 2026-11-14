@@ -5,6 +5,8 @@
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, points, signed, candidateName } from '#lib/format.js';
+	import { absorbedByOverhang } from '#lib/seats.js';
+	import { NO_ELECTORATES_REASON } from '#lib/bases.js';
 
 	let { data } = $props();
 	const nat = $derived(data.national);
@@ -46,6 +48,7 @@
 	const flips = $derived(data.electorates.filter((e) => e.flips));
 	const gains = $derived(rows.filter((r) => r.change > 0));
 	const losses = $derived(rows.filter((r) => r.change < 0));
+	const absorbed = $derived(absorbedByOverhang(nat));
 	const govt = ['national', 'act', 'nz-first'];
 	const govtSeats = (/** @type {'prelim' | 'projected'} */ v) =>
 		govt.reduce((a, p) => a + (nat.seats[v][p]?.total ?? 0), 0);
@@ -71,13 +74,20 @@
 					class="party-change" style:--c={colour(r.id)}>{r.short} {signed(r.change)}</span
 				>{/each}{/each}</strong
 	>.
-	{#each flips as f (f.slug)}
-		<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a> flips from
+	{#each flips as f, i (f.slug)}{i > 0 ? ' ' : ''}<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a> flips from
 		{f.prelim_winner_party ? names[f.prelim_winner_party] : 'other'} to
 		{f.winner_party ? names[f.winner_party] : 'other'}.
 	{/each}
-	National, ACT and NZ First go from {govtSeats('prelim')} to {govtSeats('projected')} of
-	{nat.house.projected} ({Math.floor(nat.house.projected / 2) + 1} for a majority).
+	{#each absorbed as a (a.id)}
+		{names[a.id]}’s Sainte-Laguë share {a.to < a.from ? 'drops' : 'rises'} from {a.from} to {a.to}, but
+		it keeps its {a.seats} seats because it won {a.electorates} electorates: the overhang
+		{a.to < a.from ? 'grows' : 'shrinks'} instead{#if nat.house.prelim !== nat.house.projected}, and
+			the House goes from {nat.house.prelim} to {nat.house.projected} seats{/if}.
+	{/each}
+	National, ACT and NZ First go from {govtSeats('prelim')}{nat.house.prelim !== nat.house.projected
+		? ` of ${nat.house.prelim}`
+		: ''} to {govtSeats('projected')} of {nat.house.projected}
+	({Math.floor(nat.house.projected / 2) + 1} for a majority).
 </p>
 
 <details class="limits" id="limitations" bind:open={limitsOpen}>
@@ -102,6 +112,8 @@
 			<li>
 				Electorates are on new boundaries, so their {base} results are rebuilt from population weights.
 				These stand in for enrolled electors (and, for Māori electorates, for the Māori roll).
+				{#if base !== '2023'}The weights are from the 2023 Census, {2023 - +base} years after the {base}
+					election, so they miss population changes in between.{/if}
 			</li>
 		{:else}
 			<li>
@@ -170,7 +182,7 @@
 	<h2>Electorates</h2>
 	<p>
 		Colour is the {view === 'prelim' ? 'preliminary' : 'projected'} leader in each electorate (switch
-		with the toggle above). The hatched electorate flips with special votes. Boxes on the main map show
+		with the toggle above). {flips.length === 1 ? 'The hatched electorate flips' : 'Hatched electorates flip'} with special votes. Boxes on the main map show
 		the city insets.
 	</p>
 	<p class="muted small">
@@ -184,7 +196,8 @@
 {:else if electorateBase}
 	<h2>Electorates</h2>
 	<p>
-		Electorates aren’t projected from {base}’s special votes. For electorate projections, see the
+		Electorates aren’t projected from {base}’s special votes{#if NO_ELECTORATES_REASON[base]}, because
+			{NO_ELECTORATES_REASON[base]}{/if}. For electorate projections, see the
 		<a href={link('/', electorateBase)}>projection from {electorateBase}</a>.
 	</p>
 {/if}

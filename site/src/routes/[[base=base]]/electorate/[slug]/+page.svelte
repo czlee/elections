@@ -36,9 +36,9 @@
 		return r.link !== r.party ? `as ${party(r.link)} in ${base}` : '';
 	}
 	const srcLinks = (/** @type {any} */ s) => [
-		s.links.prelim_2023 && { label: 'prelim', url: s.links.prelim_2023.url },
-		{ label: 'official', url: s.links.final_2023.url },
-		{ label: 'XML', url: s.links.final_2023.xml }
+		s.links.prelim_base && { label: 'prelim', url: s.links.prelim_base.url },
+		{ label: 'official', url: s.links.final_base.url },
+		{ label: 'XML', url: s.links.final_base.xml }
 	].filter(Boolean);
 </script>
 
@@ -148,14 +148,14 @@
 					<tr>
 						<td>{s.name}</td>
 						<td class="num">{pct(s.share_of_2026, 1)}</td>
-						<td class="num">{pct(s.share_of_2023, 1)}</td>
+						<td class="num">{pct(s.share_of_base, 1)}</td>
 						{#if s.omitted}
 							<td colspan="4" class="muted">left out (no {base} electorate vote)</td>
 						{:else}
 							<td class="num">{votes(s[tab].prelim)}</td>
 							<td class="num">{votes(s[tab].final)}</td>
-							<td class="num">{votes(s[tab].prelim * s.share_of_2023)}</td>
-							<td class="num">{votes(s[tab].final * s.share_of_2023)}</td>
+							<td class="num">{votes(s[tab].prelim * s.share_of_base)}</td>
+							<td class="num">{votes(s[tab].final * s.share_of_base)}</td>
 						{/if}
 						<td class="sources">
 							{#each srcLinks(s) as l, i (l.label)}{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a>{/each}
@@ -309,8 +309,8 @@
 	<p>
 		Each {tab === 'candidate' ? 'candidate' : 'party'}’s weight is their 2026 preliminary share × their
 		party’s {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
-		weight ({weightSum.toFixed(4)}).{#if tab === 'candidate'} Independent candidates get a
-			multiplier of 1.{/if}
+		weight ({weightSum.toFixed(4)}).
+		{#if tab === 'candidate'}Independent candidates get a multiplier of 1.{/if}
 	</p>
 	<div class="table-wrap">
 		<table class="wide-first">

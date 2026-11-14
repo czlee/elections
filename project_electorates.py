@@ -29,38 +29,64 @@ includes changes to ordinary votes in the official count.
      (results/projection-2026/national.csv, from project_specials.py) and the
      projected electorate winners.
 
-Port Waikato is left out: 2023 had no general-election electorate vote
-there (the poll was cancelled and it went to a by-election), and its
-preliminary page wasn't archived. Its boundaries didn't change in 2025, so
-only the 2026 Port Waikato electorate is affected. In step 3 it's counted at
-the national 2023 ratio, and in step 5 at its preliminary winner.
+The base election (the "2023" throughout) is 2023 by default, or 2017 with
+--base 2017. Only these two have per-electorate preliminary counts (2020's
+weren't archived; NOTES.md).
 
-Inputs: results/concordance/electorates_2023_2026.csv (concordance.py),
-results/2023-prelim/ (scrape_wayback_prelim.py), results/2023/ and
-results/2026-prelim/ (download.py), results/projection-2026/national.csv
-(project_specials.py) and the 2023 preliminary overview page (NOTES.md).
+Port Waikato is left out of the 2023 base: 2023 had no general-election
+electorate vote there (the poll was cancelled and it went to a by-election),
+and its preliminary page wasn't archived. Its boundaries didn't change in
+2025, so only the 2026 Port Waikato electorate is affected. In step 3 it's
+counted at the national 2023 ratio, and in step 5 at its preliminary winner.
+Nothing is left out of the 2017 base.
+
+Inputs: results/concordance/electorates_<base>_2026.csv (concordance.py),
+results/<base>-prelim/ (scrape_wayback_prelim.py), results/<base>/ and
+results/2026-prelim/ (download.py), results/projection-2026/national.csv or
+national-base<base>.csv (project_specials.py) and the base election's
+preliminary count as project_specials.py reads it (NOTES.md).
 """
 import argparse
 import csv
 import os
 from collections import Counter, defaultdict
 
+import project_specials as ps
 from parties import PartyNames
-from project_specials import (PRELIM_2023_OVERVIEW, SPECIAL_ESTIMATE_2023, SPECIAL_ESTIMATE_2026,
-                              read_overview, read_party_totals)
+from project_specials import SPECIAL_ESTIMATE_2026, read_party_totals
 from seats import TOTAL_SEATS, allocate
 
+DEFAULT_BASE = "2023"
+# Base elections with electorate projections, and the base electorates left out.
+OMITTED = {"2017": set(), "2023": {39}}  # 2023: Port Waikato
+OMITTED_2023 = OMITTED["2023"]
 CONCORDANCE = "results/concordance/electorates_2023_2026.csv"
-NATIONAL_PROJECTION = "results/projection-2026/national.csv"
-OMITTED_2023 = {39}  # Port Waikato
-FILES = {
-    ("2023", "prelim", "party"): "results/2023-prelim/party_votes.csv",
-    ("2023", "final", "party"): "results/2023/party_votes.csv",
-    ("2023", "prelim", "candidate"): "results/2023-prelim/candidate_votes.csv",
-    ("2023", "final", "candidate"): "results/2023/candidate_votes.csv",
-    ("2026", "prelim", "party"): "results/2026-prelim/party_votes.csv",
-    ("2026", "prelim", "candidate"): "results/2026-prelim/candidate_votes.csv",
-}
+
+
+def concordance_file(base):
+    return "results/concordance/electorates_{0}_2026.csv".format(base)
+
+
+def files(base):
+    return {
+        (base, "prelim", "party"): "results/{0}-prelim/party_votes.csv".format(base),
+        (base, "final", "party"): "results/{0}/party_votes.csv".format(base),
+        (base, "prelim", "candidate"): "results/{0}-prelim/candidate_votes.csv".format(base),
+        (base, "final", "candidate"): "results/{0}/candidate_votes.csv".format(base),
+        ("2026", "prelim", "party"): "results/2026-prelim/party_votes.csv",
+        ("2026", "prelim", "candidate"): "results/2026-prelim/candidate_votes.csv",
+    }
+
+
+FILES = files(DEFAULT_BASE)
+
+
+def output_name(filename, base):
+    """electorates_party.csv for the default base, electorates_party-base2017.csv otherwise."""
+    if base == DEFAULT_BASE:
+        return filename
+    stem, ext = os.path.splitext(filename)
+    return "{0}-base{1}{2}".format(stem, base, ext)
 NOTABLE_SHARE = 0.05  # report candidates with multiplier 1 above this share
 CLOSE_MARGIN = 0.05   # report electorates with a projected margin below this
 
@@ -86,13 +112,13 @@ def read_votes(filename, election, names, kind):
     return votes, elec_names, labels
 
 
-def read_concordance(filename):
-    """Returns {elec_id_2026: [(elec_id_2023, share_of_2023, share_of_2026)]}."""
+def read_concordance(filename, base=DEFAULT_BASE):
+    """Returns {elec_id_2026: [(elec_id_base, share_of_base, share_of_2026)]}."""
     sources = defaultdict(list)
     with open(filename, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             sources[int(row["elec_id_2026"])].append(
-                (int(row["elec_id_2023"]), float(row["share_of_2023"]), float(row["share_of_2026"])))
+                (int(row["elec_id_" + base]), float(row["share_of_" + base]), float(row["share_of_2026"])))
     return sources
 
 
@@ -114,7 +140,7 @@ def multipliers_2023(prelim_n, final_n):
             for k, v in prelim_n.items() if v > 0}
 
 
-def project(prelim_2026, prelim_n, final_n, names, volume, fallback=None):
+def project(prelim_2026, prelim_n, final_n, names, volume, fallback=None, base=DEFAULT_BASE):
     """Shares `volume` special votes among the keys of prelim_2026. A key
     with no 2023 counterpart uses its multiplier in `fallback` ({2026 key:
     multiplier}) if there, else 1. Returns ({key: projected special votes},
@@ -124,7 +150,7 @@ def project(prelim_2026, prelim_n, final_n, names, volume, fallback=None):
     total_2026 = sum(prelim_2026.values())
     multipliers, links = {}, {}
     for key in prelim_2026:
-        link = None if isinstance(key, tuple) else names.counterpart(key, "2023", m_2023)
+        link = None if isinstance(key, tuple) else names.counterpart(key, base, m_2023)
         if link:
             links[key], multipliers[key] = link, m_2023[link]
         elif fallback and key in fallback:
@@ -147,8 +173,9 @@ def winner(votes):
     return ranked[0], ranked[1]
 
 
-def compute():
-    """Runs the projection. Returns a dict with the inputs (`data`, `labels`,
+def compute(base=DEFAULT_BASE):
+    """Runs the projection from base election `base`; `data` and
+    `elec_names` are keyed by `base` and "2026". Returns a dict with the inputs (`data`, `labels`,
     `sources`, ...), the national scale factor, and `electorates`: {2026
     elec_id: detail}, where detail has the electorate's live 2023 sources,
     omitted share and, for "party" and "candidate", the 2026 preliminary
@@ -158,40 +185,42 @@ def compute():
     runner-up. Electorates with no live sources (Port Waikato) are in
     `omitted` instead."""
     names = PartyNames()
+    omitted_base = OMITTED[base]
+    input_files = files(base)
     data, elec_names, labels = {}, {}, {}
-    for (election, stage, kind), filename in FILES.items():
+    for (election, stage, kind), filename in input_files.items():
         data[(election, stage, kind)], en, lb = read_votes(filename, election, names, kind)
         elec_names[election] = en
         labels.update(lb) if election == "2026" else None
     for kind in ["party", "candidate"]:
-        prelim_ids = set(data[("2023", "prelim", kind)])
-        final_ids = set(data[("2023", "final", kind)]) - OMITTED_2023
+        prelim_ids = set(data[(base, "prelim", kind)])
+        final_ids = set(data[(base, "final", kind)]) - omitted_base
         if prelim_ids != final_ids:
-            raise ValueError("2023 {0} votes: preliminary and final electorates differ: {1}".format(
-                kind, sorted(prelim_ids ^ final_ids)))
-    sources = read_concordance(CONCORDANCE)
+            raise ValueError("{0} {1} votes: preliminary and final electorates differ: {2}".format(
+                base, kind, sorted(prelim_ids ^ final_ids)))
+    sources = read_concordance(concordance_file(base), base)
     if set(sources) != set(data[("2026", "prelim", "party")]):
         raise ValueError("concordance and 2026 electorates differ")
 
     # Step 3: national scale factor, as in project_specials.py.
-    prelim_2023_national = names.to_ids("2023", read_overview(PRELIM_2023_OVERVIEW))
-    final_2023_national = names.to_ids("2023", read_party_totals(FILES[("2023", "final", "party")]))
+    prelim_2023_national = names.to_ids(base, ps.read_base_prelim(base))
+    final_2023_national = names.to_ids(base, read_party_totals(input_files[(base, "final", "party")]))
     national_specials_2023 = sum(final_2023_national.values()) - sum(prelim_2023_national.values())
     national_ratio = national_specials_2023 / sum(prelim_2023_national.values())
-    target = SPECIAL_ESTIMATE_2026 * national_specials_2023 / SPECIAL_ESTIMATE_2023
+    target = SPECIAL_ESTIMATE_2026 * national_specials_2023 / ps.BASES[base]["estimate"]
 
     projected, omitted, ratios, unscaled = [], [], {}, 0.0
     for elec_id in sorted(sources):
-        live = [s for s in sources[elec_id] if s[0] not in OMITTED_2023]
-        omitted_share = sum(s[2] for s in sources[elec_id] if s[0] in OMITTED_2023)
+        live = [s for s in sources[elec_id] if s[0] not in omitted_base]
+        omitted_share = sum(s[2] for s in sources[elec_id] if s[0] in omitted_base)
         if not live:
             omitted.append(elec_id)
         prelim_party_2026 = data[("2026", "prelim", "party")][elec_id]
         ratios[elec_id] = {}
         for kind in ["party", "candidate"]:
             if live:
-                ratios[elec_id][kind] = special_ratio(notional(live, data[("2023", "prelim", kind)]),
-                                                      notional(live, data[("2023", "final", kind)]))
+                ratios[elec_id][kind] = special_ratio(notional(live, data[(base, "prelim", kind)]),
+                                                      notional(live, data[(base, "final", kind)]))
             else:
                 ratios[elec_id][kind] = national_ratio
         unscaled += sum(prelim_party_2026.values()) * ratios[elec_id]["party"]
@@ -204,11 +233,12 @@ def compute():
         detail = {"name": elec_names["2026"][elec_id], "live": live, "omitted_share": omitted_share}
         for kind in ["party", "candidate"]:
             prelim_2026 = data[("2026", "prelim", kind)][elec_id]
-            prelim_n = notional(live, data[("2023", "prelim", kind)])
-            final_n = notional(live, data[("2023", "final", kind)])
+            prelim_n = notional(live, data[(base, "prelim", kind)])
+            final_n = notional(live, data[(base, "final", kind)])
             volume = sum(prelim_2026.values()) * ratios[elec_id][kind] * scale
             specials, multipliers, links = project(prelim_2026, prelim_n, final_n, names, volume,
-                                                   detail["party"]["multipliers"] if kind == "candidate" else None)
+                                                   detail["party"]["multipliers"] if kind == "candidate" else None,
+                                                   base)
             final = {k: prelim_2026[k] + specials[k] for k in prelim_2026}
             detail[kind] = {"prelim_2026": prelim_2026, "prelim_n": prelim_n, "final_n": final_n,
                             "ratio": ratios[elec_id][kind], "volume": volume, "specials": specials,
@@ -222,7 +252,8 @@ def compute():
         p1, _ = winner(data[("2026", "prelim", "candidate")][elec_id])
         winners_prelim[elec_id] = winners_final[elec_id] = p1
 
-    return {"names": names, "data": data, "elec_names": elec_names, "labels": labels, "sources": sources,
+    return {"base": base, "files": input_files, "omitted_base": omitted_base,
+            "names": names, "data": data, "elec_names": elec_names, "labels": labels, "sources": sources,
             "national_ratio": national_ratio, "target": target, "scale": scale, "ratios": ratios,
             "electorates": details, "omitted": omitted,
             "winners_prelim": winners_prelim, "winners_final": winners_final}
@@ -238,10 +269,12 @@ def seats_from(party_votes, won):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--base", choices=sorted(OMITTED), default=DEFAULT_BASE)
     parser.add_argument("--outdir", default="results/projection-2026")
     args = parser.parse_args()
+    base = args.base
 
-    c = compute()
+    c = compute(base)
     names, labels, data, elec_names = c["names"], c["labels"], c["data"], c["elec_names"]
     omitted, scale, target, national_ratio = c["omitted"], c["scale"], c["target"], c["national_ratio"]
     winners_prelim, winners_final = c["winners_prelim"], c["winners_final"]
@@ -275,15 +308,16 @@ def main():
                     "projected_specials": volume, "flips": p1 != f1, "no_2023_counterpart": "; ".join(notable)})
 
     os.makedirs(args.outdir, exist_ok=True)
-    header = ["elec_id", "elec_name", "party_id", "name", "party_id_2023", "prelim_votes", "multiplier",
+    header = ["elec_id", "elec_name", "party_id", "name", "party_id_" + base, "prelim_votes", "multiplier",
               "projected_special_votes", "projected_final_votes", "projected_final_pct"]
     for filename, rows in [("electorates_party.csv", party_rows), ("electorates_candidate.csv", candidate_rows)]:
-        with open(os.path.join(args.outdir, filename), "w", newline="", encoding="utf-8") as f:
+        with open(os.path.join(args.outdir, output_name(filename, base)), "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(header)
             writer.writerows(rows)
     summary.sort(key=lambda s: s["projected_margin_pct"])
-    with open(os.path.join(args.outdir, "electorates_summary.csv"), "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(args.outdir, output_name("electorates_summary.csv", base)), "w", newline="",
+              encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(summary[0]))
         writer.writeheader()
         for s in summary:
@@ -297,10 +331,11 @@ def main():
         scale, sum(float(r[7]) for r in party_rows) + sum(
             sum(data[("2026", "prelim", "party")][e].values()) * national_ratio * scale for e in omitted), target))
     print("projected special candidate votes {0:,.0f}".format(sum(float(r[7]) for r in candidate_rows)))
-    print("not projected (all 2023 sources omitted): " + ", ".join(elec_names["2026"][e] for e in omitted))
+    print("not projected (all {0} sources omitted): ".format(base) + ", ".join(elec_names["2026"][e] for e in omitted))
     partly = [(s["name"], s["omitted_share"]) for s in summary if s["omitted_share"] > 0]
     if partly:
-        print("partly from omitted 2023 electorates: " + ", ".join("{0} ({1:.1%})".format(*p) for p in partly))
+        print("partly from omitted {0} electorates: ".format(base) +
+              ", ".join("{0} ({1:.1%})".format(*p) for p in partly))
     print()
     print("Electorates projected to flip, or with a projected margin under {0:.0%}:".format(CLOSE_MARGIN))
     print("{0:<24} {1:<34} {2:>7} {3:>6}   {4:<34} {5:>7} {6:>6}  {7}".format(
@@ -314,13 +349,13 @@ def main():
     notable = [(s["name"], s["no_2023_counterpart"]) for s in summary if s["no_2023_counterpart"]]
     if notable:
         print()
-        print("candidates over {0:.0%} with no 2023 candidate counterpart (multiplier 1 unless shown):".format(
-            NOTABLE_SHARE))
+        print("candidates over {0:.0%} with no {1} candidate counterpart (multiplier 1 unless shown):".format(
+            NOTABLE_SHARE, base))
         for n, c in notable:
             print("  {0}: {1}".format(n, c))
 
     # Step 5: seats
-    with open(NATIONAL_PROJECTION, newline="", encoding="utf-8") as f:
+    with open(ps.default_output(base), newline="", encoding="utf-8") as f:
         party_votes = {row["party_id"]: float(row["projected_final_votes"]) for row in csv.DictReader(f)}
     print()
     for label, won in [("preliminary electorates", winners_prelim), ("projected electorates", winners_final)]:
@@ -330,7 +365,8 @@ def main():
             label, house, house - TOTAL_SEATS, house // 2 + 1, ", ".join(
                 "{0} {1}".format(names.short_names[p], s[2]) for p, s in
                 sorted(seats.items(), key=lambda x: -x[1][2]) if s[2])))
-    print("wrote electorates_party.csv, electorates_candidate.csv, electorates_summary.csv in " + args.outdir)
+    print("wrote {0} in {1}".format(", ".join(output_name(f, base) for f in (
+        "electorates_party.csv", "electorates_candidate.csv", "electorates_summary.csv")), args.outdir))
 
 
 if __name__ == "__main__":

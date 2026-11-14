@@ -5,6 +5,7 @@
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, pct, pp, mult, signed } from '#lib/format.js';
+	import { absorbedByOverhang } from '#lib/seats.js';
 
 	let { data } = $props();
 	const n = $derived(data.national);
@@ -27,7 +28,8 @@
 		const rows = [...n.ladder.prelim, ...n.ladder.projected];
 		return new Set(rows.filter((r) => has('prelim', r) !== has('projected', r)).map((r) => `${r.party}#${r.seat}`));
 	});
-	const lastIn = (/** @type {any[]} */ l) => l.filter((r) => r.allocated).at(-1);
+	const absorbed = $derived(absorbedByOverhang(n));
+	const lastIn =(/** @type {any[]} */ l) => l.filter((r) => r.allocated).at(-1);
 	const firstOut = (/** @type {any[]} */ l) => l.find((r) => !r.allocated);
 </script>
 
@@ -168,6 +170,11 @@
 	{#each changed as p, i (p.id)}{i > 0 ? ', ' : ''}{p.short} {signed(
 			n.seats.projected[p.id].total - n.seats.prelim[p.id].total
 		)}{/each}.
+	{#each absorbed as a (a.id)}
+		{names[a.id]} also {a.to < a.from ? 'loses' : 'gains'} a seat under Sainte-Laguë ({a.from} → {a.to}),
+		but that doesn’t change its seats: it won {a.electorates} electorates, more than its share either
+		way, so the overhang {a.to < a.from ? 'grows' : 'shrinks'} by one instead (see below).
+	{/each}
 </p>
 <div class="ladders">
 	{#each [['prelim', 'Preliminary count'], ['projected', 'Projected final']] as [key, title] (key)}

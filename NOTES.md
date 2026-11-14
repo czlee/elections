@@ -151,6 +151,16 @@ Machine instead (next section).
     across the 7 Māori electorates. Plan: impute each 2025 Māori electorate's gap
     evenly over its suppressed meshblocks.
 - The 2020 layers' population fields are 2018 Census figures. Don't use them.
+- **2014 electorate layers** (for the 2017 election; downloaded by the user on
+  14 November 2026 as `statsnz-new-zealand-2layers-GPKG.zip`, extracted to
+  `data/statsnz/general-electoral-district-2014/` and
+  `maori-electoral-district-2014/`): 64 + 7 MultiPolygons, EPSG:2193, codes
+  `GED2014_V1_00` / `MED2014_V1_00`. Names have no macrons ("Kaikoura"), and the
+  Māori layer has a stray `\x81` byte where a macron would be ("Ta\x81maki
+  Makaurau"); `concordance.name_key()` strips both, and every name then
+  matches the 2017 results one to one. 2025 meshblocks mostly sit inside one
+  2014 electorate: 91 have under 99% of their area in one (6,624 people), 2
+  under 90% (171), none under 50%; Māori: 4 under 99%, all with no population.
 
 ### Special-vote estimates in the preliminary press releases (checked 10 November 2026)
 
@@ -362,6 +372,11 @@ Machine instead (next section).
   point. General-roll meshblock sums differ from the published 2025 totals by
   56 people (median absolute) to 593 (Waikato, +0.8%), mostly upwards in
   rural seats; not explained, too small to matter.
+  - `--base 2017` (14 November 2026): 2017 (2014 boundaries) → 2026, writing
+    `electorates_2017_2026.csv` (154 overlaps); columns are named by base year
+    (`elec_id_2017`, `share_of_2017`). Weights are still the 2023 Census, six
+    years after 2017 (stated as a limitation on the site). The 2023 output is
+    byte-identical.
 - `project_electorates.py` (10 November 2026): per-electorate projection of
   both party and candidate votes; method in its docstring. Writes
   `electorates_party.csv`, `electorates_candidate.csv` and
@@ -372,6 +387,16 @@ Machine instead (next section).
   Māori winner there) and Tākuta Ferris (independent in Te Tai Tonga, the 2023
   Te Pāti Māori winner) get a multiplier of 1. Neither affects a projected
   winner (both are fourth).
+  - `--base 2017` (14 November 2026) writes `electorates_*-base2017.csv`;
+    nothing is omitted (2017 had no by-election gap). The 2023 output is
+    byte-identical. 2017 flips Hamilton East and Wairarapa (National →
+    Labour) as well as Wellington Bays (Labour → Green): 130 seats, National
+    40, National + ACT + NZ First 64 (majority 66). Three party rows get small
+    negative specials (2017 parties whose final count was below their
+    preliminary in the area): Outdoors & Freedom in Dunedin (−7) and Tukituki
+    (−4), Te Pāti Māori in Kaikōura (−16); no projected count goes negative.
+    2017's small-party multipliers are noisy (e.g. East Cape ACT candidate,
+    party-vote multiplier 0.174), since ACT had 0.5% in 2017.
 - `export_site_data.py` (13 November 2026): writes the site's JSON
   (`site/src/lib/data/2023/`) from `project_specials.compute()` and
   `project_electorates.compute()` (both scripts were refactored to expose their
@@ -384,7 +409,8 @@ Machine instead (next section).
   preliminary pages and haven't been fetched (blocked to scripts); the XML links
   are the files `download.py` reads.
   - `--base` (14 November 2026) writes `site/src/lib/data/<base>/`. Only bases
-    in `ELECTORATE_BASES` (2023) get `electorates.json`; for the others,
+    in `ELECTORATE_BASES` (2017, 2023) get `electorates.json`, with
+    per-base regression guards in `EXPECTED` (House size, flips); for the others,
     `national.json` has `has_electorates: false` and both counts' seats hold
     electorates at the preliminary winners. Source keys are now
     `release_base`, `prelim_base` and `final_base`. The 2017 and 2020 Wayback
@@ -422,9 +448,14 @@ Machine instead (next section).
     3 location; base list in `src/lib/bases.js`). `link()` keeps the current
     page's base. The nav has a base switcher; bases without electorate
     projections hide the Electorates link, the map and the electorate pages,
-    and say so. Decided with the user: 2020 gets no electorate projection (no
-    preliminary electorate data); 2017 should get one once the Stats NZ 2014
-    electorate layers are downloaded.
+    and say why (`NO_ELECTORATES_REASON`). Decided with the user: 2020 gets no
+    electorate projection (the Wayback Machine has no 2020 preliminary results
+    by electorate); 2017 has one. When a party's Sainte-Laguë share changes
+    but its seats don't because of its electorates (2020: National 35 → 34,
+    overhang +1), the landing and party-vote pages say so
+    (`lib/seats.js`), as the user asked. The horseshoe's "gained/lost with
+    specials" rings only show when both views have the same House size
+    (positions don't line up otherwise); not changed.
 - `party_names.toml` + `parties.py`: links parties across elections.
   One table per stable `party_id`, giving the name(s) it appears under in each
   election's data (TOML rather than CSV for readability, decided with the user
@@ -440,10 +471,13 @@ Machine instead (next section).
   Conservative (2017) = New Conservatives = Conservative Party NZ; NZ Outdoors
   Party (2017) = NZ Outdoors & Freedom Party; the 2026 Alliance Party isn't
   linked to anything, since the Alliance didn't stand in 2017 or 2023. Also
-  mine, not yet reviewed (14 November 2026): 2020's New Conservative =
-  Conservative; Māori Party (2020) = Te Pāti Māori; NZ Outdoors Party (2020) =
-  NZ Outdoors & Freedom; Vision New Zealand (2020, standing alone) = 2026
-  Vision NZ; Social Credit (2020) = Democrats for Social Credit (2017). Advance
+  mine, looked right to the user and checked by web search (14 November 2026):
+  2020's New Conservative = Conservative (renamed 2018, New Conservatives
+  2023, Conservative Party NZ 2026); Māori Party (2020) = Te Pāti Māori
+  (officially renamed July 2023); NZ Outdoors Party (2020) = NZ Outdoors &
+  Freedom (renamed April 2022); Vision New Zealand (2020, standing alone) =
+  2026 Vision NZ; Social Credit (2020) = Democrats for Social Credit (2017;
+  short name changed October 2019). Advance
   NZ, ONE, TEA, Sustainable NZ and HeartlandNZ are new entries with no
   counterparts. The 2023 adjustment comes out
   at 1.0525 (596,770 valid party votes from specials vs the 567,000 estimate),
