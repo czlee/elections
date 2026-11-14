@@ -122,8 +122,10 @@
 	<p>
 		{e.name} is on 2025 boundaries. Its {base} numbers are built from the {base} electorates that
 		overlap it. Each {base} electorate's votes are multiplied by its <strong>weight</strong>: the share
-		of its 2023 Census electoral population that falls inside {e.name}. (<strong>% of {e.name}</strong>
-		is the other way round: how much of {e.name}'s population came from that electorate.)
+		of its 2023 Census electoral population that falls inside {e.name}, worked out meshblock by
+		meshblock. This assumes each {base} electorate's votes were spread evenly across its population.
+		(<strong>% of {e.name}</strong> is the other way round: how much of {e.name}'s population came
+		from that electorate.)
 		{#if e.omitted_share > 0}{pct(e.omitted_share, 1)} of its population was in Port Waikato,
 			which is left out.{/if}
 	</p>
@@ -307,7 +309,8 @@
 	<p>
 		Each {tab === 'candidate' ? 'candidate' : 'party'}'s weight is their 2026 preliminary share × their
 		party's {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
-		weight ({weightSum.toFixed(4)}).
+		weight ({weightSum.toFixed(4)}).{#if tab === 'candidate'} Independent candidates get a
+			multiplier of 1.{/if}
 	</p>
 	<div class="table-wrap">
 		<table class="wide-first">

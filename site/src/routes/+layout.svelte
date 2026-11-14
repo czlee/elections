@@ -16,8 +16,7 @@
 
 	const nav = [
 		{ href: '/', route: '/', label: 'Projection' },
-		{ href: '/party-vote/', route: '/party-vote', label: 'Party vote' },
-		{ href: '/method/', route: '/method', label: 'Method' }
+		{ href: '/party-vote/', route: '/party-vote', label: 'Party vote' }
 	];
 </script>
 
@@ -50,8 +49,8 @@
 
 <footer>
 	<p>
-		Projection by Chuan-Zheng Lee. Not an official result. Based on 2023's special votes; see
-		<a href={link('/method/')}>method</a> for assumptions and limitations.
+		Projection by Chuan-Zheng Lee. Not an official result. Based on 2023's special votes; see the
+		<a href={link('/#limitations')}>limitations</a>.
 	</p>
 	<p>
 		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> (2023 and 2026

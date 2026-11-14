@@ -9,7 +9,10 @@
 	--text-3: #66645e;
 	--link: #1c5cab;
 	--accent: #2a78d6;
-	--party-te-pati-maori: #9c2343;
+	--warn-bg: #f7e1db;
+	--warn-border: #c0392b;
+	--warn-text: #9b2617;
+	--party-te-pati-maori: #763037;
 	--party-green: #4cb35f;
 	--party-labour: #b8141b;
 	--party-top: #26a69a;
@@ -32,7 +35,10 @@
 		--text-3: #9a998f;
 		--link: #86b6ef;
 		--accent: #3987e5;
-		--party-te-pati-maori: #c2405a;
+		--warn-bg: #3a1f1b;
+		--warn-border: #d9534f;
+		--warn-text: #f2a097;
+		--party-te-pati-maori: #b44e57;
 		--party-green: #45ab59;
 		--party-labour: #b0241f;
 		--party-top: #24a99c;
@@ -53,7 +59,10 @@
 	--text-3: #9a998f;
 	--link: #86b6ef;
 	--accent: #3987e5;
-	--party-te-pati-maori: #c2405a;
+	--warn-bg: #3a1f1b;
+	--warn-border: #d9534f;
+	--warn-text: #f2a097;
+	--party-te-pati-maori: #b44e57;
 	--party-green: #45ab59;
 	--party-labour: #b0241f;
 	--party-top: #24a99c;

@@ -137,7 +137,7 @@
 		{#if overhang}
 			<text x={geometry.cx} y={geometry.cy - R0 + P * 3.6} text-anchor="middle">({overhang} overhang)</text>
 		{/if}
-		<text x={geometry.cx} y={geometry.cy - R0 + P * 5.2} text-anchor="middle">{majority} for majority</text>
+		<text x={geometry.cx} y={geometry.cy - R0 + P * 5.2} text-anchor="middle">{majority} for<tspan x={geometry.cx} dy="12">majority</tspan></text>
 		{#each dots as d, i (i)}
 			{#if d.marked}
 				<circle class="halo" cx={d.x} cy={d.y} r={R + 2.2} />

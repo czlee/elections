@@ -96,7 +96,7 @@
 						</td>
 						<td class="num" title="{votes(e.prelim_margin)} votes">
 							{points(e.prelim_margin_pct)}
-							{#if e.flips}<span class="muted small">({party(e.prelim_winner_party)})</span>{/if}
+							{#if e.flips}<br /><span class="muted small">({party(e.prelim_winner_party)})</span>{/if}
 						</td>
 						<td class="num" title="{votes(e.margin)} votes">{points(e.margin_pct)}</td>
 						<td class="num">
