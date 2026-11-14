@@ -54,6 +54,7 @@
 </svelte:head>
 
 <h1>Projected final result, 2026 general election</h1>
+<p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">
 	This projection applies the impact of the <strong>2023
 	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
@@ -165,6 +166,8 @@
 </p>
 
 <style>
+	.byline { margin-top: -0.4em; color: var(--text-2); font-size: 0.9rem; }
+	.byline .credit { color: var(--text-3); }
 	.lede { font-size: 1.05rem; }
 	.lede + .lede { margin-top: 0.6em; }
 	/* Party colour, pulled towards the text colour so light party colours stay readable. */

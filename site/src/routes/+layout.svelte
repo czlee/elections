@@ -54,6 +54,11 @@
 		<a href={link('/#limitations')}>limitations</a>.
 	</p>
 	<p>
+		The method and design decisions are mine; the code, including the data processing and this
+		website, was largely written by <a href="https://claude.ai/">Claude</a>, under my
+		direction.
+	</p>
+	<p>
 		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> (2023 and 2026
 		results), <a href="https://web.archive.org/">Internet Archive</a> (2023 preliminary count),
 		<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population and
