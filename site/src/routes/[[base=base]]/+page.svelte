@@ -82,11 +82,11 @@
 <p class="lede">
 	Under this projection:
 	<strong
-		>{#each [gains, losses] as group, g (g)}{g > 0 ? '; ' : ''}{#each group as r, i (r.id)}{i > 0 ? ', ' : ''}<span
+		>{#each [gains, losses] as group, g (g)}{g > 0 ? '; ' : ''}{#each group as r, i (i)}{i > 0 ? ', ' : ''}<span
 					class="party-change" style:--c={colour(r.id)}>{r.short} {signed(r.change)}</span
 				>{/each}{/each}</strong
 	>.
-	{#each flips as f, i (f.slug)}{i > 0 ? ' ' : ''}<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a> flips from
+	{#each flips as f, i (i)}{i > 0 ? ' ' : ''}<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a> flips from
 		{f.prelim_winner_party ? names[f.prelim_winner_party] : 'other'} to
 		{f.winner_party ? names[f.winner_party] : 'other'}.
 	{/each}
@@ -194,7 +194,7 @@
 	</p>
 	<p class="muted small">
 		Seats with the narrowest projected margins:
-		{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({points(e.margin_pct, 1)}){/each}.
+		{#each data.electorates.filter((e) => !e.omitted).toSorted((a, b) => a.margin_pct - b.margin_pct).slice(0, 5) as e, i (i)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a> ({points(e.margin_pct, 1)}){/each}.
 	</p>
 	<GeoMap electorates={data.electorates} {names} {view} />
 	<p class="muted small">
@@ -205,7 +205,7 @@
 	<p>
 		Electorates aren’t projected from {base}’s special votes{#if NO_ELECTORATES_REASON[base]}, because
 			{NO_ELECTORATES_REASON[base]}{/if}. For electorate projections, see the
-		{#each electorateBases as b, i (b)}{i > 0 ? (i === electorateBases.length - 1 ? ' or the ' : ', the ') : ''}<a href={link('/', b)}>projection from {b}</a>{/each}.
+		{#each electorateBases as b, i (i)}{i > 0 ? (i === electorateBases.length - 1 ? ' or the ' : ', the ') : ''}<a href={link('/', b)}>projection from {b}</a>{/each}.
 	</p>
 {/if}
 

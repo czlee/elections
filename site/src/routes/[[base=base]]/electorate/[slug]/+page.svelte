@@ -154,7 +154,7 @@
 							<td class="num">{votes(s[step1].final * s.share_of_base)}</td>
 						{/if}
 						<td class="sources">
-							{#each srcLinks(s) as l, i (l.label)}{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a>{/each}
+							{#each srcLinks(s) as l, i (i)}{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a>{/each}
 						</td>
 					</tr>
 				{/each}
@@ -205,7 +205,7 @@
 							<span class="swatch" style:background={colour(r.party)}></span>{r.party ? r.label : `${candidateName(r.label)} (independent)`}
 							{#if r.candidates?.length}
 								<div class="small note">
-									{#each r.candidates as c, i (c.name)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
+									{#each r.candidates as c, i (i)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
 											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of the 2026 {e.name}’s population"
 											>{candidateName(c.name)}</span>{/each}
 								</div>
