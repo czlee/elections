@@ -82,8 +82,7 @@
 	{#each features as f (f.properties.name)}
 		{@const e = byName[f.properties.name]}
 		<a href={link(`/electorate/${e?.slug}/`)} aria-label={f.properties.name} {...hover(f.properties.name)}>
-			<path d={path(f)} fill={fill(f.properties.name)} class:omitted={e?.omitted}
-				class:hover={hovered === f.properties.name}>
+			<path d={path(f)} fill={fill(f.properties.name)} class:omitted={e?.omitted}>
 				<title>{f.properties.name}</title>
 			</path>
 			{#if e?.flips}
@@ -92,6 +91,11 @@
 			{/if}
 		</a>
 	{/each}
+	<!-- The hover outline is drawn last, on top of every shape: SVG paints in
+	     document order, so neighbours drawn later would otherwise cover the
+	     outer half of its stroke. -->
+	{@const h = hovered && features.find((/** @type {any} */ f) => f.properties.name === hovered)}
+	{#if h}<path d={path(h)} class="hover-outline" />{/if}
 {/snippet}
 
 <figure>
@@ -154,7 +158,7 @@
 	.inset { position: relative; }
 	svg { width: 100%; display: block; height: auto; }
 	path { stroke: var(--surface); stroke-width: 0.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-	path.hover { stroke: var(--text); stroke-width: 2; }
+	path.hover-outline { fill: none; stroke: var(--highlight); stroke-width: 2; pointer-events: none; }
 	path.omitted { opacity: 0.45; }
 	path.hatch { stroke: none; pointer-events: none; }
 	.hatch-stripe { fill: var(--surface); opacity: 0.6; }
