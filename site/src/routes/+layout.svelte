@@ -53,6 +53,11 @@
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
+<div class="v1-banner" role="note">
+	This is an earlier version of the projection, with one special-vote multiplier per party.
+	<a href="https://czlee.nz/elections/2026-projection/">See the current version →</a>
+</div>
+
 {#if DRAFT}
 	<div class="draft-banner" role="note">
 		<strong>DRAFT</strong> · Work in progress: numbers, wording and layout may change. Not an official result.
@@ -102,6 +107,10 @@
 
 <style>
 	header { border-bottom: 1px solid var(--border); }
+	.v1-banner {
+		background: var(--surface-2); color: var(--text); border-bottom: 1px solid var(--border);
+		font-size: 0.9rem; text-align: center; padding: 0.45em 16px;
+	}
 	.draft-banner {
 		background: #fab219; color: #1a1a19; font-size: 0.85rem; text-align: center; padding: 0.35em 16px;
 	}
