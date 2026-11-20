@@ -8,9 +8,9 @@
 
 <h1>Electorates</h1>
 <p class="muted small">
-	“Needs” is the special-vote
-	<Term tip="How they did in the special votes compared with the preliminary count: share of specials ÷ share of preliminary votes. Above 1, specials helped.">multiplier</Term>
-	the projected runner-up would have needed to tie, against the one they got from 2023. Click an
-	electorate for its working.
+	“Specials needed” is how much better the projected runner-up would have needed to do in the
+	special votes to tie, with everyone else’s
+	<Term tip="How a party did in the special votes compared with ordinary votes: share of specials ÷ share of ordinary votes, separately for overseas and domestic special votes. Above 1, specials helped.">multipliers</Term>
+	unchanged (“—” if even every special vote wouldn’t be enough). Click an electorate for its working.
 </p>
 <ElectorateList electorates={data.electorates} {names} />

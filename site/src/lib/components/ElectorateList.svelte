@@ -1,7 +1,7 @@
 <script>
 	import { link } from '#lib/link.js';
 	import { colour } from '#lib/parties.js';
-	import { votes, points, mult, candidateName } from '#lib/format.js';
+	import { votes, points, pct, candidateName } from '#lib/format.js';
 
 	/** @type {{electorates: any[], names: Record<string, string>}} */
 	let { electorates, names } = $props();
@@ -17,14 +17,14 @@
 		{ key: 'second', label: 'Runner-up' },
 		{ key: 'prelim_margin_pct', label: 'Prelim margin', num: true },
 		{ key: 'margin_pct', label: 'Projected margin', num: true },
-		{ key: 'gap', label: 'Needs / had', num: true }
+		{ key: 'needed', label: 'Specials needed', num: true }
 	];
 
 	const rows = $derived.by(() => {
 		const q = query.trim().toLowerCase();
 		const value = (/** @type {any} */ e) =>
 			e.omitted ? Infinity
-				: sortKey === 'gap' ? (e.breakeven.needed ?? Infinity) / e.breakeven.had
+				: sortKey === 'needed' ? (needed(e) ?? Infinity)
 				: e[sortKey];
 		return electorates
 			.filter((e) => roll === 'all' || e.roll === roll)
@@ -43,6 +43,11 @@
 		else { sortKey = key; ascending = true; }
 	}
 	const party = (/** @type {string | null} */ p) => (p ? names[p] ?? p : 'Ind./other');
+	/** How much better (as a fraction) the runner-up needed to do in the special votes to tie, or null if no amount would do. */
+	function needed(/** @type {any} */ e) {
+		const b = e.breakeven;
+		return b.factor === null ? null : b.needed_specials / b.had_specials - 1;
+	}
 </script>
 
 <div class="filters">
@@ -99,9 +104,9 @@
 							{#if e.flips}<br /><span class="muted small">({party(e.prelim_winner_party)})</span>{/if}
 						</td>
 						<td class="num" title="{votes(e.margin)} votes">{points(e.margin_pct)}</td>
-						<td class="num">
-							{e.breakeven.needed === null ? '—' : mult(e.breakeven.needed)}
-							<span class="muted">/ {mult(e.breakeven.had)}</span>
+						<td class="num" title={needed(e) === null ? 'Couldn’t catch up even with every special vote'
+							: `${votes(e.breakeven.needed_specials)} specials instead of ${votes(e.breakeven.had_specials)}`}>
+							{needed(e) === null ? '—' : `+${pct(/** @type {number} */ (needed(e)), 1)}`}
 						</td>
 					{/if}
 				</tr>

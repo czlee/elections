@@ -32,15 +32,19 @@
 	const live = $derived(e.omitted ? [] : e.sources.filter((/** @type {any} */ s) => !s.omitted));
 	/** Where a row's multiplier came from, in words. */
 	function source(/** @type {any} */ r) {
-		if (r.link === 'party vote') return `No ${base} candidate, uses party-vote multiplier`;
-		if (!r.link) return r.party ? `No ${base} counterpart, uses multiplier 1` : 'Independent, uses multiplier 1';
+		if (r.link === 'party vote') return `No ${base} candidate, uses party-vote multipliers`;
+		if (!r.link) return r.party ? `No ${base} counterpart, uses multipliers of 1` : 'Independent, uses multipliers of 1';
 		return r.link !== r.party ? `As ${party(r.link)} in ${base}` : '';
 	}
 	const srcLinks = (/** @type {any} */ s) => [
-		s.links.prelim_base && { label: 'prelim', url: s.links.prelim_base.url },
 		{ label: 'official', url: s.links.final_base.url },
-		{ label: 'XML', url: s.links.final_base.xml }
-	].filter(Boolean);
+		{ label: 'XML', url: s.links.final_base.xml },
+		{ label: 'CSV', url: s.links.final_base[step1 === 'candidate' ? 'candidate_csv' : 'party_csv'] }
+	];
+	/** A pool multiplier, or a dash if there isn't one (no ordinary votes). */
+	const m = (/** @type {number | null | undefined} */ v) => (v == null ? '—' : mult(v));
+	const share = (/** @type {number} */ v, /** @type {number} */ total) => (total ? v / total : 0);
+	const POOLS = /** @type {const} */ ([['overseas', 'Overseas specials'], ['domestic', 'Domestic specials']]);
 </script>
 
 <p class="small"><a href={link('/electorates/')}>← All electorates</a></p>
@@ -78,19 +82,23 @@
 			<strong>Why.</strong>
 			In the preliminary count {e.bridge.prelim_lead >= 0 ? who(W) : who(S)} leads by
 			{votes(Math.abs(e.bridge.prelim_lead))}. About {votes(e.candidate.volume)} electorate-vote
-			specials are projected here. From {base}, {who(W)}’s multiplier is
-			{mult(W.multiplier)} and {who(S)}’s is {mult(S.multiplier)}. Specials are shared in proportion to
-			preliminary share × multiplier, so {who(W)} gets {votes(e.bridge.specials_winner)} and
-			{who(S)} {votes(e.bridge.specials_second)}: a net {signed(e.bridge.specials_winner - e.bridge.specials_second)}
+			specials are projected here: {votes(e.candidate.pools.overseas.volume)} overseas,
+			{votes(e.candidate.pools.domestic.volume)} domestic and {votes(e.candidate.pools.revisions.volume)}
+			in revisions. From {base}, {who(W)}’s multipliers are {m(W.pools.domestic.multiplier)} domestic and
+			{m(W.pools.overseas.multiplier)} overseas; {who(S)}’s are {m(S.pools.domestic.multiplier)} and
+			{m(S.pools.overseas.multiplier)}. Each kind of special vote is shared in proportion to preliminary
+			share × multiplier, so {who(W)} gets {votes(e.bridge.specials_winner)} and {who(S)}
+			{votes(e.bridge.specials_second)}: a net {signed(e.bridge.specials_winner - e.bridge.specials_second)}
 			for {who(W)}.
 		</p>
 		<p>
-			{#if e.breakeven.needed === null}
+			{#if e.breakeven.factor === null}
 				{who(S)} couldn’t catch up even with every special vote.
 			{:else}
-				To tie, {who(S)} would have needed a multiplier of <strong>{mult(e.breakeven.needed)}</strong>
-				(with everyone else’s unchanged); they got {mult(e.breakeven.had)}, which is
-				{(e.breakeven.needed / e.breakeven.had).toFixed(2)}× short.
+				To tie, {who(S)} would have needed to do
+				<strong>{pct(e.breakeven.needed_specials / e.breakeven.had_specials - 1, 1)} better</strong> in the
+				special votes: {votes(e.breakeven.needed_specials)} instead of {votes(e.breakeven.had_specials)}, with
+				both multipliers {e.breakeven.factor.toFixed(2)}× as high and everyone else’s unchanged.
 			{/if}
 		</p>
 	</div>
@@ -107,7 +115,6 @@
 	/>
 
 	{@const k = e.candidate}
-	{@const weightSum = k.rows.reduce((/** @type {number} */ a, /** @type {any} */ r) => a + r.prelim_share * r.multiplier, 0)}
 
 	<h2>1. Notional {base} {e.name}</h2>
 	<p>
@@ -119,7 +126,7 @@
 		how much of the 2026 {e.name}’s population came from that {base} electorate.)
 		{#if e.omitted_share > 0}{pct(e.omitted_share, 1)} of its population was in Port Waikato,
 			which is left out.{/if}
-		The party vote is needed too, for the step 2 fallback and the step 3 scale factor.
+		The party vote is needed too, for the step 2 fallback and the step 3 scale factors.
 	</p>
 	<div class="toggle" role="group" aria-label="Votes shown in this table">
 		<button aria-pressed={step1 === 'candidate'} onclick={() => (step1 = 'candidate')}>Electorate vote</button>
@@ -132,10 +139,9 @@
 					<th>{base} electorate</th>
 					<th class="num" title="Share of the 2026 {e.name}’s population that came from this {base} electorate">% of 2026 {e.name}</th>
 					<th class="num" title="Share of this {base} electorate’s population that’s inside the 2026 {e.name}: its votes are multiplied by this">Weight</th>
-					<th class="num">Preliminary</th>
-					<th class="num">Final</th>
-					<th class="num">Weighted prelim</th>
-					<th class="num">Weighted final</th>
+					<th class="num">Ordinary</th>
+					<th class="num">Overseas</th>
+					<th class="num">Domestic</th>
 					<th>Sources</th>
 				</tr>
 			</thead>
@@ -146,12 +152,11 @@
 						<td class="num">{pct(s.share_of_2026, 1)}</td>
 						<td class="num">{pct(s.share_of_base, 1)}</td>
 						{#if s.omitted}
-							<td colspan="4" class="muted">left out (no {base} electorate vote)</td>
+							<td colspan="3" class="muted">left out (no {base} electorate vote)</td>
 						{:else}
-							<td class="num">{votes(s[step1].prelim)}</td>
-							<td class="num">{votes(s[step1].final)}</td>
-							<td class="num">{votes(s[step1].prelim * s.share_of_base)}</td>
-							<td class="num">{votes(s[step1].final * s.share_of_base)}</td>
+							<td class="num">{votes(s[step1].ordinary)}</td>
+							<td class="num">{votes(s[step1].overseas)}</td>
+							<td class="num">{votes(s[step1].domestic)}</td>
 						{/if}
 						<td class="sources">
 							{#each srcLinks(s) as l, i (i)}{i > 0 ? ' · ' : ''}<a href={l.url}>{l.label}</a>{/each}
@@ -161,76 +166,88 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td>Notional {e.name}</td>
-					<td colspan="4"></td>
-					<td class="num">{votes(e[step1].base_rows.prelim)}</td>
-					<td class="num">{votes(e[step1].base_rows.final)}</td>
+					<td>Notional {e.name} (weighted)</td>
+					<td colspan="2"></td>
+					<td class="num">{votes(e[step1].base_rows.ordinary)}</td>
+					<td class="num">{votes(e[step1].base_rows.pools.overseas)}</td>
+					<td class="num">{votes(e[step1].base_rows.pools.domestic)}</td>
 					<td></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
 	<p class="small muted">
-		Valid {step1 === 'candidate' ? 'electorate' : 'party'} votes. Each party’s{step1 === 'candidate' ? ' candidate' : ''} votes are weighted the
-		same way. The {base} preliminary pages are Wayback Machine captures.
+		Valid {step1 === 'candidate' ? 'electorate' : 'party'} votes in the {base} final count, split into
+		ordinary votes and overseas and domestic special votes, from the results by voting place (Wayback
+		Machine captures, as the live site blocks them). Each party’s{step1 === 'candidate' ? ' candidate' : ''}
+		votes are weighted the same way.
 	</p>
 
-	<h2>2. Each party’s {base} multiplier (electorate vote)</h2>
+	<h2>2. Each party’s {base} multipliers (electorate vote)</h2>
 	<p>
-		Special votes = final − preliminary. Multiplier = share of the specials ÷ share of the
-		preliminary count. Above 1, special voters here liked them more than election-night voters did.
+		Overseas multiplier = share of the overseas special votes ÷ share of the ordinary votes; domestic
+		multiplier, the same with domestic special votes. Above 1, those special voters here liked them
+		more than ordinary voters did.
 	</p>
 	<MultiplierBars
-		rows={k.base_rows.rows.filter((/** @type {any} */ r) => r.prelim_share > 0.02 && r.multiplier).map((/** @type {any} */ r) => ({
-			id: r.key, label: r.label, value: r.multiplier, party: r.party
+		rows={k.base_rows.rows.filter((/** @type {any} */ r) => r.ordinary_share > 0.02).map((/** @type {any} */ r) => ({
+			id: r.key, label: r.label, party: r.party,
+			domestic: r.pools.domestic.multiplier, overseas: r.pools.overseas.multiplier
 		}))}
 	/>
-	<div class="table-wrap">
-		<table class="wide-first">
-			<thead>
-				<tr>
-					<th>{base} candidate</th>
-					<th class="num">Preliminary</th>
-					<th class="num">Final</th>
-					<th class="num">Specials</th>
-					<th class="num">Prelim share</th>
-					<th class="num">Special share</th>
-					<th class="num">Multiplier</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each k.base_rows.rows as r (r.key)}
+	{#snippet baseTable(/** @type {any} */ t, /** @type {any[]} */ rows, /** @type {string} */ heading, /** @type {string} */ totalLabel, /** @type {boolean} */ withCandidates)}
+		<div class="table-wrap">
+			<table class="wide-first">
+				<thead>
 					<tr>
-						<td>
-							<span class="swatch" style:background={colour(r.party)}></span>{r.party ? r.label : `${candidateName(r.label)} (independent)`}
-							{#if r.candidates?.length}
-								<div class="small note">
-									{#each r.candidates as c, i (i)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
-											title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of the 2026 {e.name}’s population"
-											>{candidateName(c.name)}</span>{/each}
-								</div>
-							{/if}
-						</td>
-						<td class="num">{votes(r.prelim)}</td>
-						<td class="num">{votes(r.final)}</td>
-						<td class="num">{signed(r.specials)}</td>
-						<td class="num">{pct(r.prelim_share)}</td>
-						<td class="num">{pct(r.special_share)}</td>
-						<td class="num"><strong>{r.multiplier === null ? '—' : mult(r.multiplier)}</strong></td>
+						<th>{heading}</th>
+						<th class="num">Ordinary</th>
+						<th class="num">Overseas</th>
+						<th class="num">Domestic</th>
+						<th class="num">Ordinary share</th>
+						<th class="num">Overseas share</th>
+						<th class="num">Domestic share</th>
+						<th class="num">Overseas mult.</th>
+						<th class="num">Domestic mult.</th>
 					</tr>
-				{/each}
-			</tbody>
-			<tfoot>
-				<tr>
-					<td>Total</td>
-					<td class="num">{votes(k.base_rows.prelim)}</td>
-					<td class="num">{votes(k.base_rows.final)}</td>
-					<td class="num">{signed(k.base_rows.specials)}</td>
-					<td colspan="3"></td>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
+				</thead>
+				<tbody>
+					{#each rows as r (r.key)}
+						<tr>
+							<td>
+								<span class="swatch" style:background={colour(r.party)}></span>{r.party ? r.label : `${candidateName(r.label)} (independent)`}
+								{#if withCandidates && r.candidates?.length}
+									<div class="small note">
+										{#each r.candidates as c, i (i)}{i > 0 ? ', ' : ''}<span class:minor={c.share < MINOR}
+												title="{base} {c.share >= MINOR ? 'main' : 'minor'} source: {pct(c.share, 1)} of the 2026 {e.name}’s population"
+												>{candidateName(c.name)}</span>{/each}
+									</div>
+								{/if}
+							</td>
+							<td class="num">{votes(r.ordinary)}</td>
+							<td class="num">{votes(r.pools.overseas.votes)}</td>
+							<td class="num">{votes(r.pools.domestic.votes)}</td>
+							<td class="num">{pct(r.ordinary_share)}</td>
+							<td class="num">{pct(share(r.pools.overseas.votes, t.pools.overseas))}</td>
+							<td class="num">{pct(share(r.pools.domestic.votes, t.pools.domestic))}</td>
+							<td class="num"><strong>{m(r.pools.overseas.multiplier)}</strong></td>
+							<td class="num"><strong>{m(r.pools.domestic.multiplier)}</strong></td>
+						</tr>
+					{/each}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td>{totalLabel}</td>
+						<td class="num">{votes(t.ordinary)}</td>
+						<td class="num">{votes(t.pools.overseas)}</td>
+						<td class="num">{votes(t.pools.domestic)}</td>
+						<td colspan="5"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	{/snippet}
+	{@render baseTable(k.base_rows, k.base_rows.rows, `${base} candidate`, 'Total', true)}
 	<p class="small muted">
 		Candidates are matched to 2026 by party. Where several names are shown, the area took in parts of
 		several {base} electorates; names in lighter text are from electorates that make up less than
@@ -242,68 +259,79 @@
 			{fallback.map((/** @type {any} */ r) => r.label).join(', ')}
 			had no {base} candidate here, so
 			{fallback.length === 1 ? 'its candidate uses' : 'their candidates use'} the party’s
-			<em>party-vote</em> multiplier in this area, worked out the same way from the notional {base}
+			<em>party-vote</em> multipliers in this area, worked out the same way from the notional {base}
 			party vote:
 		</p>
-		<div class="table-wrap">
-			<table class="wide-first">
-				<thead>
-					<tr>
-						<th>{base} party (party vote)</th>
-						<th class="num">Preliminary</th>
-						<th class="num">Final</th>
-						<th class="num">Specials</th>
-						<th class="num">Prelim share</th>
-						<th class="num">Special share</th>
-						<th class="num">Multiplier</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each fallback as r (r.key)}
-						<tr>
-							<td><span class="swatch" style:background={colour(r.party)}></span>{r.label}</td>
-							<td class="num">{votes(r.prelim)}</td>
-							<td class="num">{votes(r.final)}</td>
-							<td class="num">{signed(r.specials)}</td>
-							<td class="num">{pct(r.prelim_share)}</td>
-							<td class="num">{pct(r.special_share)}</td>
-							<td class="num"><strong>{r.multiplier === null ? '—' : mult(r.multiplier)}</strong></td>
-						</tr>
-					{/each}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>All parties (party vote)</td>
-						<td class="num">{votes(e.party.base_rows.prelim)}</td>
-						<td class="num">{votes(e.party.base_rows.final)}</td>
-						<td class="num">{signed(e.party.base_rows.specials)}</td>
-						<td colspan="3"></td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
+		{@render baseTable(e.party.base_rows, fallback, `${base} party (party vote)`, 'All parties (party vote)', false)}
 		<p class="small muted">
 			A party new in 2026 has no {base} party vote either, so it gets 1. A party that was part of
-			an umbrella party in {base} uses the umbrella’s multiplier.
+			an umbrella party in {base} uses the umbrella’s multipliers.
 		</p>
 	{/if}
 
 	<h2>3. How many special votes</h2>
 	<p>
-		In {base}, there were {votes(k.base_rows.specials)} specials here on {votes(k.base_rows.prelim)}
-		preliminary votes, a ratio of <strong>{pct(k.ratio, 1)}</strong>. Every electorate’s ratio is
-		multiplied by the same national factor, <strong>{k.scale.toFixed(3)}</strong>, so that the
-		electorates’ party-vote specials add up to the <a href={link('/party-vote/')}>national
-		projection</a> (fewer specials are expected in 2026). So:
-		{votes(k.prelim_total)} preliminary × {pct(k.ratio, 1)} × {k.scale.toFixed(3)} =
-		<strong>{votes(k.volume)}</strong> projected electorate-vote specials.
+		For overseas and domestic special votes, each electorate’s {base} ratio of special votes to ordinary
+		votes is multiplied by a national factor for that kind of special vote, so that the electorates’
+		party-vote specials add up to the <a href={link('/party-vote/')}>national projection</a> (fewer
+		domestic specials are expected in 2026). Revisions, the official count’s corrections to ordinary
+		votes, are the same share of the preliminary count in every electorate.
+	</p>
+	<div class="table-wrap">
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th class="num">{base} ratio</th>
+					<th class="num">× national factor</th>
+					<th class="num">× 2026 preliminary</th>
+					<th class="num">= projected</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each POOLS as [key, label] (key)}
+					{@const p = k.pools[key]}
+					<tr>
+						<td>{label}</td>
+						<td class="num" title="{votes(k.base_rows.pools[key])} ÷ {votes(k.base_rows.ordinary)} ordinary votes">{pct(p.ratio, 1)}</td>
+						<td class="num">{p.scale.toFixed(3)}</td>
+						<td class="num">{votes(k.prelim_total)}</td>
+						<td class="num">{votes(p.volume)}</td>
+					</tr>
+				{/each}
+				<tr>
+					<td>Revisions</td>
+					<td class="num">{pct(k.pools.revisions.ratio, 2)}<span class="muted">*</span></td>
+					<td class="num">—</td>
+					<td class="num">{votes(k.prelim_total)}</td>
+					<td class="num">{signed(k.pools.revisions.volume)}</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>Total</td>
+					<td colspan="3"></td>
+					<td class="num"><strong>{votes(k.volume)}</strong></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<p class="small muted">
+		* The national ratio, not this electorate’s own. Revisions are mostly one-off corrections: an
+		electorate can change by several percent in one official count and barely at all in the next.
+		Between 2017 and 2023, on today’s boundaries, electorates’ revision rates were barely correlated
+		(0.22), so an electorate’s past revisions say little about its next ones. Māori electorates are
+		a partial exception: theirs have been consistently higher (+1.5% in 2017 and +2.2% in 2023,
+		against +0.1% and +0.5% in general electorates), but that isn’t modelled. Figures are rounded, so
+		the rows may not add up exactly.
 	</p>
 
 	<h2>4. Sharing out the 2026 specials</h2>
 	<p>
-		Each candidate’s weight is their 2026 preliminary share × their
-		party’s {base} multiplier. Their share of the {votes(k.volume)} specials is their weight ÷ the total
-		weight ({weightSum.toFixed(4)}).
+		Each kind of special vote is shared out separately. A candidate’s share of the overseas specials is
+		their 2026 preliminary share × their party’s {base} overseas multiplier, divided by the total of
+		that over all candidates; the same for domestic specials. Revisions are shared like the
+		preliminary count.
 	</p>
 	<div class="table-wrap">
 		<table class="wide-first">
@@ -312,10 +340,11 @@
 					<th>Candidate</th>
 					<th class="num">Preliminary</th>
 					<th class="num">Share</th>
-					<th class="num">× multiplier</th>
-					<th class="num">= weight</th>
-					<th class="num">Special share</th>
-					<th class="num">+ specials</th>
+					<th class="num">Overseas mult.</th>
+					<th class="num">Domestic mult.</th>
+					<th class="num">+ overseas</th>
+					<th class="num">+ domestic</th>
+					<th class="num">+ revisions</th>
 					<th class="num">Projected</th>
 					<th class="num">Share</th>
 				</tr>
@@ -329,10 +358,12 @@
 						</td>
 						<td class="num">{votes(r.prelim)}</td>
 						<td class="num">{pct(r.prelim_share)}</td>
-						<td class="num">{#if source(r)}<Term tip={source(r)}>{mult(r.multiplier)}</Term>{:else}{mult(r.multiplier)}{/if}</td>
-						<td class="num">{(r.prelim_share * r.multiplier).toFixed(4)}</td>
-						<td class="num">{pct(r.special_share)}</td>
-						<td class="num">{signed(r.specials)}</td>
+						{#each ['overseas', 'domestic'] as key (key)}
+							<td class="num">{#if source(r)}<Term tip={source(r)}>{mult(r.pools[key].multiplier)}</Term>{:else}{mult(r.pools[key].multiplier)}{/if}</td>
+						{/each}
+						<td class="num">{signed(r.pools.overseas.specials)}</td>
+						<td class="num">{signed(r.pools.domestic.specials)}</td>
+						<td class="num">{signed(r.pools.revisions.specials)}</td>
 						<td class="num">{votes(r.final)}</td>
 						<td class="num"><strong>{pct(r.final_share)}</strong></td>
 					</tr>
@@ -342,10 +373,10 @@
 				<tr>
 					<td>Total</td>
 					<td class="num">{votes(k.prelim_total)}</td>
-					<td></td><td></td>
-					<td class="num">{weightSum.toFixed(4)}</td>
-					<td></td>
-					<td class="num">{signed(k.volume)}</td>
+					<td colspan="3"></td>
+					<td class="num">{signed(k.pools.overseas.volume)}</td>
+					<td class="num">{signed(k.pools.domestic.volume)}</td>
+					<td class="num">{signed(k.pools.revisions.volume)}</td>
 					<td class="num">{votes(k.prelim_total + k.volume)}</td>
 					<td></td>
 				</tr>

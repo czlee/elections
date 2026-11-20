@@ -92,9 +92,15 @@ def electorate_links_2026(elec_id):
 
 
 def electorate_links_base(base, elec_id, timestamps):
+    # The voting-place CSVs: the live site blocks them, so link to the Wayback
+    # Machine's latest capture (download_specials.py didn't keep timestamps; a
+    # bare year redirects to the nearest capture).
+    csv_path = "electionresults_{0}/statistics/csv/{1}-votes-by-voting-place-{2}.csv"
     links = {"final_base": {
         "url": RESULTS + "electionresults_{0}/electorate-details-{1:02d}.html".format(base, elec_id),
-        "xml": RESULTS + "electionresults_{0}/xml/e{1:02d}/e{1:02d}.xml".format(base, elec_id)}}
+        "xml": RESULTS + "electionresults_{0}/xml/e{1:02d}/e{1:02d}.xml".format(base, elec_id),
+        "party_csv": WAYBACK.format("2026", csv_path.format(base, "party", elec_id)),
+        "candidate_csv": WAYBACK.format("2026", csv_path.format(base, "candidate", elec_id))}}
     if elec_id in timestamps:
         links["prelim_base"] = {"url": WAYBACK.format(
             timestamps[elec_id], "electionresults_{0}_preliminary/electorate-details-{1:02d}.html".format(
@@ -214,14 +220,27 @@ def national(cn, ce=None):
             "multiplier": cn["multipliers"][p], "special_share": cn["special_share_2026"][p],
             "specials": cn["specials_2026"][p], "final": final_2026[p],
             "final_share": final_2026[p] / sum(final_2026.values()),
+            "pools": {name: {"multiplier": pool["multipliers"][p], "share": pool["share"][p],
+                             "specials": pool["specials"][p]} for name, pool in cn["pools"].items()},
         })
     base_parties = []
+    ordinary_base = cn["ordinary_base"]
+    total_ordinary = sum(ordinary_base.values())
     for p in sorted(cn["final_base"], key=lambda p: -cn["final_base"][p]):
         base_parties.append({
             "id": p, "short": names.short_names[p], "prelim": cn["prelim_base"][p], "final": cn["final_base"][p],
             "specials": cn["specials_base"][p], "prelim_share": cn["prelim_share_base"][p],
             "special_share": cn["special_share_base"][p], "multiplier": cn["multipliers_base"][p],
+            "ordinary": ordinary_base[p], "ordinary_share": ordinary_base[p] / total_ordinary,
+            "pools": {name: {"votes": cn["pools"][name]["base"][p],
+                             "share": cn["pools"][name]["base"][p] / cn["pools"][name]["base_total"],
+                             "multiplier": cn["pools"][name]["multipliers_base"][p]} for name in pe.SPECIAL_POOLS},
         })
+    pools_json = {}
+    for name, pool in cn["pools"].items():
+        pools_json[name] = {k: pool[k] for k in ["base_total", "adjustment", "volume", "estimate_base", "estimate_2026"]
+                            if k in pool}
+    pools_json["revisions"]["base_prelim"] = sum(cn["prelim_base"].values())
     house = {k: sum(s[2] for s in seats.values()) + other
              for k, seats, other in [("prelim", prelim_seats, prelim_other), ("projected", final_seats, final_other)]}
     return {
@@ -229,7 +248,8 @@ def national(cn, ce=None):
         "estimate_base": cn["estimate_base"], "estimate_2026": cn["estimate_2026"],
         "adjustment": cn["adjustment"], "projected_specials": cn["projected_specials_total"],
         "base_totals": {"prelim": sum(cn["prelim_base"].values()), "final": sum(cn["final_base"].values()),
-                        "specials": sum(cn["specials_base"].values())},
+                        "specials": sum(cn["specials_base"].values()), "ordinary": total_ordinary},
+        "pools": pools_json,
         "prelim_total": sum(cn["prelim_2026"].values()), "final_total": sum(final_2026.values()),
         "parties": parties, "base_parties": base_parties,
         "seats": {"prelim": seats_json(prelim_seats, final_2026), "projected": seats_json(final_seats, final_2026)},

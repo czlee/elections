@@ -242,7 +242,8 @@ def compute(base=DEFAULT_BASE):
     # Steps 1 and 3: base multipliers and volumes for each pool
     prelim_share_2026 = shares(prelim_2026)
     links = {p: names.counterpart(p, base, final_base) for p in prelim_2026}
-    ordinary_share_base = shares(Counter({p: categories["ordinary"].get(p, 0) for p in final_base}))
+    ordinary_base = Counter({p: categories["ordinary"].get(p, 0) for p in final_base})
+    ordinary_share_base = shares(ordinary_base)
     pools = {}
     for pool, estimate_2026, estimate in [
             ("overseas", SPECIAL_ESTIMATE_OVERSEAS_2026, overseas_estimate_base),
@@ -283,6 +284,7 @@ def compute(base=DEFAULT_BASE):
         "prelim_base": prelim_base, "final_base": final_base, "specials_base": specials_base,
         "prelim_share_base": prelim_share_base, "special_share_base": special_share_base,
         "multipliers_base": multipliers_base, "adjustment": adjustment, "pools": pools,
+        "ordinary_base": ordinary_base,
         "estimate_base": estimate_base, "estimate_2026": SPECIAL_ESTIMATE_2026,
         "projected_specials_total": projected_specials_total,
         "prelim_2026": prelim_2026, "prelim_share_2026": prelim_share_2026, "links": links,

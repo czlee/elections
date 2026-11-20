@@ -7,7 +7,7 @@
 	import '../app.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import appleTouchIcon from '#lib/assets/apple-touch-icon.png';
-	import { DRAFT } from '#lib/config.js';
+	import { DRAFT, V1_URL } from '#lib/config.js';
 	import { link } from '#lib/link.js';
 	import { page } from '$app/state';
 	import { BOUNDARIES } from '#lib/bases.js';
@@ -92,11 +92,15 @@
 	</p>
 	<p>
 		Data: <a href="https://www.electionresults.govt.nz/">Electoral Commission</a> ({data.base} and 2026
-		results), <a href="https://web.archive.org/">Internet Archive</a> ({data.base} preliminary count){#if data.hasElectorates},
+		results), <a href="https://web.archive.org/">Internet Archive</a> ({data.base} preliminary count and results by voting place){#if data.hasElectorates},
 			<a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2023 Census electoral population,
 			{BOUNDARIES[data.base]} and 2025 electorate boundaries, and 2025 regional council boundaries
 			for the coastline, CC BY 4.0){/if}. Code:
 		<a href="https://github.com/czlee/elections">czlee/elections</a>.
+	</p>
+	<p>
+		An <a href={V1_URL}>earlier version</a> of this projection used one special-vote multiplier
+		per party, rather than separate ones for overseas and domestic special votes.
 	</p>
 </footer>
 

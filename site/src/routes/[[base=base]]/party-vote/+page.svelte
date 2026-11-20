@@ -10,10 +10,11 @@
 	let { data } = $props();
 	const n = $derived(data.national);
 	const src = $derived(n.sources);
+	const pools = $derived(n.pools);
 	const names = $derived(Object.fromEntries([...n.base_parties, ...n.parties].map((p) => [p.id, p.short])));
 	// Parties shown in charts: those over 0.5% in either count; the rest are in the tables.
 	const major = $derived(n.parties.filter((p) => p.prelim_share > 0.005 || p.final_share > 0.005));
-	const baseMajor = $derived(n.base_parties.filter((p) => p.prelim_share > 0.005));
+	const baseMajor = $derived(n.base_parties.filter((p) => p.ordinary_share > 0.005));
 	const changed = $derived(
 		n.parties.filter((p) => (n.seats.projected[p.id]?.total ?? 0) !== (n.seats.prelim[p.id]?.total ?? 0))
 	);
@@ -37,8 +38,8 @@
 <h1>Party vote projection</h1>
 <p>
 	The party vote from the 2026 preliminary count, plus a projection of the special votes still
-	to be counted. Each party gets the same share of the special votes, relative to its
-	preliminary share, as it did in {n.base}.
+	to be counted. Overseas and domestic special votes are projected separately: each party gets the
+	same share of each, relative to its share of ordinary votes, as it did in {n.base}.
 </p>
 
 <div class="steps">
@@ -50,27 +51,84 @@
 <h2>1. How many special votes</h2>
 <p>
 	The Electoral Commission estimated <strong>{votes(n.estimate_2026)}</strong> special votes in
-	2026. In {n.base} it estimated {votes(n.estimate_base)}, and the official count ended up with
-	{votes(n.base_totals.specials)} more valid party votes than the preliminary count
-	({votes(n.base_totals.final)} − {votes(n.base_totals.prelim)}), a ratio of
-	<strong>{n.adjustment.toFixed(4)}</strong>. Applying the same ratio:
-	{votes(n.estimate_2026)} × {n.adjustment.toFixed(4)} = <strong>{votes(n.projected_specials)}</strong>
-	projected special party votes.
+	2026, including {votes(pools.overseas.estimate_2026)} overseas and dictation votes. What the official
+	count adds to the preliminary count comes in three parts, each projected separately:
 </p>
+<ul>
+	<li><strong>Overseas special votes.</strong> In {n.base}, {votes(pools.overseas.base_total)} were counted,
+		against an election-night estimate of {votes(pools.overseas.estimate_base)}. The same ratio is applied to
+		the 2026 estimate.</li>
+	<li><strong>Domestic special votes</strong> (all the others), the same way, using the rest of each
+		estimate.</li>
+	<li><strong>Revisions:</strong> the official count’s corrections to ordinary votes. In {n.base}, final
+		ordinary votes were {votes(pools.revisions.base_total)} more than the preliminary count
+		({pct(pools.revisions.adjustment)} of it), so the 2026 preliminary count is scaled by the same
+		share.</li>
+</ul>
+<div class="table-wrap">
+	<table>
+		<thead>
+			<tr>
+				<th></th>
+				<th class="num">{n.base} count</th>
+				<th class="num">÷ {n.base} estimate</th>
+				<th class="num">= ratio</th>
+				<th class="num">× 2026 estimate</th>
+				<th class="num">= projected</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each [['overseas', 'Overseas specials'], ['domestic', 'Domestic specials']] as [key, label] (key)}
+				{@const p = pools[key]}
+				<tr>
+					<td>{label}</td>
+					<td class="num">{votes(p.base_total)}</td>
+					<td class="num">{votes(p.estimate_base)}</td>
+					<td class="num">{p.adjustment.toFixed(4)}</td>
+					<td class="num">{votes(p.estimate_2026)}</td>
+					<td class="num">{votes(p.volume)}</td>
+				</tr>
+			{/each}
+			<tr>
+				<td>Revisions</td>
+				<td class="num">{signed(pools.revisions.base_total)}</td>
+				<td class="num" title="{n.base} preliminary count">{votes(pools.revisions.base_prelim)}<span class="muted">*</span></td>
+				<td class="num">{pct(pools.revisions.adjustment)}</td>
+				<td class="num" title="2026 preliminary count">{votes(n.prelim_total)}<span class="muted">*</span></td>
+				<td class="num">{signed(pools.revisions.volume)}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>Total</td>
+				<td class="num">{votes(n.base_totals.specials)}</td>
+				<td class="num">{votes(n.estimate_base)}</td>
+				<td></td>
+				<td class="num">{votes(n.estimate_2026)}</td>
+				<td class="num"><strong>{votes(n.projected_specials)}</strong></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
 <p class="small muted">
-	“Special votes” here means final minus preliminary valid party votes, which also picks up any
-	changes to ordinary votes in the official count. The estimate is of special votes cast; the
-	count is of valid party votes, so the ratio also absorbs special votes that were disallowed or
-	informal.
+	* For revisions, preliminary counts instead of estimates. The estimates are of special votes cast;
+	the counts are of valid party votes, so the ratios also absorb special votes that were disallowed
+	or informal. The overseas estimates include dictation votes, which the official count records as
+	domestic, so the overseas ratio tends to be a little under 1 and the domestic one a little over.
+	Rounded, so the rows may not add up exactly.
 </p>
 <Sources items={[src.release_2026, src.release_base, src.prelim_base, src.final_base]} />
 
-<h2>2. Each party’s {n.base} multiplier</h2>
+<h2>2. Each party’s {n.base} multipliers</h2>
 <p>
-	A party’s multiplier is its share of the {n.base} special votes divided by its share of the
-	{n.base} preliminary count. Above 1, it did better among special voters.
+	A party’s <strong>overseas multiplier</strong> is its share of the {n.base} overseas special votes
+	divided by its share of the {n.base} ordinary votes; its <strong>domestic multiplier</strong>, the
+	same with domestic special votes. Above 1, it did better among those special voters than among
+	ordinary voters. Ordinary votes are from the final count, not the preliminary count, so that the
+	official count’s corrections don’t leak into the multipliers.
 </p>
-<MultiplierBars rows={baseMajor.map((p) => ({ id: p.id, label: p.short, value: p.multiplier }))} />
+<MultiplierBars rows={baseMajor.map((p) => ({ id: p.id, label: p.short,
+	domestic: p.pools.domestic.multiplier, overseas: p.pools.overseas.multiplier }))} />
 <details>
 	<summary>All {n.base} parties</summary>
 	<div class="table-wrap">
@@ -78,46 +136,57 @@
 			<thead>
 				<tr>
 					<th>Party ({n.base})</th>
-					<th class="num">Preliminary</th>
-					<th class="num">Final</th>
-					<th class="num">Specials</th>
-					<th class="num">Prelim share</th>
-					<th class="num">Special share</th>
-					<th class="num">Multiplier</th>
+					<th class="num">Ordinary</th>
+					<th class="num">Overseas</th>
+					<th class="num">Domestic</th>
+					<th class="num">Ordinary share</th>
+					<th class="num">Overseas share</th>
+					<th class="num">Domestic share</th>
+					<th class="num">Overseas mult.</th>
+					<th class="num">Domestic mult.</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each n.base_parties as p (p.id)}
 					<tr>
 						<td><span class="swatch" style:background={colour(p.id)}></span>{p.short}</td>
-						<td class="num">{votes(p.prelim)}</td>
-						<td class="num">{votes(p.final)}</td>
-						<td class="num">{signed(p.specials)}</td>
-						<td class="num">{pct(p.prelim_share)}</td>
-						<td class="num">{pct(p.special_share)}</td>
-						<td class="num"><strong>{mult(p.multiplier)}</strong></td>
+						<td class="num">{votes(p.ordinary)}</td>
+						<td class="num">{votes(p.pools.overseas.votes)}</td>
+						<td class="num">{votes(p.pools.domestic.votes)}</td>
+						<td class="num">{pct(p.ordinary_share)}</td>
+						<td class="num">{pct(p.pools.overseas.share)}</td>
+						<td class="num">{pct(p.pools.domestic.share)}</td>
+						<td class="num"><strong>{mult(p.pools.overseas.multiplier)}</strong></td>
+						<td class="num"><strong>{mult(p.pools.domestic.multiplier)}</strong></td>
 					</tr>
 				{/each}
 			</tbody>
 			<tfoot>
 				<tr>
 					<td>Total</td>
-					<td class="num">{votes(n.base_totals.prelim)}</td>
-					<td class="num">{votes(n.base_totals.final)}</td>
-					<td class="num">{signed(n.base_totals.specials)}</td>
-					<td colspan="3"></td>
+					<td class="num">{votes(n.base_totals.ordinary)}</td>
+					<td class="num">{votes(pools.overseas.base_total)}</td>
+					<td class="num">{votes(pools.domestic.base_total)}</td>
+					<td colspan="5"></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
+	<p class="small muted">
+		Final count {votes(n.base_totals.final)} = ordinary {votes(n.base_totals.ordinary)} + overseas
+		{votes(pools.overseas.base_total)} + domestic {votes(pools.domestic.base_total)}. The preliminary count was
+		{votes(n.base_totals.prelim)}, so revisions were {signed(pools.revisions.base_total)}.
+	</p>
 	<Sources items={[src.prelim_base, src.final_base]} />
 </details>
 
 <h2>3. Sharing out the 2026 specials</h2>
 <p>
-	Each 2026 party’s share of the projected specials is its preliminary share times its multiplier,
-	scaled so the shares add up to 100%. Parties that are new in 2026 get a multiplier of 1; a party
-	that was part of an umbrella party in {n.base} uses the umbrella’s multiplier.
+	Each pool is shared out separately. A 2026 party’s share of the projected overseas specials is
+	its preliminary share times its overseas multiplier, scaled so the shares add up to 100%; the
+	same for domestic specials. Revisions are shared like the preliminary count. Parties that are
+	new in 2026 get multipliers of 1; a party that was part of an umbrella party in {n.base} uses the
+	umbrella’s.
 </p>
 <DeltaBars rows={major.map((p) => ({ id: p.id, label: p.short, from: p.prelim_share, to: p.final_share }))} />
 <div class="table-wrap">
@@ -127,9 +196,11 @@
 				<th>Party</th>
 				<th class="num">Preliminary</th>
 				<th class="num">Share</th>
-				<th class="num">× multiplier</th>
-				<th class="num">Special share</th>
-				<th class="num">+ specials</th>
+				<th class="num">Overseas mult.</th>
+				<th class="num">Domestic mult.</th>
+				<th class="num">+ overseas</th>
+				<th class="num">+ domestic</th>
+				<th class="num">+ revisions</th>
 				<th class="num">Projected final</th>
 				<th class="num">Share</th>
 				<th class="num">Change</th>
@@ -145,15 +216,29 @@
 					</td>
 					<td class="num">{votes(p.prelim)}</td>
 					<td class="num">{pct(p.prelim_share)}</td>
-					<td class="num">{mult(p.multiplier)}</td>
-					<td class="num">{pct(p.special_share)}</td>
-					<td class="num">{signed(p.specials)}</td>
+					<td class="num">{mult(p.pools.overseas.multiplier)}</td>
+					<td class="num">{mult(p.pools.domestic.multiplier)}</td>
+					<td class="num">{signed(p.pools.overseas.specials)}</td>
+					<td class="num">{signed(p.pools.domestic.specials)}</td>
+					<td class="num">{signed(p.pools.revisions.specials)}</td>
 					<td class="num">{votes(p.final)}</td>
 					<td class="num"><strong>{pct(p.final_share)}</strong></td>
 					<td class="num">{pp(p.final_share - p.prelim_share)}</td>
 				</tr>
 			{/each}
 		</tbody>
+		<tfoot>
+			<tr>
+				<td>Total</td>
+				<td class="num">{votes(n.prelim_total)}</td>
+				<td colspan="3"></td>
+				<td class="num">{signed(pools.overseas.volume)}</td>
+				<td class="num">{signed(pools.domestic.volume)}</td>
+				<td class="num">{signed(pools.revisions.volume)}</td>
+				<td class="num">{votes(n.final_total)}</td>
+				<td colspan="2"></td>
+			</tr>
+		</tfoot>
 	</table>
 </div>
 <Sources items={[src.prelim_2026]} />

@@ -626,14 +626,13 @@ mind, but fine as it's consistent across bases).
 
 ## Plans
 
-### Phase 3: site for the pooled projection (discussed 20 November 2026, not started)
+### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`, awaiting the user's review)
 
 - Freeze the current site at `/elections/2026-projection/v1/` (the user's
   choice of path, "least jinx-y") by building a tagged commit (`d946dec`, the
   last single-pool site) in CI alongside the main build; check OG/canonical URLs;
   add a "newer version" link on v1.
-- **Exported JSON changed in phase 2 and the site hasn't caught up, so don't
-  commit re-exported site data until it has.** Base-year electorate fields
+- Exported JSON changed in phase 2; the site now reads it (phase 3). Base-year electorate fields
   are now final-count ordinaries (`ordinary`, `ordinary_share`), not
   preliminary counts (`prelim`); rows and base rows have per-pool
   multipliers (`pools`); per-kind `ratio`/`scale` became `pools`; the 2020

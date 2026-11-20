@@ -22,10 +22,7 @@ export const ENROLMENT_UNTIL = /** @type {Record<string, string>} */ ({
 });
 
 /** Why a base year has no electorate projections, completing "because …". */
-export const NO_ELECTORATES_REASON = /** @type {Record<string, string>} */ ({
-	'2020':
-		'the Wayback Machine doesn’t have the 2020 preliminary results by electorate (only the national totals)'
-});
+export const NO_ELECTORATES_REASON = /** @type {Record<string, string>} */ ({});
 
 /** The base year for a route's (optional) base param. */
 export const baseOf = (/** @type {string | undefined} */ param) => param ?? DEFAULT_BASE;

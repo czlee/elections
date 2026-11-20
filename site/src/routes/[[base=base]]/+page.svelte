@@ -75,7 +75,7 @@
 <p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">
 	This projection applies the impact of the <strong>{base}
-	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. This also picks up any corrections to ordinary votes in the official count.">special votes</Term></strong>
+	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. That’s overseas special votes and domestic special votes, which are projected separately, and the official count’s corrections to ordinary votes.">special votes</Term></strong>
 	to the 2026 preliminary count.
 	{#if !data.hasElectorates}Party vote only: electorates aren’t projected from {base}.{/if}
 </p>
@@ -101,6 +101,10 @@
 	<summary><strong>Before you believe this:</strong> Reasons this might not work (a.k.a. limitations)</summary>
 	<ul>
 		<li><strong>This is a mechanical projection, not a forecast.</strong></li>
+		<li>
+			Overseas and domestic special votes are projected separately, but each is assumed to split
+			between parties the way it did in {base}, relative to ordinary votes.
+		</li>
 		<li>
 			In {base}, people could enrol or update their enrolment {ENROLMENT_UNTIL[base]}, voting by
 			special vote. In 2026, enrolment closed 13 days before election day. {specialsComparison} The

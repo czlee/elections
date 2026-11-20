@@ -13,15 +13,19 @@ others under their year (`/2020/`, `/2017/`); see `src/lib/bases.js`. After
 changing the projection, from the repository root:
 
 ```
-python3 project_specials.py
-python3 project_electorates.py
-python3 export_site_data.py
-python3 project_specials.py --base 2020
-python3 export_site_data.py --base 2020
-python3 project_specials.py --base 2017
-python3 project_electorates.py --base 2017   # after concordance.py --base 2017 (venv)
-python3 export_site_data.py --base 2017
+python3 download_specials.py                 # special votes by category, all base years (slow the first time)
+for base in 2023 2020 2017; do               # concordance.py --base <base> first (venv)
+    python3 project_specials.py --base $base
+    python3 project_electorates.py --base $base
+    python3 export_site_data.py --base $base
+done
 ```
+
+## Earlier version
+
+The single-multiplier version of the site (before overseas and domestic special
+votes were split) is kept at `/elections/2026-projection/v1/`, built by CI from
+the `site-v1` branch (see `.github/workflows/pages.yml`).
 
 ## Social previews
 
