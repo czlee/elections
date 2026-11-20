@@ -626,7 +626,15 @@ mind, but fine as it's consistent across bases).
 
 ## Plans
 
-### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`, awaiting the user's review)
+### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`; **parked, not published**)
+
+- **Decided by the user (20 November 2026): not publishing this for now**; it stays
+  on the `special-pools` and `site-v1` branches (neither pushed). The split changes no
+  party vote seats under any base; 2017 and 2023 results are identical to the
+  published site; the 2020 base gains electorate projections (Hamilton East,
+  Wairarapa and Wellington Bays flip; National 42 → 40, House 132 → 130). To
+  publish later: push `site-v1` first (pages.yml checks it out), then merge
+  `special-pools` into main.
 
 - Freeze the current site at `/elections/2026-projection/v1/` (the user's
   choice of path, "least jinx-y") by building a tagged commit (`d946dec`, the
