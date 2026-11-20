@@ -8,7 +8,7 @@ My previous scripts have been moved to [czlee/elections-2020](https://github.com
 
 ## Setup
 
-The scripts that download and project results (`download.py`,
+The scripts that download and project results (`download.py`, `download_specials.py`,
 `scrape_wayback_prelim.py`, `project_specials.py`, `seats.py`) use only the
 Python standard library (Python 3.11 or later, for `tomllib`).
 
@@ -49,6 +49,7 @@ All are CC BY 4.0, credited in the site's footer.
 python3 download.py --election 2023          # 2023 official results
 python3 download.py                          # 2026 preliminary results
 python3 scrape_wayback_prelim.py             # 2023 preliminary count (slow: Wayback Machine)
+python3 download_specials.py -e 2023         # special votes by category (slow: Wayback Machine)
 python3 project_specials.py                  # national projection
 venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
 python3 project_electorates.py               # per-electorate projection

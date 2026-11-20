@@ -15,6 +15,12 @@ checked; the site changes, so re-check anything old before relying on it.
   for 2002, 2014, 2017, 2020 and 2023. Claude's web-fetch tool, which runs from a
   different network, was blocked too, so it isn't specific to one IP address.
   Leaving out the User-Agent doesn't help.
+- **The per-voting-place CSVs are in the Wayback Machine** (checked 20 November
+  2026): CDX lists `party-` and `candidate-votes-by-voting-place-N.csv` for
+  every electorate of 2017, 2020 and 2023. `download_specials.py` uses them.
+  The user saved 2023's party CSVs for electorates 1 and 21 from the live site
+  in a browser (`data/live-site/`): byte-identical to the Wayback copies
+  (captured January 2026).
 - **The `/xml/` paths are reachable** with a custom User-Agent (we use
   `Elections Analysis`) or curl's default. **Python's default User-Agent
   (`Python-urllib/3.x`) gets a 403 even on `/xml/`**, so scripts must set one.
@@ -263,7 +269,9 @@ Machine instead (next section).
   (spot-checked 10 November 2026 by comparing `eNN.xml` with the sum of that
   electorate's voting-place files, for every party, candidate and informal
   count):
-  - **2023 official: apparently ordinary votes only (inferred).** Every party
+  - **2023 official: ordinary votes only** (inferred 10 November; confirmed
+    20 November 2026: no `vp_no` 300+ files, and Auckland Central's gap of
+    12,046 party votes is within 8 of the CSV's special-vote rows, 12,038). Every party
     and candidate has more votes in `eNN.xml` than in the voting-place sum
     (never fewer), and so do informals. Gaps: Christchurch Central 9,927 party / 9,122 candidate (24.6%
     of votes cast), Palmerston North 6,072 / 5,524 (16.7%), Wellington Central
@@ -272,10 +280,27 @@ Machine instead (next section).
     exactly equal `eNN.xml`, informals included: 2020 Dunedin gap 18 party / 13
     candidate, 2020 Northland 60 / 60, 2017 Rongotai 0 / 0. The files are dated
     after the official results (2020-11-20, 2017-10-07), so this isn't a
-    preliminary snapshot. Which files hold the specials is unknown: no tag
-    marks them. Most votes are in `vp_no` 200+ files (e.g. 33,457 of 46,103
-    ballots in Dunedin 2020), so they may be folded into those. The small 2020
-    gaps aren't explained.
+    preliminary snapshot. **The specials are the `vp_no` 4xx files**
+    (found 20 November 2026; no tag marks them, only the number). **Which
+    number holds which category varies between electorates**, even within a
+    year, so they can't be labelled from the XML alone:
+    - 2020 Auckland Central: 401 overseas, 402 overseas party-only, 403 before
+      polling day, 404 on polling day, 405 party-only (all match the CSV
+      exactly). 2020 Banks Peninsula: 401 overseas, 402 before, 403 on, 404
+      party-only, 405 empty.
+    - 2017 Auckland Central: 401 overseas, 402 before, 403 on, 404 party-only
+      (2017's CSVs have no overseas party-only row).
+    - `download_specials.py --check-xml` compares all 4xx files together with
+      the CSVs' special votes, for every electorate and party: 2017 matches
+      exactly. 2020 matches in the 10 electorates with a separate overseas
+      party-only file; in the other 62, **the XML leaves out the overseas
+      party-only votes** (120 votes in 48 electorates; 14 had none), and
+      otherwise matches exactly.
+    - 3xx files exist too (2017 Auckland Central: 302 has 163 ballots, 303 has
+      13; 301 and 2020's 301–302 are empty). They aren't special-vote rows
+      in the CSV, so they're presumably counted as ordinary. Not identified.
+    The small 2020 gaps aren't explained. The missing overseas party-only
+    votes are only part of them at most (Dunedin: 5 of 18; Northland: 0 of 60).
   - **2026 preliminary: sums equal `eNN.xml` exactly** (Auckland Central,
     Glendene, Palmerston North, Southland, Te Tai Tokerau). That's expected,
     since specials aren't counted yet. Ballot papers issued can differ slightly
@@ -294,12 +319,46 @@ Machine instead (next section).
   ordinary votes, not just specials, so recovered preliminary counts (from the
   Wayback Machine) are the more direct source anyway. The 2023 subtraction
   figures are at most a rough sanity check on them.
-- The XML gives **one** special-vote total. Unlike the CSVs it doesn't split
-  specials into overseas, before polling day, on polling day and party-only
-  (see `SPECIAL_ROW_NAMES` in `electorate.py` in
-  [czlee/elections-2020](https://github.com/czlee/elections-2020)).
+- For 2023, the XML has **no** split of special votes into overseas, before
+  polling day, on polling day and party-only (2017 and 2020: see the 4xx files
+  above). The CSVs have it for every year (next section).
 - Size: 2023 has about 10,655 voting-place results (`total_voting_places_counted`),
   about 72 minutes at 0.4 s per request. 2026 preliminary has 9,389.
+
+### Special votes by category (checked 20 November 2026)
+
+- The CSVs' special-vote rows, by label before " - <electorate>":
+  "Overseas Special Votes Including Defence Force"; overseas party-only
+  ("Overseas Votes Allowed for Party Only" in 2020, "Overseas Special Votes
+  for Party Only" in 2023, none in 2017); "Special Votes BEFORE Polling Day";
+  "Special Votes ON Polling Day"; "Votes Allowed for Party Only". Other rows
+  are ordinary: voting places, "Voting places where less than 6 votes were
+  taken", hospital teams. A voting place can have "Special" in its name
+  ("Wairau Valley Special School").
+- For every electorate and party in all three years, ordinary + overseas +
+  domestic equals the CSV's total row and `party_votes.csv`.
+- Final − prelim = overseas + domestic + revisions, where revisions = final
+  ordinaries − prelim (the official count's corrections). National totals
+  (prelim as `project_specials.py` reads it):
+
+  | | 2017 | 2020 | 2023 |
+  |---|---|---|---|
+  | overseas counted / estimate | 58,952 / 61,375 | 61,037 / 66,000 | 77,189 / 80,000 |
+  | domestic counted / estimate | 359,028 / 322,697 | 427,739 / 414,000 | 505,364 / 487,000 |
+  | revisions (% of prelim) | 4,114 (0.19%) | 13,848 (0.58%) | 14,217 (0.63%) |
+
+  The estimates are the press releases' (overseas includes dictation votes,
+  which the CSVs count as domestic; domestic = total estimate − overseas).
+- Overseas and domestic multipliers differ a lot. 2023: Labour 0.65 / 1.05,
+  Green 2.26 / 1.24, ACT 1.19 / 0.75, NZ First 0.49 / 0.73, Te Pāti Māori
+  1.23 / 1.91. Overseas was 12–14% of counted specials in 2017–2023, but
+  96,947 of 2026's 399,365 estimate (24%).
+- Revisions are lumpy. 2023 (71 electorates, without Port Waikato): median
+  about 0%, 29 negative; Māngere +11.8%, Hutt South +8.1%, Coromandel +4.6%,
+  Te Tai Tonga +4.3%, Te Tai Hauāuru +4.1%, Mana −3.8%. All six were 100%
+  counted in the archived preliminary pages, so this isn't missing results.
+  Their party mix reflects where corrections happened, so the projection
+  shares revisions like the preliminary count (multiplier 1).
 
 ### Quirks in the 2026 preliminary data (8 November 2026 snapshot)
 
@@ -338,7 +397,13 @@ Machine instead (next section).
   official feed. It doesn't scrape the national totals on `index.html`.
   Checked 10 November 2026: it runs for 2023 and 2017 with no problems
   reported except 2023's missing Port Waikato page.
-- `project_specials.py` (10 November 2026): national projection of the 2026
+- `download_specials.py` (20 November 2026): downloads the party and
+  candidate per-voting-place CSVs for 2017, 2020 and 2023 from the Wayback
+  Machine into `results/<year>/raw/csv/`, and writes
+  `results/<year>/party_votes_by_category.csv` (ordinary, overseas, domestic).
+  Stops on any reconciliation error. Candidate CSVs aren't parsed yet.
+- `project_specials.py` (10 November 2026; split into overseas, domestic and
+  revisions pools 20 November 2026): national projection of the 2026
   final party vote from 2023's preliminary-to-final changes; method in its
   docstring. Writes `results/projection-2026/national.csv`. Reads the 2023
   preliminary totals straight from the saved overview page. Parties new in 2026

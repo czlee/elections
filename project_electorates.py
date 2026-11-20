@@ -20,8 +20,8 @@ includes changes to ordinary votes in the official count.
   3. Special-vote volume. Each 2026 electorate's special votes are its 2026
      preliminary count times its notional 2023 ratio of special votes to
      preliminary votes, times one national scale factor. The factor makes the
-     party votes add up to the national projection's total (the Electoral
-     Commission's estimate times the 2023 adjustment; see project_specials.py).
+     party votes add up to the national projection's total (the sum of its
+     overseas, domestic and revisions pools; see project_specials.py).
      The same factor is used for candidate votes.
   4. Projected special votes are shared out as in project_specials.py: the
      2026 preliminary share times the multiplier, normalised.
@@ -53,7 +53,7 @@ from collections import Counter, defaultdict
 
 import project_specials as ps
 from parties import PartyNames
-from project_specials import SPECIAL_ESTIMATE_2026, read_party_totals
+from project_specials import read_party_totals
 from seats import TOTAL_SEATS, allocate
 
 DEFAULT_BASE = "2023"
@@ -207,7 +207,7 @@ def compute(base=DEFAULT_BASE):
     final_2023_national = names.to_ids(base, read_party_totals(input_files[(base, "final", "party")]))
     national_specials_2023 = sum(final_2023_national.values()) - sum(prelim_2023_national.values())
     national_ratio = national_specials_2023 / sum(prelim_2023_national.values())
-    target = SPECIAL_ESTIMATE_2026 * national_specials_2023 / ps.BASES[base]["estimate"]
+    target = ps.compute(base)["projected_specials_total"]
 
     projected, omitted, ratios, unscaled = [], [], {}, 0.0
     for elec_id in sorted(sources):
