@@ -4,6 +4,9 @@
 #
 # The site's data (site/src/lib/data/) is committed: CI doesn't rerun the
 # Python pipeline, which needs Stats NZ data and a slow Wayback scrape.
+#
+# The earlier, single-multiplier version of the site is built from the
+# site-v1 branch and served at /elections/2026-projection/v1/.
 name: Deploy site
 
 on:
@@ -26,21 +29,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: site-v1
+          path: v1
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: site/package-lock.json
+          cache-dependency-path: |
+            site/package-lock.json
+            v1/site/package-lock.json
       - run: npm ci
         working-directory: site
       - run: npm run build
         working-directory: site
         env:
           BASE_PATH: /elections/2026-projection
+      - run: npm ci
+        working-directory: v1/site
+      - run: npm run build
+        working-directory: v1/site
+        env:
+          BASE_PATH: /elections/2026-projection/v1
       - name: Assemble Pages tree
         run: |
           mkdir -p _site
           cp -r site/build _site/2026-projection
+          cp -r v1/site/build _site/2026-projection/v1
           cp site/static-root/index.html _site/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
