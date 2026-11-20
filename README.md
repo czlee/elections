@@ -49,7 +49,7 @@ All are CC BY 4.0, credited in the site's footer.
 python3 download.py --election 2023          # 2023 official results
 python3 download.py                          # 2026 preliminary results
 python3 scrape_wayback_prelim.py             # 2023 preliminary count (slow: Wayback Machine)
-python3 download_specials.py -e 2023         # special votes by category (slow: Wayback Machine)
+python3 download_specials.py -e 2023         # special votes by category, party and candidate (slow: Wayback Machine)
 python3 project_specials.py                  # national projection
 venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
 python3 project_electorates.py               # per-electorate projection

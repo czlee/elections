@@ -18,10 +18,14 @@ three pools, which are projected separately:
 
   1. For each party, the base multipliers are its share of the base
      election's overseas special votes, and of its domestic special votes,
-     each divided by its share of the base's preliminary count. Every
-     party's revisions multiplier is 1.
+     each divided by its share of the base's ordinary votes in the final
+     count. (Not the preliminary count: that would mix the revisions into
+     the multipliers.) Every party's revisions multiplier is 1.
   2. In each pool, the projected 2026 share is the 2026 preliminary share
-     times the multiplier, normalised to add to 100%.
+     times the multiplier, normalised to add to 100%. Revisions are shared
+     like the preliminary count, so the 2026 final count's ordinary votes
+     are shared like it too, and the preliminary share stands in for the
+     ordinary-vote share that the multipliers were measured against.
   3. The number of 2026 votes in each pool:
        overseas   the Electoral Commission's 2026 estimate of overseas (and
                   dictation) votes, times the base election's overseas
@@ -238,6 +242,7 @@ def compute(base=DEFAULT_BASE):
     # Steps 1 and 3: base multipliers and volumes for each pool
     prelim_share_2026 = shares(prelim_2026)
     links = {p: names.counterpart(p, base, final_base) for p in prelim_2026}
+    ordinary_share_base = shares(Counter({p: categories["ordinary"].get(p, 0) for p in final_base}))
     pools = {}
     for pool, estimate_2026, estimate in [
             ("overseas", SPECIAL_ESTIMATE_OVERSEAS_2026, overseas_estimate_base),
@@ -245,7 +250,7 @@ def compute(base=DEFAULT_BASE):
              estimate_base - overseas_estimate_base)]:
         votes = Counter({p: categories[pool].get(p, 0) for p in final_base})
         pool_share = shares(votes)
-        m_base = {p: pool_share[p] / prelim_share_base[p] for p in final_base}
+        m_base = {p: pool_share[p] / ordinary_share_base[p] for p in final_base}
         base_total = sum(votes.values())
         pools[pool] = {"base": votes, "base_total": base_total, "multipliers_base": m_base,
                        "estimate_base": estimate, "estimate_2026": estimate_2026,

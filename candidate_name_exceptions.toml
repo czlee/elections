@@ -1,0 +1,60 @@
+# Candidates whose name in the per-voting-place CSVs (download_specials.py) has
+# a different surname from the official feed's, by election: "CSV name" =
+# "official name". The CSVs use legal names and the feed uses the names
+# candidates stood under. Candidates are matched by total votes (unique in
+# every electorate); each pair here was checked by eye to be the same person:
+# the given names agree, or the CSV gives the other surname, usually
+# double-barrelled or hyphenated. download_specials.py stops on any surname
+# mismatch not listed here, and on any entry here it didn't need. Comments
+# give the electorate number.
+
+[2017]
+"X, Mika" = "HAKA, Mika"                                                 # 1
+"CURTIS, Raewyn Marcelle" = "BENNETT, Raewyn"                            # 2
+"CLARK, Angela Maree" = "WARREN-CLARK, Angie"                            # 2
+"HERBERT-SHUFFLEBOTHAM, Janine Anne" = "SHUFFLEBOTHAM, Janine"           # 4
+"SHADBOLT, Melanie Jane" = "MARK-SHADBOLT, Melanie"                      # 5
+"MONTAGUE-GALLAGHER, Shane Anthony" = "GALLAGHER, Shane"                 # 9
+"PALA, Ainul Nisha" = "DEGIA-PALA, Anne"                                 # 21
+"BOYACK-MAYER, Rachel Elizabeth" = "BOYACK, Rachel"                      # 30
+"BEEHRE, Kym Elizabeth" = "KOLONI, Kym"                                  # 34
+"DOUBE, Jessica Jane" = "HAMMOND DOUBE, Jessica"                         # 36
+"HODGKINSON, Rachel Ann" = "CLARK, Rachel"                               # 47
+"BLACKTOPP, Russell Kane" = "KANE, Rusty"                                # 52
+"KINGI, Emma-Jane Alice Mihaere" = "MIHAERE KINGI, Emma-Jane"            # 70
+"TAARE, Mei Matere" = "REEDY-TAARE, Mei"                                 # 70
+"STANTON TUREI, Metiria Leeann Agnes" = "TUREI, Metiria"                 # 70
+
+[2020]
+"MELLOW-SANDFORD, Emma Jane" = "MELLOW, Emma"                            # 1
+"CLARK, Angela Maree" = "WARREN-CLARK, Angie"                            # 3
+"McCARTHY, Charlotte Miria" = "STAPLES, Charlotte"                       # 6
+"AVENDANO CHRISTIE, Adriana Catalina Ruth" = "CHRISTIE, Adriana"         # 11
+"HEDGE DEEDMAN-HEDGE, Myah" = "DEEDMAN, Myah"                            # 12
+"NISHA PALA, Ainul" = "DEGIA-PALA, Anne"                                 # 19
+"JORONEN (NEE CARTWRIGHT), Helen Rebecca Louise" = "CARTWRIGHT, Helen"   # 20
+"BOYACK-MAYER, Rachel Elizabeth" = "BOYACK, Rachel"                      # 27
+"BLACKTOPP, Russell Kane" = "KANE, Rusty"                                # 29
+"THURSTON, Daniel George" = "THURSTON CROW, Dan"                         # 29
+"MARSH, Helen Gordon" = "JEREMIAH, Helen"                                # 32
+"XIAO, Yuhui" = "XIAO-COLLEY, Sophia Yuhui"                              # 32
+"WILSON, Rawinia Tau Aroha" = "MARU, Aroha"                              # 40
+"ASI TUIATAGA LEAVASA, Neru" = "LEAVASA, Neru"                           # 48
+"LIVINGSTON-POOLEY, Tracy Jane" = "LIVINGSTON, Tracy"                    # 52
+"LEWIS CARR, Stephanie" = "LEWIS, Steph"                                 # 62
+"SKIPWORTH, Heather" = "TE AU-SKIPWORTH, Heather"                        # 67
+"BAILEY, Korrallie Te Atakahaea Viviene" = "BAILEY-TAURUA, Korrallie"    # 69
+
+[2023]
+"MANUKIA, Ruby" = "SCHAUMKEL, Ruby"                                      # 19
+"STANLEY, Brooke Fiafia" = "PAO STANLEY, Brooke"                         # 21
+"VANDEN HEUVEL, Anthony Joseph James" = "VAN DEN HEUVEL, Anthony Joseph J"  # 24
+"BOYACK-MAYER, Rachel Elizabeth" = "BOYACK, Rachel Elizabeth"            # 27
+"ALVAREZ DE LUGO COLMENARES, Juan Jose" = "ALVAREZ DE LUGO, Juan"        # 28
+"MUHAMMAD JAWAD, Wajahat Ali" = "MUHAMMAD, Ali"                          # 34
+"VERCOE, Karri-Ann Alisa" = "BLACK-VERCOE, Kariana"                      # 44
+"LEWIS CARR, Stephanie Ann" = "LEWIS, Steph"                             # 62
+"CLARK, Angela Maree" = "WARREN-CLARK, Angie"                            # 64
+"NANDWANI-LYNN, Ankita" = "LYNN, Ankita"                                 # 65
+"PEKE, Soraya Waiata" = "PEKE-MASON, Soraya"                             # 69
+"FUIMAONO KARENA, Geoffrey Wayne Puhi" = "FUIMAONO PUHI, Geoffrey Karena"  # 71

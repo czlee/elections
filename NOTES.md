@@ -359,6 +359,34 @@ Machine instead (next section).
   counted in the archived preliminary pages, so this isn't missing results.
   Their party mix reflects where corrections happened, so the projection
   shares revisions like the preliminary count (multiplier 1).
+- **Electorate revision rates barely persist** (checked 20 November 2026):
+  2017 vs 2023 notional revision rates on 2026 boundaries correlate at 0.22
+  (rank 0.25). 2023's largest (Māngere +11.4%, Hutt South +7.3%,
+  Coromandel +4.6% on 2026 boundaries) were about 0% in 2017. **Except Māori
+  electorates**, which run consistently higher: 2017 +1.47% vs +0.11% for
+  general electorates, 2023 +2.24% vs +0.49%; six of seven above +0.8% in
+  both (Te Tai Tonga +4.0%, +4.3%). Possibly Māori-roll votes cast away from
+  the home electorate reaching it only in the official count; not verified.
+- **Decided with the user (20 November 2026): electorate revisions use one
+  uniform national ratio** (2026 prelim × the base's national revisions
+  ratio), not each electorate's own (mostly noise, and not possible for 2020,
+  which has no electorate prelims) nor separate Māori/general ratios (not
+  worth the complexity). **The site should explain this** (phase 3).
+- **Decided with the user (20 November 2026): multipliers are measured against
+  final-count ordinary votes**, not the preliminary count, in both the national
+  and electorate projections, so that revisions don't leak into them. With
+  uniform revisions, 2026's projected ordinaries are shared like its prelim, so
+  multiplying prelim shares is exact.
+- Candidate CSVs: same layout, heading "Candidate Vote Details", no
+  party-only rows. **Names are legal names**, which differ from the official
+  feed's in about a quarter of cases ("KAYE, Nicola Laura" for "KAYE, Nikki").
+  Candidates are matched by total votes instead: in every electorate of all
+  three years, the totals are unique and equal `candidate_votes.csv`'s as a
+  set of numbers, except 2023 Port Waikato (all 0, no electorate vote). The
+  surnames must then match, unless the pair is in
+  `candidate_name_exceptions.toml` (45 pairs, each checked by eye; decided
+  with the user to keep a committed list rather than fuzzy matching). 2023
+  Port Waikato's heading reads "Port Waikato 39\n(Poll Cancelled)".
 
 ### Quirks in the 2026 preliminary data (8 November 2026 snapshot)
 
@@ -400,8 +428,10 @@ Machine instead (next section).
 - `download_specials.py` (20 November 2026): downloads the party and
   candidate per-voting-place CSVs for 2017, 2020 and 2023 from the Wayback
   Machine into `results/<year>/raw/csv/`, and writes
-  `results/<year>/party_votes_by_category.csv` (ordinary, overseas, domestic).
-  Stops on any reconciliation error. Candidate CSVs aren't parsed yet.
+  `results/<year>/party_votes_by_category.csv` and
+  `candidate_votes_by_category.csv` (ordinary, overseas, domestic). Stops on
+  any reconciliation error. `--check-xml` compares 2017's and 2020's specials
+  with the XML 4xx files.
 - `project_specials.py` (10 November 2026; split into overseas, domestic and
   revisions pools 20 November 2026): national projection of the 2026
   final party vote from 2023's preliminary-to-final changes; method in its
@@ -437,6 +467,9 @@ Machine instead (next section).
   point. General-roll meshblock sums differ from the published 2025 totals by
   56 people (median absolute) to 593 (Waikato, +0.8%), mostly upwards in
   rural seats; not explained, too small to matter.
+  - `--base 2020` (20 November 2026): same layers as 2023 (2020 and 2023 used
+    the same boundaries); the output equals the 2023 file apart from the
+    column names.
   - `--base 2017` (14 November 2026): 2017 (2014 boundaries) → 2026, writing
     `electorates_2017_2026.csv` (154 overlaps); columns are named by base year
     (`elec_id_2017`, `share_of_2017`). Weights are still the 2023 Census, six
@@ -460,6 +493,14 @@ Machine instead (next section).
     (final below preliminary) are listed under "Needs the user's review".
     2017's small-party multipliers are noisy (e.g. East Cape ACT candidate,
     party-vote multiplier 0.174), since ACT had 0.5% in 2017.
+  - **Pools (20 November 2026):** overseas, domestic and revisions per
+    electorate, multipliers against notional ordinaries, revisions at the
+    national ratio; method in its docstring. No base-year electorate prelims
+    needed, so **`--base 2020` works** (`electorates_*-base2020.csv`, needs
+    `concordance.py --base 2020`). Flips: 2023 base Wellington Bays; 2017 and
+    2020 bases Hamilton East, Wairarapa and Wellington Bays. No winner changes
+    from phase 1 (single pool); largest margin changes Māngere −702 (2023 base,
+    its +11.8% revision no longer inflates its volume) and Epsom −917 (2017).
 - `export_site_data.py` (13 November 2026): writes the site's JSON
   (`site/src/lib/data/2023/`) from `project_specials.compute()` and
   `project_electorates.compute()` (both scripts were refactored to expose their
@@ -584,6 +625,25 @@ switcher; and the per-party horseshoe rings (not quite what the user had in
 mind, but fine as it's consistent across bases).
 
 ## Plans
+
+### Phase 3: site for the pooled projection (discussed 20 November 2026, not started)
+
+- Freeze the current site at `/elections/2026-projection/v1/` (the user's
+  choice of path, "least jinx-y") by building a tagged commit (`d946dec`, the
+  last single-pool site) in CI alongside the main build; check OG/canonical URLs;
+  add a "newer version" link on v1.
+- **Exported JSON changed in phase 2 and the site hasn't caught up, so don't
+  commit re-exported site data until it has.** Base-year electorate fields
+  are now final-count ordinaries (`ordinary`, `ordinary_share`), not
+  preliminary counts (`prelim`); rows and base rows have per-pool
+  multipliers (`pools`); per-kind `ratio`/`scale` became `pools`; the 2020
+  base has `electorates.json`; and `breakeven` is now `factor` (the scale on
+  the runner-up's overseas and domestic multipliers to tie), `needed_specials`
+  and `had_specials`, for wording like "would have needed to do 6% better in
+  the special votes" (user's suggestion). `electorates.json` grew from
+  1.2 MB to 1.7 MB.
+- Show two multipliers per party, three volume pieces (overseas, domestic,
+  revisions), and explain why revisions use one national ratio (see above).
 
 ### Per-electorate projection (discussed 10 November 2026, not started)
 

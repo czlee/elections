@@ -24,9 +24,19 @@ For each electorate and party, the three categories must add up to the CSV's
 total row, and that must equal results/<year>/party_votes.csv
 (download.py --election <year>), or the script stops with an error.
 
-Raw CSVs (party and, for later use, candidate votes) are saved under
-results/<year>/raw/csv/. The output is results/<year>/party_votes_by_category.csv,
-with the official feed's party names.
+The candidate CSVs work the same way, except that they have no party-only
+rows. Their candidate names are legal names, which can differ from the
+official feed's (e.g. "KAYE, Nicola Laura" for "KAYE, Nikki"), so candidates
+are matched by total votes instead: in every electorate, each candidate's
+total is unique and equal to candidate_votes.csv's (checked for 2017, 2020 and
+2023). As a check, the surnames must then be equal, unless the pair is listed
+in candidate_name_exceptions.toml. An electorate where every candidate has 0
+votes (2023 Port Waikato, which had no electorate vote) is skipped.
+
+Raw CSVs are saved under results/<year>/raw/csv/. The outputs are
+results/<year>/party_votes_by_category.csv and
+results/<year>/candidate_votes_by_category.csv, with the official feed's party
+and candidate names.
 
 --check-xml (2017 and 2020 only) also downloads each electorate's special-vote
 voting-place files (vp_no 4xx) from the XML feed and reports any party whose
@@ -40,6 +50,7 @@ import csv
 import io
 import os
 import re
+import tomllib
 import urllib.error
 from collections import Counter, defaultdict
 
@@ -65,44 +76,54 @@ CATEGORIES = {
 # would also catch voting places like "Wairau Valley Special School".)
 SPECIAL_RE = re.compile(r"special votes|votes allowed", re.I)
 NOT_PARTIES = {"Total Valid Party Votes", "Informal Party Votes"}
+NOT_CANDIDATES = {"Total Valid Candidate Votes", "Informal Candidate Votes"}
+HEADINGS = {"party": "Party Vote Details", "candidate": "Candidate Vote Details"}
+NAME_EXCEPTIONS_FILE = "candidate_name_exceptions.toml"
 # Years whose XML feed has special-vote voting places, numbered 4xx (NOTES.md).
 # Electorates have up to five; missing numbers are skipped.
 XML_SPECIAL_YEARS = {"2017", "2020"}
 XML_SPECIAL_VP_NOS = range(401, 410)
 
 
-def parse_party_csv(text, elec_id):
-    """Parses a party-votes-by-voting-place CSV. Returns (electorate name,
-    {category: Counter({party: votes})}, Counter of the total row, Counter of
-    the overseas party-only votes, which are also in "overseas")."""
-    rows = list(csv.reader(io.StringIO(text.lstrip("﻿"))))
-    match = re.fullmatch(r"(.*) (\d+)", rows[1][0].strip())
-    if not match or match.group(2) != str(elec_id) or rows[1][1].strip() != "Party Vote Details":
+def parse_csv(text, elec_id, kind="party"):
+    """Parses a party- or candidate-votes-by-voting-place CSV. Returns
+    (electorate name, {category: Counter({column: votes})}, Counter of the
+    total row, Counter of the overseas party-only votes, which are also in
+    "overseas"). Columns are parties or candidates, as named in the CSV."""
+    rows = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
+    # e.g. "Auckland Central 1", or "Port Waikato 39\n(Poll Cancelled)" (2023 candidate votes)
+    match = re.fullmatch(r"(.*?) (\d+)(?:\s*\(.*\))?", rows[1][0].strip(), re.S)
+    if not match or match.group(2) != str(elec_id) or rows[1][1].strip() != HEADINGS[kind]:
         raise ValueError("electorate {0}: unexpected heading {1}".format(elec_id, rows[1]))
     name = match.group(1)
-    parties = [p.strip() for p in rows[2][2:]]
+    skip = NOT_PARTIES if kind == "party" else NOT_CANDIDATES
+    columns = [c.strip() for c in rows[2][2:]]
     votes = {"ordinary": Counter(), "overseas": Counter(), "domestic": Counter()}
     overseas_party_only = Counter()
     for row in rows[3:]:
         label = row[1].strip() if len(row) > 1 else ""
         if label == name + " Total":
-            total = Counter({p: int(v) for p, v in zip(parties, row[2:]) if p not in NOT_PARTIES})
+            total = Counter({c: int(v) for c, v in zip(columns, row[2:]) if c not in skip})
             return name, votes, total, overseas_party_only
         if not label or not any(v.strip() for v in row[2:]):
             continue  # section heading, e.g. "Advance Voting Places"
-        kind = label.split(" - ")[0].strip().lower()
-        if kind in CATEGORIES:
-            category = CATEGORIES[kind]
+        label_kind = label.split(" - ")[0].strip().lower()
+        if label_kind in CATEGORIES:
+            category = CATEGORIES[label_kind]
         elif SPECIAL_RE.search(label):
             raise ValueError("electorate {0}: unrecognised special-vote row {1!r}".format(elec_id, label))
         else:
             category = "ordinary"
-        for party, value in zip(parties, row[2:]):
-            if party not in NOT_PARTIES and value.strip():
-                votes[category][party] += int(value)
-                if category == "overseas" and "party only" in kind:
-                    overseas_party_only[party] += int(value)
+        for column, value in zip(columns, row[2:]):
+            if column not in skip and value.strip():
+                votes[category][column] += int(value)
+                if category == "overseas" and "party only" in label_kind:
+                    overseas_party_only[column] += int(value)
     raise ValueError("electorate {0}: no {1!r} row".format(elec_id, name + " Total"))
+
+
+def parse_party_csv(text, elec_id):
+    return parse_csv(text, elec_id, "party")
 
 
 def read_official(year):
@@ -112,6 +133,89 @@ def read_official(year):
         for row in csv.DictReader(f):
             official[int(row["elec_id"])][row["party"]] += int(row["votes"])
     return official
+
+
+def read_official_candidates(year):
+    """Reads results/<year>/candidate_votes.csv as {elec_id: {candidate: (party, votes)}}."""
+    official = defaultdict(dict)
+    with open(os.path.join("results", year, "candidate_votes.csv"), newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            official[int(row["elec_id"])][row["candidate"]] = (row["party"], int(row["votes"]))
+    return official
+
+
+def read_name_exceptions(year):
+    """{CSV name: official name} for candidates whose surnames differ."""
+    with open(NAME_EXCEPTIONS_FILE, "rb") as f:
+        return tomllib.load(f).get(year, {})
+
+
+def surname(name):
+    return name.split(",")[0].strip().upper()
+
+
+def match_candidates(year, elec_id, total, official, exceptions, used):
+    """Maps each CSV candidate (`total`: {CSV name: votes}) to the official
+    candidate with the same total. Raises an error on a tie or no match, or if
+    the surnames differ and the pair isn't in `exceptions`; adds each exception
+    used to `used`."""
+    by_votes = defaultdict(list)
+    for candidate, (_, votes) in official.items():
+        by_votes[votes].append(candidate)
+    mapping = {}
+    for csv_name, votes in total.items():
+        matches = by_votes.get(votes, [])
+        if len(matches) != 1:
+            raise ValueError("{0} electorate {1}: {2!r} ({3} votes) matches {4} official candidates: {5}".format(
+                year, elec_id, csv_name, votes, len(matches), matches))
+        official_name = matches[0]
+        if surname(csv_name) != surname(official_name):
+            if exceptions.get(csv_name) != official_name:
+                raise ValueError("{0} electorate {1}: {2!r} matched {3!r} by votes, but the surnames differ; "
+                                 "if it's the same person, add it to {4}".format(
+                                     year, elec_id, csv_name, official_name, NAME_EXCEPTIONS_FILE))
+            used.add(csv_name)
+        mapping[csv_name] = official_name
+    if sorted(mapping.values()) != sorted(official):
+        raise ValueError("{0} electorate {1}: candidates don't match one to one".format(year, elec_id))
+    return mapping
+
+
+def write_candidates(year, files):
+    """Parses the candidate CSVs and writes candidate_votes_by_category.csv."""
+    official = read_official_candidates(year)
+    exceptions, used = read_name_exceptions(year), set()
+    if set(files) != set(official):
+        raise ValueError("{0}: electorates {1} are in only one of the CSVs and candidate_votes.csv".format(
+            year, sorted(set(files) ^ set(official))))
+    rows, national, skipped = [], Counter(), []
+    for elec_id in sorted(official):
+        with open(files[elec_id], encoding="utf-8") as f:
+            name, votes, total, _ = parse_csv(f.read(), elec_id, "candidate")
+        if not any(total.values()) and not any(v for _, v in official[elec_id].values()):
+            skipped.append("{0} {1}".format(elec_id, name))
+            continue
+        summed = Counter()
+        for category in votes:
+            summed.update(votes[category])
+        for candidate in total:
+            if summed[candidate] != total[candidate]:
+                raise ValueError("{0} {1} {2}: categories sum to {3}, total row says {4}".format(
+                    year, name, candidate, summed[candidate], total[candidate]))
+        mapping = match_candidates(year, elec_id, total, official[elec_id], exceptions, used)
+        for category, counts in votes.items():
+            for csv_name, value in counts.items():
+                candidate = mapping[csv_name]
+                rows.append([elec_id, name, candidate, official[elec_id][candidate][0], category, value])
+                national[category] += value
+    unused = set(exceptions) - used
+    if unused:
+        raise ValueError("{0}: unused entries in {1}: {2}".format(year, NAME_EXCEPTIONS_FILE, sorted(unused)))
+    write_csv(os.path.join("results", year, "candidate_votes_by_category.csv"),
+              ["elec_id", "elec_name", "candidate", "party", "category", "votes"], rows)
+    print("{0} candidates: ordinary {1:,}, overseas {2:,}, domestic {3:,}{4}".format(
+        year, national["ordinary"], national["overseas"], national["domestic"],
+        "; skipped " + ", ".join(skipped) + " (no votes)" if skipped else ""))
 
 
 def download(year, kind, rawdir, force=False):
@@ -162,6 +266,8 @@ def check_xml(year, by_elec):
 def main(year, types, force=False, xml=False):
     rawdir = os.path.join("results", year, "raw", "csv")
     files = {kind: download(year, kind, rawdir, force) for kind in types}
+    if "candidate" in files:
+        write_candidates(year, files["candidate"])
     if "party" not in files:
         return
 
@@ -174,7 +280,7 @@ def main(year, types, force=False, xml=False):
     rows, national, by_elec = [], defaultdict(Counter), {}
     for elec_id in sorted(official):
         with open(files["party"][elec_id], encoding="utf-8") as f:
-            name, votes, total, overseas_party_only = parse_party_csv(f.read(), elec_id)
+            name, votes, total, overseas_party_only = parse_csv(f.read(), elec_id, "party")
         # Resolve the CSV's names to the official feed's through party_ids, as
         # the CSVs use some different names (e.g. "Leighton Baker Party").
         official_names = {names.party_id(year, p): p for p in official[elec_id]}

@@ -1,6 +1,7 @@
 """Builds a concordance from a base election's electorates to 2026 electorates
 (2025 boundaries), weighted by 2023 Census electoral population. The base is
-2023 (2020 boundaries) by default, or 2017 (2014 boundaries) with --base 2017.
+2023 (2020 boundaries) by default, 2020 (the same boundaries) with --base 2020,
+or 2017 (2014 boundaries) with --base 2017.
 
 Each 2025 meshblock is placed in a base-year and a 2025 general electorate,
 and a base-year and a 2025 Māori electorate, by its representative point (a
@@ -45,7 +46,7 @@ ELECTORATE_LAYERS = {
     "MED2025": ("maori-electorates-2025", "MED2025_V1_00", "MAORI_ELECTORAL_POPULATION"),
 }
 # Base election: (general layer, Māori layer) its electorates were on.
-BASE_LAYERS = {"2017": ("GED2014", "MED2014"), "2023": ("GED2020", "MED2020")}
+BASE_LAYERS = {"2017": ("GED2014", "MED2014"), "2020": ("GED2020", "MED2020"), "2023": ("GED2020", "MED2020")}
 DEFAULT_BASE = "2023"
 SUPPRESSED = -999
 
