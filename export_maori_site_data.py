@@ -85,11 +85,11 @@ def main():
     counted_won = Counter(winner_of(v) for v in all_votes.values())
     none_won = Counter(winner_of(v) for v in new.values())
 
-    def seats(won):
+    def seats(won, waived=()):
         eligible = {p: n for p, n in won.items() if p in party_votes}
         other = sum(n for p, n in won.items() if p not in party_votes)
-        res = allocate(party_votes, eligible, other)
-        _, to_allocate, quotients = _quotients(party_votes, eligible, other, TOTAL_SEATS, 0.05)
+        res = allocate(party_votes, eligible, other, waived=waived)
+        _, to_allocate, quotients = _quotients(party_votes, eligible, other, TOTAL_SEATS, 0.05, waived)
         ent = Counter(p for _, p, _ in quotients[:to_allocate])
         out = {pid(p): {"electorate": e, "list": l, "total": t}
                for p, (e, l, t) in sorted(res.items(), key=lambda x: (-x[1][2], x[0])) if t > 0}
@@ -97,7 +97,8 @@ def main():
         return out, {pid(p): n for p, n in ent.items()}, sum(r[2] for r in res.values()) + other, other_out
 
     seats_c, ent_c, house_c, other_c = seats(counted_won)
-    seats_n, ent_n, house_n, other_n = seats(none_won)
+    seats_n, ent_n, house_n, other_n = seats(none_won, m.THRESHOLD_WAIVED)
+    seats_nw, ent_nw, house_nw, _ = seats(none_won)  # the same without the waiver
     assert other_c["total"] == 0 and other_n["total"] == 0, "independents won electorates; handle them"
     total_party = sum(party_votes.values())
 
@@ -150,12 +151,23 @@ def main():
         if w0 != w1:
             flips.append(entry["slug"])
 
-    sensitivity = []
-    for s in SHARES:
-        won = Counter(winner_of(v) for v in by_share[s].values())
-        fl = [gnames[e] for e in sorted(gnames) if winner_of(general[e]) != winner_of(by_share[s][e])]
-        sensitivity.append({"share": s, "flips": fl, "labour": won[LABOUR], "national": won["National Party"]})
+    # Sensitivity: which electorates flip as the share of TPM+ votes that go to Labour rises. An
+    # electorate's flip status only changes at its Labour break-even, so the ranges between
+    # the break-evens (0 to 1) each have one set of flips. Each row is one such range.
+    cuts = sorted({round(e["labour_breakeven"], 9) for e in electorates
+                   if e["labour_breakeven"] is not None and 0 < e["labour_breakeven"] < 1})
+    bounds = [0.0] + cuts + [1.0]
+    sensitivity, seen = [], set()
+    for lo, hi in zip(bounds, bounds[1:]):
+        mid = (lo + hi) / 2
+        proj = m.project(general, places, mid)[0]
+        won = Counter(winner_of(v) for v in proj.values())
+        fl = [gnames[e] for e in sorted(gnames) if winner_of(general[e]) != winner_of(proj[e])]
+        sensitivity.append({"from": lo, "to": hi, "flips": fl, "new": [f for f in fl if f not in seen],
+                            "labour": won[LABOUR], "national": won["National Party"]})
+        seen |= set(fl)
 
+    parties_extra = {pid(m.FERRIS): "Tākuta Ferris (independent)"}
     maori_summary = [
         {"party": pid(party), "how": how, "votes": v}
         for (party, how), v in sorted(log.items(), key=lambda x: -x[1])]
@@ -164,11 +176,13 @@ def main():
         if p != m.INDEPENDENT:
             parties[pid(p)] = pn.short_names.get(pid(p)) or unlisted[pid(p)]
     maori_total = sum(sum(t.values()) for _, _, t in places)
+    parties.update(parties_extra)
     national = {
         "parties": [{"id": i, "short": s} for i, s in sorted(parties.items(), key=lambda x: x[1])],
-        "seats": {"counted": seats_c, "none": seats_n},
-        "entitlement": {"counted": ent_c, "none": ent_n},
-        "house": {"counted": house_c, "none": house_n},
+        "seats": {"counted": seats_c, "none": seats_n, "none_no_waiver": seats_nw},
+        "waived": sorted(pid(p) for p in m.THRESHOLD_WAIVED),
+        "entitlement": {"counted": ent_c, "none": ent_n, "none_no_waiver": ent_nw},
+        "house": {"counted": house_c, "none": house_n, "none_no_waiver": house_nw},
         "party_vote_total": total_party,
         "tpm_party_share": party_votes[TPM] / total_party,
         "flips": flips,
@@ -189,7 +203,7 @@ def main():
             json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
         print("wrote {0} ({1:,} bytes)".format(path, os.path.getsize(path)))
     print("flips:", flips)
-    print("sensitivity:", [(x["share"], len(x["flips"]), x["labour"], x["national"]) for x in sensitivity])
+    print("sensitivity:", [(round(x["from"], 3), round(x["to"], 3), len(x["flips"]), x["new"]) for x in sensitivity])
     print("houses:", house_c, house_n, "breakevens:",
           sorted((round(e["labour_breakeven"], 2), e["name"]) for e in electorates if e["labour_breakeven"] is not None)[-14:-4])
 

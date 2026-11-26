@@ -9,6 +9,9 @@
 	let { data } = $props();
 	const nat = $derived(data.national);
 	let view = $state(/** @type {'counted' | 'none'} */ ('none'));
+	/** Assumption 5: whether the 5% threshold is waived for Māori parties in the no-Māori-electorates count. */
+	let waiver = $state(true);
+	const noKey = $derived(waiver ? 'none' : 'none_no_waiver');
 	// The footer links to #limitations; open the box when arriving that way.
 	let limitsOpen = $state(false);
 	$effect(() => {
@@ -22,10 +25,10 @@
 	const name = (/** @type {string | null} */ id) => (id ? names[id] ?? id : 'Independent');
 	const rows = $derived(
 		nat.parties
-			.filter((/** @type {any} */ p) => nat.seats.counted[p.id]?.total || nat.seats.none[p.id]?.total)
+			.filter((/** @type {any} */ p) => nat.seats.counted[p.id]?.total || nat.seats[noKey][p.id]?.total)
 			.map((/** @type {any} */ p) => {
 				const c = nat.seats.counted[p.id] ?? { total: 0, electorate: 0, list: 0 };
-				const n = nat.seats.none[p.id] ?? { total: 0, electorate: 0, list: 0 };
+				const n = nat.seats[noKey][p.id] ?? { total: 0, electorate: 0, list: 0 };
 				return { ...p, counted: c, none: n, change: n.total - c.total };
 			})
 			.toSorted((/** @type {any} */ a, /** @type {any} */ b) => b.none.total - a.none.total || b.counted.total - a.counted.total)
@@ -39,10 +42,20 @@
 			return [r.id, { total: o.total, electorate: o.electorate }];
 		}))
 	);
-	const house = $derived(nat.house[view]);
+	const house = $derived(nat.house[view === 'none' ? noKey : view]);
 	const majority = $derived(Math.floor(house / 2) + 1);
-	const gains = $derived(rows.filter((/** @type {any} */ r) => r.change > 0));
-	const losses = $derived(rows.filter((/** @type {any} */ r) => r.change < 0));
+	/** The headline seat changes, with the threshold waived (the default): gains first, then the biggest losses. */
+	const headlineChanges = $derived(
+		nat.parties
+			.map((/** @type {any} */ p) => ({ ...p, change: (nat.seats.none[p.id]?.total ?? 0) - (nat.seats.counted[p.id]?.total ?? 0) }))
+			.filter((/** @type {any} */ r) => r.change)
+			.toSorted((/** @type {any} */ a, /** @type {any} */ b) => Number(b.change > 0) - Number(a.change > 0) || (a.change > 0 ? b.change - a.change : a.change - b.change))
+	);
+	const waivedTpm = $derived(nat.seats.none['te-pati-maori']?.total ?? 0);
+	/** The party that gets the seat Te Pāti Māori would have if the threshold isn't waived. */
+	const seatGoesTo = $derived(
+		nat.parties.find((/** @type {any} */ p) => (nat.seats.none_no_waiver[p.id]?.total ?? 0) > (nat.seats.none[p.id]?.total ?? 0))?.id
+	);
 	const flips = $derived(data.electorates.filter((/** @type {any} */ e) => e.flips));
 	/** Flips grouped by "from → to", as [{from, to, list}]. */
 	const flipGroups = $derived.by(() => {
@@ -58,29 +71,51 @@
 	/** Overhang in a count: seats above Sainte-Laguë share for parties whose electorates exceed it. */
 	const overhang = (/** @type {'counted' | 'none'} */ v) =>
 		rows
-			.map((/** @type {any} */ r) => ({ id: r.id, extra: r[v].total - (nat.entitlement[v][r.id] ?? 0), ent: nat.entitlement[v][r.id] ?? 0 }))
+			.map((/** @type {any} */ r) => {
+				const ent = nat.entitlement[v === 'none' ? noKey : v][r.id] ?? 0;
+				return { id: r.id, extra: r[v].total - ent, ent };
+			})
 			.filter((/** @type {any} */ x) => x.extra > 0 && rows.find((/** @type {any} */ r) => r.id === x.id)[v].list === 0);
-	const overhangSentence = (/** @type {'counted' | 'none'} */ v) => {
-		const o = overhang(v);
-		if (!o.length) return `With no Māori electorates there’s no overhang: the House has ${nat.house[v]} seats.`;
-		return `As counted, ${o.map((/** @type {any} */ x) => `${name(x.id)} has ${x.extra} overhang seat${x.extra === 1 ? '' : 's'} (${x.ent} by share, ${x.ent + x.extra} electorates)`).join(' and ')}, so the House has ${nat.house[v]} seats.`;
-	};
+	/** "Neither X nor Y would have an overhang": the parties with an overhang as counted, if there's none without Māori electorates. */
+	const noOverhang = $derived.by(() => {
+		const was = overhang('counted').map((/** @type {any} */ x) => name(x.id));
+		if (!was.length || overhang('none').length) return '';
+		return was.length === 1 ? `${was[0]} would not have an overhang.` : `Neither ${was.join(' nor ')} would have an overhang.`;
+	});
 	const winsOf = (/** @type {'counted' | 'none'} */ v, /** @type {string} */ id) => nat.seats[v][id]?.electorate ?? 0;
+	/** A share as a percentage with at most one decimal, e.g. 12.3% or 50%. */
+	const share = (/** @type {number} */ x) => `${Number((100 * x).toFixed(1))}%`;
+	const labourGain = $derived(winsOf('none', 'labour') - winsOf('counted', 'labour'));
 
-	/** @type {Record<string, string>} */
-	const HOW = {
-		'to Labour': 'Labour’s candidate (assumption 2)',
-		'same party': 'The same party’s candidate (assumption 3)',
-		'to bloc major party (no candidate there)': 'Labour’s candidate: no Green candidate there (assumption 3)',
-		'discarded: independent': 'Dropped (assumption 4)',
-		'discarded: no candidate there and no bloc': 'Dropped: no candidate there, no bloc (assumption 4)'
-	};
 	const dropped = $derived(
 		nat.moved.filter((/** @type {any} */ m) => m.how.startsWith('discarded'))
 	);
 	const droppedIndep = $derived(dropped.filter((/** @type {any} */ m) => m.party === null).reduce((a, m) => a + m.votes, 0));
 	const droppedOther = $derived(dropped.filter((/** @type {any} */ m) => m.party !== null).reduce((a, m) => a + m.votes, 0));
 	const maoriRoll = $derived(nat.maori_candidate_votes);
+	const toBloc = $derived(nat.moved.find((/** @type {any} */ m) => m.how.startsWith('to bloc'))?.votes ?? 0);
+	/** Votes by assumption and outcome. Small parties' own candidates are merged. */
+	const tableRows = $derived.by(() => {
+		const sum = (/** @type {any[]} */ xs) => xs.reduce((/** @type {number} */ a, /** @type {any} */ m) => a + m.votes, 0);
+		const same = nat.moved.filter((/** @type {any} */ m) => m.how === 'same party');
+		const big = same.filter((/** @type {any} */ m) => m.votes >= 5000);
+		const ORDER = ['national', 'top', 'alcp', 'nz-loyal'];
+		const rank = (/** @type {string} */ id) => (ORDER.includes(id) ? ORDER.indexOf(id) : ORDER.length);
+		const small = same
+			.filter((/** @type {any} */ m) => m.votes < 5000)
+			.toSorted((/** @type {any} */ a, /** @type {any} */ b) => rank(a.party) - rank(b.party));
+		return [
+			{ a: 2, who: 'TPM+: Te Pāti Māori, Te Tai Tokerau and Tākuta Ferris', parties: ['te-pati-maori'], to: 'labour', votes: sum(nat.moved.filter((/** @type {any} */ m) => m.how === 'to Labour')) },
+			...big.map((/** @type {any} */ m) => ({ a: 3, who: name(m.party), parties: [m.party], to: m.party, votes: m.votes })),
+			{ a: 3, who: `Green, where there was no Green candidate`, parties: ['green'], to: 'labour', votes: toBloc },
+			{ a: 3, who: `${small.map((/** @type {any} */ m) => name(m.party)).join(', ')}`, parties: small.map((/** @type {any} */ m) => m.party), to: 'own', votes: sum(small) },
+			{ a: 4, who: 'Independents; parties with no candidate or bloc', parties: [null], to: null, votes: sum(nat.moved.filter((/** @type {any} */ m) => m.how.startsWith('discarded'))) }
+		];
+	});
+	/** Votes from Te Pāti Māori, the Te Tai Tokerau Party and Tākuta Ferris, who all go to Labour. */
+	const group = $derived(
+		nat.moved.filter((/** @type {any} */ m) => m.how === 'to Labour').reduce((/** @type {number} */ a, /** @type {any} */ m) => a + m.votes, 0)
+	);
 	/** The narrowest new margins, for the limitations. */
 	const close = $derived(data.electorates.toSorted((/** @type {any} */ a, /** @type {any} */ b) => a.margin - b.margin).slice(0, 3));
 </script>
@@ -91,70 +126,68 @@
 	What would the 2026 <strong>electorate</strong> results have been if there were no Māori electorates, and
 	every Māori-roll voter had voted in the general electorate for their area instead? This applies a few
 	<a href="#assumptions">assumptions</a> to the 2026 <strong>preliminary count</strong>. The party vote
-	doesn’t distinguish between rolls, so it stays as it was; only the electorates change.
+	stays as-is; only the electorates change.
 </p>
 <p class="lede">
-	Under these assumptions, <strong>{flips.length} of the {nat.general_electorates} general electorates flip</strong>:
-	{#each flipGroups as g, k (k)}{k > 0 ? '; ' : ''}{#each g.list as f, i (f.slug)}{i > 0 ? (i === g.list.length - 1 ? ' and ' : ', ') : ''}<a href={link(`/electorate/${f.slug}/`)}>{f.name}</a>{/each} from {name(g.from)} to {name(g.to)}{/each}.
-	Electorate wins (all {nat.general_electorates + nat.maori_electorates.length} electorates as counted, the {nat.general_electorates} general ones after) go from
-	{#each ['national', 'labour'] as id, i (id)}{i > 0 ? ' and ' : ''}{name(id)} {winsOf('counted', id)} to {winsOf('none', id)}{/each},
-	with {name('green')} and {name('act')} unchanged, and
-	{name('te-pati-maori')} losing the {winsOf('counted', 'te-pati-maori')} electorates it won.
-	Seats:
+	Under the <a href="#assumptions">assumptions</a>, <strong>{flips.length} of the {nat.general_electorates} general electorates flip</strong>
+	from {name(flipGroups[0].from)} to {name(flipGroups[0].to)}, for a net gain of {labourGain}
+	electorate{labourGain === 1 ? '' : 's'} for {name('labour')}. {noOverhang} Overall seats:
 	<strong
-		>{#each [gains, losses] as group, g (g)}{g > 0 && gains.length ? '; ' : ''}{#each group as r, i (i)}{i > 0 ? ', ' : ''}<span
-					class="party-change" style:--c={colour(r.id)}>{r.short} {signed(r.change)}</span
-				>{/each}{/each}</strong
-	>. {name('te-pati-maori')} would have no seats because it got {pct(nat.tpm_party_share)} of the party vote,
-	under the 5% threshold, and no electorates.
+		>{#each headlineChanges as r, i (r.id)}{i > 0 ? ', ' : ''}<span
+				class="party-change" style:--c={colour(r.id)}>{r.short} {signed(r.change)}</span
+			>{/each}</strong
+	>.
+</p>
+<p class="lede">
+	If the 5% threshold is waived for {name('te-pati-maori')} (per the 1986
+	<a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission</a>), they keep
+	{waivedTpm} list seat{waivedTpm === 1 ? '' : 's'}; otherwise, that seat goes to {name(seatGoesTo)}.
+	<a href="#threshold">You can switch this below.</a>
 </p>
 
-<h2 id="assumptions">What this assumes</h2>
+<h2 id="assumptions">Assumptions</h2>
 <p>
-	{votes(maoriRoll)} votes were cast for Māori electorate candidates across {nat.voting_places.toLocaleString('en-NZ')}
-	voting-place results. Each is moved to a general electorate as follows. These are assumptions, not findings.
+	{votes(maoriRoll)} votes were cast for Māori-electorate candidates. Each is counted in a general electorate as
+	follows. <strong>TPM+</strong> is shorthand for voters for Te Pāti Māori, the Te Tai Tokerau Party and
+	Tākuta Ferris.
 </p>
 <ol class="assumptions">
 	<li>
 		<strong>Voters follow their voting places.</strong> A Māori-roll vote cast at a voting place is counted in
-		the general electorate that place is in. This isn’t exactly right (people vote away from home, at
-		advance voting places and with mobile teams), but we have to assume something, and every
-		voting place that took Māori-electorate votes has a general electorate it belongs to.
+		the general electorate that place is in. This isn’t exactly right (people vote away from home), but we have to assume something.
 	</li>
 	<li>
-		<strong>Every Te Pāti Māori voter would have voted for the Labour candidate.</strong> So would every
-		Te Tai Tokerau Party voter (a Māori-electorate-only party in the same bloc). This is the most
-		favourable assumption for Labour: the <a href="#sensitivity">table below</a> shows what happens if
-		fewer of them do.
+		<strong>TPM+ voters vote Labour.</strong> All {votes(group)} of them. This is the most favourable assumption
+		for Labour: <a href="#sensitivity">see what happens if fewer do</a>.
 	</li>
 	<li>
-		<strong>Everyone else votes for their party’s candidate in that general electorate.</strong> If their
-		party has no candidate there, the vote goes to the major party of the same bloc: Labour for Green
-		(this applies to {votes(nat.moved.find((/** @type {any} */ m) => m.how.startsWith('to bloc'))?.votes ?? 0)} votes). The
-		same rule would send New Zealand First and ACT voters to National, but no right-bloc party stood in
-		a Māori electorate other than National itself, so it was never needed.
+		<strong>Everyone else votes for their party’s candidate there.</strong> If their party has no candidate, they
+		vote for the major party of the same bloc.
 	</li>
 	<li>
-		<strong>Some votes are dropped.</strong> Independents’ votes ({votes(droppedIndep)}) are dropped. So are
-		{votes(droppedOther)} votes for Legalise Cannabis, Opportunity, NZ Loyal and Your PIC Party in
-		electorates where those parties had no candidate, and which have no bloc to fall back on. Even if all of them had gone to a general electorate’s runner-up, no result would change.
+		<strong>Some votes are dropped:</strong> other independents ({votes(droppedIndep)}), and voters for parties with no
+		candidate there and no bloc ({votes(droppedOther)}). Even if all of them had gone to a runner-up, no result would change.
 	</li>
 </ol>
-<div class="table-wrap">
+<details class="votes">
+	<summary>Where the {votes(maoriRoll)} Māori-electorate votes went</summary>
+	<div class="table-wrap">
 	<table>
-		<thead><tr><th>Māori-electorate vote for</th><th>Counted for</th><th class="num">Votes</th></tr></thead>
+		<thead><tr><th>Assumption</th><th>Māori-electorate voters for</th><th>Counted for</th><th class="num">Votes</th></tr></thead>
 		<tbody>
-			{#each nat.moved as m, i (i)}
+			{#each tableRows as r, i (i)}
 				<tr>
-					<td>{#if m.party}<span class="swatch" style:background={colour(m.party)}></span>{/if}{name(m.party)}</td>
-					<td>{HOW[m.how] ?? m.how}</td>
-					<td class="num">{votes(m.votes)}</td>
+					<td>{r.a}</td>
+					<td>{#each r.parties as p, k (k)}<span class="swatch" style:background={colour(p)}></span>{/each}{r.who}</td>
+					<td>{#if r.to === 'own'}Their own candidates{:else if r.to}<span class="swatch" style:background={colour(r.to)}></span>{name(r.to)}{:else}Dropped{/if}</td>
+					<td class="num">{votes(r.votes)}</td>
 				</tr>
 			{/each}
 		</tbody>
-		<tfoot><tr><td>Total</td><td></td><td class="num">{votes(nat.moved.reduce((/** @type {number} */ a, /** @type {any} */ m) => a + m.votes, 0))}</td></tr></tfoot>
+		<tfoot><tr><td></td><td>Total</td><td></td><td class="num">{votes(nat.moved.reduce((/** @type {number} */ a, /** @type {any} */ m) => a + m.votes, 0))}</td></tr></tfoot>
 	</table>
-</div>
+	</div>
+</details>
 
 <details class="limits" id="limitations" bind:open={limitsOpen}>
 	<summary><strong>Before you believe this:</strong> Reasons this might not work (a.k.a. limitations)</summary>
@@ -170,8 +203,11 @@
 			list seats.
 		</li>
 		<li>
-			<strong>Boundaries stay as they were.</strong> With the Māori electorates gone, the general
-			electorates would have been redrawn to be bigger, so these aren’t the seats there would have been.
+			<strong>Boundaries stay as they were.</strong> With no Māori electorates, the general electorates would have
+			been redrawn. The South Island is fixed at 16 general electorates, so its population quota would rise by
+			about 5% (from about 70,000 to 73,600) as South Island Māori-roll voters join it, and the North Island,
+			whose count is its population divided by that quota, would have about 52 general electorates, not 48. By our
+			estimate that’s about 68 electorates, not 71. So these aren’t the seats there would have been.
 		</li>
 		<li>
 			The narrowest electorates are sensitive to the assumptions above:
@@ -182,9 +218,28 @@
 	</ul>
 </details>
 
-<div class="toggle" role="group" aria-label="Count">
-	<button aria-pressed={view === 'counted'} onclick={() => (view = 'counted')}>As counted (preliminary)</button>
-	<button aria-pressed={view === 'none'} onclick={() => (view = 'none')}>No Māori electorates</button>
+<div class="controls">
+	<div class="toggle" role="group" aria-label="Count">
+		<button aria-pressed={view === 'counted'} onclick={() => (view = 'counted')}>As counted (preliminary)</button>
+		<button aria-pressed={view === 'none'} onclick={() => (view = 'none')}>No Māori electorates</button>
+	</div>
+	<div class="param" id="threshold">
+		<span class="param-row">
+			<button
+				type="button"
+				class="switch"
+				role="switch"
+				aria-checked={waiver}
+				aria-labelledby="waiver-label"
+				onclick={() => (waiver = !waiver)}
+			><span class="thumb"></span></button>
+			<span id="waiver-label">Waive the 5% threshold for Māori parties</span>
+		</span>
+		<span class="small muted">
+			The 1986 <a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission on the
+			Electoral System</a> recommended this when it proposed abolishing the Māori electorates, but it was never adopted.
+		</span>
+	</div>
 </div>
 <div class="grid">
 	<Parliament
@@ -223,15 +278,14 @@
 				<tr>
 					<td>Total</td>
 					<td class="num">{nat.house.counted}</td>
-					<td class="num">{nat.house.none}</td>
+					<td class="num">{nat.house[noKey]}</td>
 					<td colspan="3"></td>
 				</tr>
 			</tfoot>
 		</table>
 		<p class="small muted">
 			Seats are allocated from the preliminary party vote ({votes(nat.party_vote_total)} valid votes) and the
-			electorates each party wins in that count. Elec. and List are for the “No Māori elec.” column.
-			{overhangSentence('counted')}{overhang('none').length ? '' : ' With no Māori electorates, nobody has any.'}
+			electorates each party wins in that count, with the threshold waived for Māori parties in the “No Māori elec.” column. Elec. and List are for that column too.
 		</p>
 	</div>
 </div>
@@ -251,29 +305,29 @@
 	Click an electorate for its working, or <a href={link('/electorates/')}>see all electorates in a table →</a>
 </p>
 
-<h2 id="sensitivity">What if fewer Te Pāti Māori voters voted Labour?</h2>
+<h2 id="sensitivity">What if fewer TPM+ voters voted Labour?</h2>
 <p>
-	Assumption 2 is the one that matters most: Te Pāti Māori’s votes ({votes(nat.moved.find((/** @type {any} */ m) => m.party === 'te-pati-maori')?.votes ?? 0)})
-	are far more than any other party’s here. This shows the result if only some share of them went to Labour, and the rest
+	Assumption 2 is the one that matters most: those {votes(group)} votes are far more than any other
+	party’s here. This shows the result if only some share of them went to Labour, and the rest
 	<Term tip="Not counted for anyone: they’d have voted for another candidate we can’t identify, or not voted at all.">went nowhere</Term>.
 </p>
 <div class="table-wrap">
 	<table>
 		<thead>
 			<tr>
-				<th class="num">Share to Labour</th>
+				<th class="num">Share voting Labour</th>
 				<th class="num">Electorates flipping</th>
-				<th>Which</th>
+				<th>Newly flipping</th>
 				<th class="num">Labour wins</th>
 				<th class="num">National wins</th>
 			</tr>
 		</thead>
 		<tbody>
-			{#each nat.sensitivity as s (s.share)}
+			{#each nat.sensitivity as s (s.from)}
 				<tr>
-					<td class="num">{pct(s.share, 0)}</td>
+					<td class="num">{share(s.from)} to {share(s.to)}</td>
 					<td class="num">{s.flips.length}</td>
-					<td>{s.flips.join(', ')}</td>
+					<td>{s.new.join(', ')}</td>
 					<td class="num">{s.labour}</td>
 					<td class="num">{s.national}</td>
 				</tr>
@@ -282,8 +336,9 @@
 	</table>
 </div>
 <p class="muted small">
-	“Wins” are among the {nat.general_electorates} general electorates. The “Labour needs” column on the
-	<a href={link('/electorates/')}>electorates page</a> gives the exact share each electorate needs.
+	Each range starts where another electorate’s break-even is: Labour needs <em>more than</em> the lower figure to
+	win it. “Wins” are among the {nat.general_electorates} general electorates. The “Labour needs” column on the
+	<a href={link('/electorates/')}>electorates page</a> gives each electorate’s break-even.
 </p>
 
 <style>
@@ -295,15 +350,32 @@
 	.party-change { color: color-mix(in srgb, var(--c) 65%, var(--text)); white-space: nowrap; }
 	.limits {
 		border: 1px solid var(--warn-border); border-left-width: 4px; background: var(--warn-bg);
-		border-radius: 4px; padding: 0.55em 0.9em; margin: 1em 0; max-width: 72ch;
+		border-radius: 4px; padding: 0.55em 0.9em; margin: 1em 0; max-width: var(--measure);
 	}
 	.limits summary { cursor: pointer; color: var(--warn-text); }
 	.limits[open] summary { margin-bottom: 0.3em; }
 	.limits ul { margin: 0.3em 0; }
 	.limits ul { padding-left: 1.2em; }
 	.limits li + li { margin-top: 0.25em; }
-	.assumptions { max-width: 72ch; padding-left: 1.4em; }
+	.assumptions { max-width: var(--measure); padding-left: 1.4em; }
 	.assumptions li { margin: 0.6em 0; }
+	.votes { margin: 0.8em 0; }
+	.votes summary { cursor: pointer; color: var(--text-2); font-size: 0.9rem; }
+	.controls { display: flex; flex-wrap: wrap; gap: 0.6em 1.5em; align-items: flex-start; margin: 0.8em 0; }
+	.controls .toggle { margin: 0; }
+	.param { display: flex; flex-direction: column; gap: 0.15em; max-width: 34ch; font-size: 0.9rem; }
+	.param-row { display: flex; align-items: center; gap: 0.6em; color: var(--text-2); }
+	.switch {
+		position: relative; flex: none; width: 2.4em; height: 1.35em; padding: 0; border: 0; border-radius: 1em;
+		background: var(--text-3); cursor: pointer; transition: background 0.15s;
+	}
+	.switch[aria-checked='true'] { background: var(--party-green); }
+	.switch .thumb {
+		position: absolute; top: 0.15em; left: 0.15em; width: 1.05em; height: 1.05em; border-radius: 50%;
+		background: #fff; transition: transform 0.15s;
+	}
+	.switch[aria-checked='true'] .thumb { transform: translateX(1.05em); }
+	.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 	.toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 0.8em 0; }
 	.toggle button {
 		font: inherit; font-size: 0.9rem; padding: 0.35em 0.9em; border: 0; background: transparent;

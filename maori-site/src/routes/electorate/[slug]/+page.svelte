@@ -60,18 +60,19 @@
 	{#if labour}
 		<p>
 			{#if b === null}
-				No Te Pāti Māori voters cast votes at voting places here.
+				No TPM+ voters cast votes at voting places here.
 			{:else if b <= 0}
-				Labour’s candidate wins here even if <strong>none</strong> of the {votes(e.tpm_votes)} Te Pāti Māori
+				Labour’s candidate wins here even if <strong>none</strong> of the {votes(e.tpm_votes)} TPM+
 				voters here vote for them (the other Māori-roll votes are enough).
 			{:else if b <= 1}
-				Labour’s candidate wins if more than <strong>{pct(b, 0)}</strong> of the {votes(e.tpm_votes)} Te Pāti Māori
+				Labour’s candidate wins if more than <strong>{pct(b, 0)}</strong> of the {votes(e.tpm_votes)} TPM+
 				voters here vote for them (the rest counted for no one, everything else as above).
 				{#if e.winner_new === 'labour'}Below that, {who(rival)} wins.{:else}Above that, they overtake {who(rival)}.{/if}
 			{:else}
-				Labour’s candidate doesn’t win here even if <strong>all</strong> {votes(e.tpm_votes)} Te Pāti Māori
+				Labour’s candidate doesn’t win here even if <strong>all</strong> {votes(e.tpm_votes)} TPM+
 				voters here vote for them: they’d still be {votes(Math.round((b - 1) * e.tpm_votes))} votes behind {who(rival)}.
 			{/if}
+			<span class="muted small">(TPM+ is Te Pāti Māori, Te Tai Tokerau Party and Tākuta Ferris voters.)</span>
 		</p>
 	{/if}
 </div>
@@ -140,7 +141,7 @@
 </div>
 <p class="sources">
 	2026 source: <a href={e.links.prelim_2026.url}>preliminary count</a>
-	(<a href={e.links.prelim_2026.xml}>XML</a>), including the voting-place results.
+	(<a href={e.links.prelim_2026.xml}>XML</a>), including the voting place results.
 </p>
 
 <style>

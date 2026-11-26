@@ -7,7 +7,8 @@ electorates, if every Māori-roll voter had voted in the general electorate.
      electorate for every place that took Māori-electorate votes).
   2. Each Māori-electorate candidate's votes go to the candidate of the same
      party in that general electorate. Exceptions:
-       - Te Pāti Māori and Te Tai Tokerau Party go to Labour.
+       - Te Pāti Māori, Te Tai Tokerau Party and Tākuta Ferris (independent,
+         Te Tai Tonga) go to Labour.
        - Independents are discarded.
        - A party with no candidate in that general electorate goes to the
          major party of its bloc (BLOC_MAJOR: Green to Labour, NZ First and
@@ -20,7 +21,8 @@ electorates, if every Māori-roll voter had voted in the general electorate.
 
 Party votes are unchanged. Seats are re-allocated with seats.py from the
 preliminary party votes and the new electorate winners, 120 seats and no
-Māori electorates. Compares with the preliminary winners (not the projected
+Māori electorates, with the 5% threshold waived for Māori parties
+(THRESHOLD_WAIVED). Compares with the preliminary winners (not the projected
 final result; specials aren't involved).
 
 Inputs: results/2026-prelim/ (download.py), and the voting-place files from
@@ -39,7 +41,17 @@ PRELIM = "results/2026-prelim"
 RAW = os.path.join(PRELIM, "raw")
 OUT = "results/maori-to-general"
 MAORI = range(65, 72)
-TO_LABOUR = {"Te Pāti Māori", "Te Tai Tokerau Party"}
+# Tākuta Ferris, an independent (the 2023 Te Pāti Māori winner in Te Tai Tonga)
+# in Te Pāti Māori's bloc, is treated as a party of his own so that his votes
+# aren't dropped with the other independents.
+FERRIS = "Tākuta Ferris"
+# The 1986 Royal Commission on the Electoral System recommended abolishing the
+# Māori electorates and waiving the party-vote threshold for parties
+# primarily representing Māori interests. With no Māori electorates, we apply
+# that: these parties qualify for list seats whatever their party vote.
+THRESHOLD_WAIVED = {"Te Pāti Māori", "Te Tai Tokerau Party"}
+FERRIS_CANDIDATE = "FERRIS, Tākuta"
+TO_LABOUR = {"Te Pāti Māori", "Te Tai Tokerau Party", FERRIS}
 INDEPENDENT = "Independent"
 BLOC_MAJOR = {"Green Party": "Labour Party", "New Zealand First Party": "National Party",
               "ACT New Zealand": "National Party"}
@@ -49,7 +61,7 @@ def read_candidates():
     """Returns {c_no: party short name} from candidates.xml and parties.xml."""
     parties = {p.get("p_no"): p.findtext("short_name") for p in ET.parse(os.path.join(RAW, "parties.xml")).getroot()}
     parties["0"] = INDEPENDENT
-    return {c.get("c_no"): parties[c.findtext("party")]
+    return {c.get("c_no"): FERRIS if c.findtext("candidate_name") == FERRIS_CANDIDATE else parties[c.findtext("party")]
             for c in ET.parse(os.path.join(RAW, "candidates.xml")).getroot()}
 
 
@@ -103,8 +115,9 @@ def project(general, places, labour_share=1.0):
     Counter of (party, treatment) -> votes, and a Counter of
     (general e_no, Māori e_no, party, treatment, target party or None) -> votes).
 
-    labour_share is the share of Te Pāti Māori's votes that go to Labour; the
-    rest are dropped (they'd stay home or vote for someone else we can't
+    labour_share is the share of the TO_LABOUR parties' votes (Te Pāti Māori,
+    Te Tai Tokerau Party and Tākuta Ferris, treated as one group) that go to
+    Labour; the rest are dropped (they'd stay home or vote for someone else we can't
     identify). The default is 1, the assumption in the module docstring.
     """
     new = {e: dict(v) for e, v in general.items()}
@@ -113,7 +126,7 @@ def project(general, places, labour_share=1.0):
         for party, n in totals.items():
             if n == 0:
                 continue
-            if party == "Te Pāti Māori" and labour_share != 1:
+            if party in TO_LABOUR and labour_share != 1:
                 dropped = n - n * labour_share
                 n = n * labour_share
                 log[(party, "dropped: not to Labour")] += dropped
@@ -197,10 +210,11 @@ def main():
     for e, v in by_e.items():
         old_won[winner(v)[0]] += 1
     print("\nSeats (prelim party votes; electorates won -> total):")
-    for label, won in [("as counted", old_won), ("no Māori seats", wins_new)]:
+    for label, won, waived in [("as counted", old_won, ()), ("no Māori seats, threshold waived", wins_new, THRESHOLD_WAIVED),
+                               ("no Māori seats, no waiver", wins_new, ())]:
         eligible = {p: n for p, n in won.items() if p in votes}
         other = sum(n for p, n in won.items() if p not in votes)
-        result = allocate(votes, eligible, other)
+        result = allocate(votes, eligible, other, waived=waived)
         print("  {0}: {1} seats".format(label, sum(r[2] for r in result.values()) + other))
         for p, (e_won, lst, tot) in sorted(result.items(), key=lambda x: -x[1][2]):
             if tot:

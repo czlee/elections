@@ -324,13 +324,13 @@ Machine instead (next section).
 files for electorates 65–71, which are the Māori electorates; 1–64 are general).
 Every place that took Māori-electorate votes has a general electorate as its
 home (`vp_e_no`), so the votes follow places with no geography. Rules, set by the
-user: Te Pāti Māori and Te Tai Tokerau Party → Labour; independents dropped; the
+user: Te Pāti Māori, Te Tai Tokerau Party and Tākuta Ferris (the independent in Te Tai Tonga; his 4,716 votes added at the user's request, 26 November 2026) → Labour, and all three are one group in the sensitivity table and break-even (user's request, 26 November 2026; flips unchanged); other independents dropped; the
 same party's candidate where there is one; otherwise the bloc's major party
 (Green → Labour, NZ First and ACT → National). **Nobody was redirected to
 National by the bloc rule** (no right-bloc Māori candidates besides National's
 own 1,104 votes). Discarded, no candidate there and no bloc: Legalise Cannabis
 1,276, NZ Loyal 421, Your PIC Party 236, Opportunity 225 (2,158 votes, none
-could decide a flip). Independents: 5,421.
+could decide a flip). Other independents: 705.
 
 Result (preliminary count only; specials not involved): 7 of 64 general
 electorates flip National → Labour: East Cape, Hamilton East, Hamilton West,
@@ -350,7 +350,23 @@ one), and a sensitivity table (0–100% of them voting Labour: 4 flips at 0%, 6
 at 25%, 7 from 50%). The voting-place and Labour assumptions are in the body
 of the page, not the limitations. Dropped votes (independents, parties with no
 bloc) can't change any result even if they all went to a runner-up (checked:
-the smallest margin after dropped votes is 51, Northland).
+the smallest margin after dropped votes is 51, Northland, then Nelson 62 after Ferris's votes went to Labour; no flips changed).
+
+Threshold waiver (26 November 2026, at the user's request). The 1986 Royal
+Commission on the Electoral System (*Towards a Better Democracy*) proposed a 4%
+threshold, abolishing the Māori electorates, and waiving the threshold for
+parties primarily representing Māori interests; Parliament kept the seats and
+set 5% (so the waiver wasn't adopted). Sources: Wikipedia's article on the
+Commission (its Recommendations: Māori electorates abolished, "with Māori
+parties instead receiving representation if they did not pass the threshold")
+and two search summaries quoting the report (p. 101, "parties primarily
+representing Māori interests"). Not checked against the report itself:
+elections.nz's page returned nothing and Te Ara gave a 403. The site applies it
+in the no-Māori-electorates scenario only: `seats.allocate(waived=...)` lets
+Te Pāti Māori and Te Tai Tokerau Party qualify, so Te Pāti Māori's 13,845 party
+votes (0.57%) earn 1 list seat and National has 35, not 36. Without it: Te Pāti
+Māori 0, National 36 (printed by `maori_to_general.py`). The waiver doesn't
+touch the electorate results.
 
 ## Code status
 

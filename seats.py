@@ -28,11 +28,12 @@ class TieError(Exception):
     pass
 
 
-def _quotients(votes, electorates, other_electorates, total_seats, threshold):
+def _quotients(votes, electorates, other_electorates, total_seats, threshold, waived=()):
     """Returns (qualified parties, seats to allocate, [(quotient, party, s)]
     sorted highest first), where quotient = votes / (2s + 1)."""
     total_votes = sum(votes.values())
-    qualified = [p for p in votes if votes[p] >= threshold * total_votes or electorates.get(p, 0) > 0]
+    qualified = [p for p in votes
+                 if votes[p] >= threshold * total_votes or electorates.get(p, 0) > 0 or p in waived]
     to_allocate = total_seats - other_electorates
     # Sainte-Laguë: the to_allocate highest quotients among qualified parties.
     quotients = sorted(((votes[p] / (2 * s + 1), p, s) for p in qualified for s in range(to_allocate)),
@@ -54,18 +55,20 @@ def quotient_ladder(votes, electorates, other_electorates=0, before=10, after=10
     return ladder, to_allocate
 
 
-def allocate(votes, electorates, other_electorates=0, total_seats=TOTAL_SEATS, threshold=THRESHOLD):
+def allocate(votes, electorates, other_electorates=0, total_seats=TOTAL_SEATS, threshold=THRESHOLD, waived=()):
     """Allocates seats.
 
     votes: {party: valid party votes}, for every party (used for the threshold).
     electorates: {party: electorates won}, for parties eligible for list seats.
     other_electorates: electorates won by candidates not from those parties
         (independents, unregistered parties).
+    waived: parties that qualify whatever their vote (a threshold exemption).
 
     Returns {party: (electorate_seats, list_seats, total_seats)} for every
     party in `votes` or `electorates`.
     """
-    qualified, to_allocate, quotients = _quotients(votes, electorates, other_electorates, total_seats, threshold)
+    qualified, to_allocate, quotients = _quotients(votes, electorates, other_electorates, total_seats, threshold,
+                                                   waived)
     if len(quotients) > to_allocate and quotients[to_allocate - 1][0] == quotients[to_allocate][0]:
         tied = sorted(p for q, p, _ in quotients if q == quotients[to_allocate][0])
         raise TieError("tie for the last seat between {0}".format(", ".join(map(str, tied))))
