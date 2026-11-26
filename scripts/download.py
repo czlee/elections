@@ -18,6 +18,9 @@ import xml.etree.ElementTree as ET
 
 # Known XML feeds. Use the www host, not archive.electionresults.govt.nz (see NOTES.md).
 ELECTIONS = {
+    # The final count's URL is a guess from the pattern (it was a 404 on 27 Nov 2026, before the final
+    # count came out). If it's wrong on the day, find the real one and use --base.
+    "2026": "https://www.electionresults.govt.nz/electionresults_2026/xml/",
     "2026-prelim": "https://www.electionresults.govt.nz/electionresults_2026_preliminary/xml/",
     "2023": "https://www.electionresults.govt.nz/electionresults_2023/xml/",
     "2020": "https://www.electionresults.govt.nz/electionresults_2020/xml/",

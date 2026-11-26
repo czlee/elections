@@ -105,7 +105,7 @@ def check_feed(filename):
 
 
 def main():
-    for election in ["2017", "2020", "2023", "2026-prelim"]:
+    for election in ["2017", "2020", "2023", "2026-prelim", "2026"]:
         filename = os.path.join("data", "elections", election, "raw", "election.xml")
         if not os.path.exists(filename):
             print("{0}: no {1}, skipped".format(election, filename))
