@@ -1,50 +1,53 @@
 """Projects the 2026 final count in each electorate, for both the party vote
-and the electorate (candidate) vote, by applying 2023's special votes to the
-2026 preliminary count. Per-electorate version of project_specials.py.
+and the electorate (candidate) vote, by applying a base election's special
+votes to the 2026 preliminary count. Per-electorate version of
+project_specials.py, with the same three pools: overseas and domestic special
+votes, and revisions (the official count's corrections to the preliminary
+count).
 
-As there, "special votes" means final minus preliminary valid votes, which also
-includes changes to ordinary votes in the official count.
-
-  1. Notional 2023 counts. Each 2026 electorate's 2023 preliminary and final
-     counts are the sums of its 2023 source electorates' counts, each weighted
-     by the share of that 2023 electorate's electoral population that's in
-     the 2026 electorate (concordance.py). This assumes votes are spread
-     evenly over each 2023 electorate's population.
-  2. Multipliers. For each party, in each 2026 electorate, the multiplier is
-     its share of the notional special votes divided by its share of the
-     notional preliminary count, separately for party votes and candidate
-     votes. Candidates are matched by party (party_names.toml). A candidate
-     whose party had no 2023 candidate there uses that party's party-vote
-     multiplier in the same electorate. An independent, or a candidate from a
-     party with no list, gets a multiplier of 1.
-  3. Special-vote volume. Each 2026 electorate's special votes are its 2026
-     preliminary count times its notional 2023 ratio of special votes to
-     preliminary votes, times one national scale factor. The factor makes the
-     party votes add up to the national projection's total (the Electoral
-     Commission's estimate times the 2023 adjustment; see project_specials.py).
-     The same factor is used for candidate votes.
-  4. Projected special votes are shared out as in project_specials.py: the
-     2026 preliminary share times the multiplier, normalised.
+  1. Notional base counts. Each 2026 electorate's base-year final count, and
+     its ordinary, overseas and domestic votes (download_specials.py), are
+     the sums of its base source electorates' counts, each weighted by the
+     share of that base electorate's electoral population that's in the 2026
+     electorate (concordance.py). This assumes votes are spread evenly over
+     each base electorate's population.
+  2. Multipliers. For each party, in each 2026 electorate, the overseas and
+     domestic multipliers are its share of the notional pool divided by its
+     share of the notional ordinary votes, separately for party votes and
+     candidate votes. Candidates are matched by party (party_names.toml). A
+     candidate whose party had no base candidate there uses that party's
+     party-vote multiplier for the same pool in the same electorate. An
+     independent, or a candidate from a party with no list, gets 1.
+  3. Volumes. Each 2026 electorate's overseas (domestic) votes are its 2026
+     preliminary count times its notional ratio of overseas (domestic) to
+     ordinary votes, times a national scale factor for the pool. The factor
+     makes the party votes add up to the national projection's pool
+     (project_specials.py); the same factor is used for candidate votes.
+     Revisions are the 2026 preliminary count times the national revisions
+     ratio, the same in every electorate. Electorates' own revisions barely
+     carry over from one election to the next, so they aren't used
+     (NOTES.md).
+  4. Each pool is shared out as in project_specials.py: the 2026 preliminary
+     share times the multiplier (1 for revisions), normalised.
   5. Seats are allocated from the national projection's party votes
      (results/projection-2026/national.csv, from project_specials.py) and the
      projected electorate winners.
 
-The base election (the "2023" throughout) is 2023 by default, or 2017 with
---base 2017. Only these two have per-electorate preliminary counts (2020's
-weren't archived; NOTES.md).
+The base election is 2023 by default, or 2017 or 2020 with --base. Base-year
+preliminary counts aren't needed per electorate, so 2020 (whose weren't
+archived) works too.
 
 Port Waikato is left out of the 2023 base: 2023 had no general-election
-electorate vote there (the poll was cancelled and it went to a by-election),
-and its preliminary page wasn't archived. Its boundaries didn't change in
-2025, so only the 2026 Port Waikato electorate is affected. In step 3 it's
-counted at the national 2023 ratio, and in step 5 at its preliminary winner.
-Nothing is left out of the 2017 base.
+electorate vote there (the poll was cancelled and it went to a by-election).
+Its boundaries didn't change in 2025, so only the 2026 Port Waikato electorate
+is affected. In step 3 it's counted at the national ratios, and in step 5 at
+its preliminary winner. Nothing is left out of the 2017 and 2020 bases.
 
 Inputs: results/concordance/electorates_<base>_2026.csv (concordance.py),
-results/<base>-prelim/ (scrape_wayback_prelim.py), results/<base>/ and
-results/2026-prelim/ (download.py), results/projection-2026/national.csv or
-national-base<base>.csv (project_specials.py) and the base election's
-preliminary count as project_specials.py reads it (NOTES.md).
+results/<base>/ (download.py and download_specials.py), results/2026-prelim/
+(download.py), and project_specials.py's inputs (it's run for the national
+pools), and results/projection-2026/national.csv or national-base<base>.csv
+(project_specials.py) for seats.
 """
 import argparse
 import csv
@@ -53,12 +56,12 @@ from collections import Counter, defaultdict
 
 import project_specials as ps
 from parties import PartyNames
-from project_specials import SPECIAL_ESTIMATE_2026, read_party_totals
+from project_specials import read_party_totals
 from seats import TOTAL_SEATS, allocate
 
 DEFAULT_BASE = "2023"
 # Base elections with electorate projections, and the base electorates left out.
-OMITTED = {"2017": set(), "2023": {39}}  # 2023: Port Waikato
+OMITTED = {"2017": set(), "2020": set(), "2023": {39}}  # 2023: Port Waikato
 OMITTED_2023 = OMITTED["2023"]
 CONCORDANCE = "results/concordance/electorates_2023_2026.csv"
 
@@ -69,9 +72,7 @@ def concordance_file(base):
 
 def files(base):
     return {
-        (base, "prelim", "party"): "results/{0}-prelim/party_votes.csv".format(base),
         (base, "final", "party"): "results/{0}/party_votes.csv".format(base),
-        (base, "prelim", "candidate"): "results/{0}-prelim/candidate_votes.csv".format(base),
         (base, "final", "candidate"): "results/{0}/candidate_votes.csv".format(base),
         ("2026", "prelim", "party"): "results/2026-prelim/party_votes.csv",
         ("2026", "prelim", "candidate"): "results/2026-prelim/candidate_votes.csv",
@@ -87,15 +88,24 @@ def output_name(filename, base):
         return filename
     stem, ext = os.path.splitext(filename)
     return "{0}-base{1}{2}".format(stem, base, ext)
+CATEGORIES = ["ordinary", "overseas", "domestic"]
+SPECIAL_POOLS = ["overseas", "domestic"]
 NOTABLE_SHARE = 0.05  # report candidates with multiplier 1 above this share
 CLOSE_MARGIN = 0.05   # report electorates with a projected margin below this
 
 
+def vote_key(row, election, names, kind):
+    """For party votes, the party_id. For candidate votes, the candidate's
+    party_id, or ("other", candidate) for an independent or a party not in
+    party_names.toml (one with no list)."""
+    if kind == "party":
+        return names.party_id(election, row["party"])
+    return names.ids.get((election, row["party"]), ("other", row["candidate"]))
+
+
 def read_votes(filename, election, names, kind):
-    """Returns ({elec_id: {key: votes}}, {elec_id: name}, {(elec_id, key): label}).
-    For party votes, key is the party_id. For candidate votes, key is the
-    candidate's party_id, or ("other", candidate) for an independent or a
-    party not in party_names.toml (one with no list)."""
+    """Returns ({elec_id: {key: votes}}, {elec_id: name}, {(elec_id, key): label}),
+    with keys as in vote_key()."""
     votes = defaultdict(Counter)
     elec_names = {}
     labels = {}
@@ -103,13 +113,25 @@ def read_votes(filename, election, names, kind):
         for row in csv.DictReader(f):
             elec_id = int(row["elec_id"])
             elec_names[elec_id] = row["elec_name"]
-            if kind == "party":
-                key = names.party_id(election, row["party"])
-            else:
-                key = names.ids.get((election, row["party"]), ("other", row["candidate"]))
+            key = vote_key(row, election, names, kind)
+            if kind == "candidate":
                 labels[(elec_id, key)] = "{0} ({1})".format(row["candidate"], row["party"].strip())
             votes[elec_id][key] += int(row["votes"])
     return votes, elec_names, labels
+
+
+def category_file(base, kind):
+    return "results/{0}/{1}_votes_by_category.csv".format(base, kind)
+
+
+def read_categories(filename, election, names, kind):
+    """Reads a <kind>_votes_by_category.csv (download_specials.py). Returns
+    {category: {elec_id: Counter({key: votes})}}, keys as in vote_key()."""
+    votes = {c: defaultdict(Counter) for c in CATEGORIES}
+    with open(filename, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            votes[row["category"]][int(row["elec_id"])][vote_key(row, election, names, kind)] += int(row["votes"])
+    return votes
 
 
 def read_concordance(filename, base=DEFAULT_BASE):
@@ -131,39 +153,33 @@ def notional(sources, votes_2023):
     return result
 
 
-def multipliers_2023(prelim_n, final_n):
-    """{2023 key: share of notional special votes / share of notional
-    preliminary votes}, for keys with preliminary votes."""
-    total_prelim = sum(prelim_n.values())
-    total_specials = sum(final_n.values()) - total_prelim
-    return {k: ((final_n.get(k, 0) - v) / total_specials) / (v / total_prelim)
-            for k, v in prelim_n.items() if v > 0}
+def pool_multipliers(pool_n, ordinary_n):
+    """{base key: share of the notional pool / share of notional ordinary
+    votes}, for keys with ordinary votes."""
+    total_pool = sum(pool_n.values())
+    total_ordinary = sum(ordinary_n.values())
+    return {k: (pool_n.get(k, 0) / total_pool) / (v / total_ordinary)
+            for k, v in ordinary_n.items() if v > 0}
 
 
-def project(prelim_2026, prelim_n, final_n, names, volume, fallback=None, base=DEFAULT_BASE):
-    """Shares `volume` special votes among the keys of prelim_2026. A key
-    with no 2023 counterpart uses its multiplier in `fallback` ({2026 key:
-    multiplier}) if there, else 1. Returns ({key: projected special votes},
-    {key: multiplier}, {key: source}), where source is the 2023 key, "party
-    vote" for a fallback, or None."""
-    m_2023 = multipliers_2023(prelim_n, final_n)
+def project(prelim_2026, m_base, names, volume, fallback=None, base=DEFAULT_BASE):
+    """Shares one pool's `volume` among the keys of prelim_2026. A key with no
+    base counterpart in `m_base` ({base key: multiplier}) uses its multiplier
+    in `fallback` ({2026 key: multiplier}) if there, else 1. Returns ({key:
+    projected votes}, {key: multiplier}, {key: source}), where source is the
+    base key, "party vote" for a fallback, or None."""
     total_2026 = sum(prelim_2026.values())
     multipliers, links = {}, {}
     for key in prelim_2026:
-        link = None if isinstance(key, tuple) else names.counterpart(key, base, m_2023)
+        link = None if isinstance(key, tuple) else names.counterpart(key, base, m_base)
         if link:
-            links[key], multipliers[key] = link, m_2023[link]
+            links[key], multipliers[key] = link, m_base[link]
         elif fallback and key in fallback:
             links[key], multipliers[key] = "party vote", fallback[key]
         else:
             links[key], multipliers[key] = None, 1.0
-    unnormalised = {k: prelim_2026[k] / total_2026 * multipliers[k] for k in prelim_2026}
-    norm = sum(unnormalised.values())
-    return {k: volume * u / norm for k, u in unnormalised.items()}, multipliers, links
-
-
-def special_ratio(prelim_n, final_n):
-    return (sum(final_n.values()) - sum(prelim_n.values())) / sum(prelim_n.values())
+    _, specials = ps.project_pool({k: v / total_2026 for k, v in prelim_2026.items()}, multipliers, volume)
+    return specials, multipliers, links
 
 
 def winner(votes):
@@ -173,14 +189,27 @@ def winner(votes):
     return ranked[0], ranked[1]
 
 
+def effective_multiplier(key, prelim_2026, specials, pools):
+    """The key's projected share of all the pools' votes over its preliminary
+    share. For a key with no preliminary votes (so no projected ones either),
+    the pools' multipliers averaged by volume instead."""
+    total_volume = sum(p["volume"] for p in pools.values())
+    if prelim_2026[key] == 0:
+        return sum(p["volume"] * p["multipliers"][key] for p in pools.values()) / total_volume
+    return (specials[key] / total_volume) / (prelim_2026[key] / sum(prelim_2026.values()))
+
+
 def compute(base=DEFAULT_BASE):
-    """Runs the projection from base election `base`; `data` and
-    `elec_names` are keyed by `base` and "2026". Returns a dict with the inputs (`data`, `labels`,
-    `sources`, ...), the national scale factor, and `electorates`: {2026
-    elec_id: detail}, where detail has the electorate's live 2023 sources,
-    omitted share and, for "party" and "candidate", the 2026 preliminary
-    votes, notional 2023 preliminary and final votes, volume, ratio,
-    multipliers, links, projected special votes and projected final votes.
+    """Runs the projection from base election `base`. Returns a dict with the
+    inputs (`data`, `categories`, `labels`, `sources`, ...), the national
+    `pools` (project_specials.compute()'s) and per-pool `scales`, and
+    `electorates`: {2026 elec_id: detail}, where detail has the electorate's
+    live base sources, omitted share and, for "party" and "candidate", the
+    2026 preliminary votes, the notional base final and ordinary votes, and
+    `pools` ({pool: notional base votes (overseas and domestic only), ratio,
+    volume, multipliers, links and projected votes}), plus the pools'
+    totals: volume, projected special votes, effective multipliers
+    (projected special share / preliminary share) and projected final votes.
     Candidate details also have the preliminary and projected winner and
     runner-up. Electorates with no live sources (Port Waikato) are in
     `omitted` instead."""
@@ -192,57 +221,80 @@ def compute(base=DEFAULT_BASE):
         data[(election, stage, kind)], en, lb = read_votes(filename, election, names, kind)
         elec_names[election] = en
         labels.update(lb) if election == "2026" else None
+    categories = {kind: read_categories(category_file(base, kind), base, names, kind)
+                  for kind in ["party", "candidate"]}
     for kind in ["party", "candidate"]:
-        prelim_ids = set(data[(base, "prelim", kind)])
         final_ids = set(data[(base, "final", kind)]) - omitted_base
-        if prelim_ids != final_ids:
-            raise ValueError("{0} {1} votes: preliminary and final electorates differ: {2}".format(
-                base, kind, sorted(prelim_ids ^ final_ids)))
+        category_ids = set(categories[kind]["ordinary"]) - omitted_base
+        if category_ids != final_ids:
+            raise ValueError("{0} {1} votes: categories and final electorates differ: {2}".format(
+                base, kind, sorted(category_ids ^ final_ids)))
     sources = read_concordance(concordance_file(base), base)
     if set(sources) != set(data[("2026", "prelim", "party")]):
         raise ValueError("concordance and 2026 electorates differ")
 
-    # Step 3: national scale factor, as in project_specials.py.
-    prelim_2023_national = names.to_ids(base, ps.read_base_prelim(base))
-    final_2023_national = names.to_ids(base, read_party_totals(input_files[(base, "final", "party")]))
-    national_specials_2023 = sum(final_2023_national.values()) - sum(prelim_2023_national.values())
-    national_ratio = national_specials_2023 / sum(prelim_2023_national.values())
-    target = SPECIAL_ESTIMATE_2026 * national_specials_2023 / ps.BASES[base]["estimate"]
+    # Step 3: volumes. Overseas and domestic: each electorate's 2026 preliminary
+    # count times its notional base ratio of the pool to ordinary votes, times
+    # a national scale factor for the pool, which makes the party votes add up
+    # to the national projection's pool. Revisions: the national ratio.
+    national = ps.compute(base)
+    pools_national = national["pools"]
+    revision_ratio = pools_national["revisions"]["adjustment"]
+    party_cats = categories["party"]
+    national_ratios = {pool: sum(sum(c.values()) for c in party_cats[pool].values()) /
+                       sum(sum(c.values()) for c in party_cats["ordinary"].values()) for pool in SPECIAL_POOLS}
 
-    projected, omitted, ratios, unscaled = [], [], {}, 0.0
+    notionals, omitted, unscaled = {}, [], Counter()
     for elec_id in sorted(sources):
         live = [s for s in sources[elec_id] if s[0] not in omitted_base]
-        omitted_share = sum(s[2] for s in sources[elec_id] if s[0] in omitted_base)
         if not live:
             omitted.append(elec_id)
-        prelim_party_2026 = data[("2026", "prelim", "party")][elec_id]
-        ratios[elec_id] = {}
+        prelim_party_2026 = sum(data[("2026", "prelim", "party")][elec_id].values())
+        notionals[elec_id] = {}
         for kind in ["party", "candidate"]:
             if live:
-                ratios[elec_id][kind] = special_ratio(notional(live, data[(base, "prelim", kind)]),
-                                                      notional(live, data[(base, "final", kind)]))
+                n = {c: notional(live, categories[kind][c]) for c in CATEGORIES}
+                n["final"] = notional(live, data[(base, "final", kind)])
+                n["ratio"] = {pool: sum(n[pool].values()) / sum(n["ordinary"].values()) for pool in SPECIAL_POOLS}
             else:
-                ratios[elec_id][kind] = national_ratio
-        unscaled += sum(prelim_party_2026.values()) * ratios[elec_id]["party"]
-        if live:
-            projected.append((elec_id, live, omitted_share))
-    scale = target / unscaled
+                n = {"ratio": national_ratios}
+            notionals[elec_id][kind] = n
+        for pool in SPECIAL_POOLS:
+            unscaled[pool] += prelim_party_2026 * notionals[elec_id]["party"]["ratio"][pool]
+    scales = {pool: pools_national[pool]["volume"] / unscaled[pool] for pool in SPECIAL_POOLS}
 
     details, winners_prelim, winners_final = {}, {}, {}
-    for elec_id, live, omitted_share in projected:
+    for elec_id in sorted(sources):
+        if elec_id in omitted:
+            continue
+        live = [s for s in sources[elec_id] if s[0] not in omitted_base]
+        omitted_share = sum(s[2] for s in sources[elec_id] if s[0] in omitted_base)
         detail = {"name": elec_names["2026"][elec_id], "live": live, "omitted_share": omitted_share}
         for kind in ["party", "candidate"]:
             prelim_2026 = data[("2026", "prelim", kind)][elec_id]
-            prelim_n = notional(live, data[(base, "prelim", kind)])
-            final_n = notional(live, data[(base, "final", kind)])
-            volume = sum(prelim_2026.values()) * ratios[elec_id][kind] * scale
-            specials, multipliers, links = project(prelim_2026, prelim_n, final_n, names, volume,
-                                                   detail["party"]["multipliers"] if kind == "candidate" else None,
-                                                   base)
+            total_prelim = sum(prelim_2026.values())
+            n = notionals[elec_id][kind]
+            pools = {}
+            for pool in SPECIAL_POOLS:
+                volume = total_prelim * n["ratio"][pool] * scales[pool]
+                fallback = detail["party"]["pools"][pool]["multipliers"] if kind == "candidate" else None
+                specials, multipliers, links = project(prelim_2026, pool_multipliers(n[pool], n["ordinary"]),
+                                                       names, volume, fallback, base)
+                pools[pool] = {"notional": n[pool], "ratio": n["ratio"][pool], "volume": volume,
+                               "specials": specials, "multipliers": multipliers, "links": links}
+            # Step 2 for revisions: shared like the preliminary count.
+            volume = total_prelim * revision_ratio
+            pools["revisions"] = {"ratio": revision_ratio, "volume": volume,
+                                  "specials": {k: volume * v / total_prelim for k, v in prelim_2026.items()},
+                                  "multipliers": {k: 1.0 for k in prelim_2026}}
+            specials = {k: sum(p["specials"][k] for p in pools.values()) for k in prelim_2026}
+            volume = sum(p["volume"] for p in pools.values())
             final = {k: prelim_2026[k] + specials[k] for k in prelim_2026}
-            detail[kind] = {"prelim_2026": prelim_2026, "prelim_n": prelim_n, "final_n": final_n,
-                            "ratio": ratios[elec_id][kind], "volume": volume, "specials": specials,
-                            "multipliers": multipliers, "links": links, "final": final}
+            detail[kind] = {"prelim_2026": prelim_2026, "ordinary_n": n["ordinary"], "final_n": n["final"],
+                            "pools": pools, "volume": volume, "specials": specials, "final": final,
+                            "links": pools["domestic"]["links"],
+                            "multipliers": {k: effective_multiplier(k, prelim_2026, specials, pools)
+                                            for k in prelim_2026}}
         cand = detail["candidate"]
         cand["prelim_winner"], cand["prelim_second"] = winner(cand["prelim_2026"])
         cand["winner"], cand["second"] = winner(cand["final"])
@@ -253,8 +305,9 @@ def compute(base=DEFAULT_BASE):
         winners_prelim[elec_id] = winners_final[elec_id] = p1
 
     return {"base": base, "files": input_files, "omitted_base": omitted_base,
-            "names": names, "data": data, "elec_names": elec_names, "labels": labels, "sources": sources,
-            "national_ratio": national_ratio, "target": target, "scale": scale, "ratios": ratios,
+            "names": names, "data": data, "categories": categories, "elec_names": elec_names,
+            "labels": labels, "sources": sources, "pools": pools_national, "scales": scales,
+            "national_ratios": national_ratios, "revision_ratio": revision_ratio,
             "electorates": details, "omitted": omitted,
             "winners_prelim": winners_prelim, "winners_final": winners_final}
 
@@ -276,7 +329,7 @@ def main():
 
     c = compute(base)
     names, labels, data, elec_names = c["names"], c["labels"], c["data"], c["elec_names"]
-    omitted, scale, target, national_ratio = c["omitted"], c["scale"], c["target"], c["national_ratio"]
+    omitted, scales, pools_national = c["omitted"], c["scales"], c["pools"]
     winners_prelim, winners_final = c["winners_prelim"], c["winners_final"]
 
     party_rows, candidate_rows, summary = [], [], []
@@ -327,9 +380,13 @@ def main():
                                     ["omitted_share", "prelim_margin_pct", "projected_margin_pct"]}))
 
     # Report
-    print("scale factor {0:.4f}: projected special party votes {1:,.0f} (national projection {2:,.0f})".format(
-        scale, sum(float(r[7]) for r in party_rows) + sum(
-            sum(data[("2026", "prelim", "party")][e].values()) * national_ratio * scale for e in omitted), target))
+    for pool in SPECIAL_POOLS:
+        projected = sum(d["party"]["pools"][pool]["volume"] for d in c["electorates"].values()) + sum(
+            sum(data[("2026", "prelim", "party")][e].values()) * c["national_ratios"][pool] * scales[pool]
+            for e in omitted)
+        print("{0}: scale factor {1:.4f}, projected party votes {2:,.0f} (national projection {3:,.0f})".format(
+            pool, scales[pool], projected, pools_national[pool]["volume"]))
+    print("revisions: {0:.4%} of the preliminary count".format(c["revision_ratio"]))
     print("projected special candidate votes {0:,.0f}".format(sum(float(r[7]) for r in candidate_rows)))
     print("not projected (all {0} sources omitted): ".format(base) + ", ".join(elec_names["2026"][e] for e in omitted))
     partly = [(s["name"], s["omitted_share"]) for s in summary if s["omitted_share"] > 0]

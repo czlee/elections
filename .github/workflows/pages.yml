@@ -1,7 +1,9 @@
-# Builds the projection site (sites/2026-projection/) and the no-Māori-electorates site
+# Builds the projection site (sites/2026-projection/), the overseas/domestic-split projection
+# site (sites/2026-projection-complicated/) and the no-Māori-electorates site
 # (sites/maori-to-general/) and deploys them to GitHub Pages. The user site's custom domain
 # (czlee.nz) covers this repo's project page, so this serves
-# https://czlee.nz/elections/2026-projection/ and
+# https://czlee.nz/elections/2026-projection/,
+# https://czlee.nz/elections/2026-projection-complicated/ and
 # https://czlee.nz/elections/maori-to-general/.
 #
 # The sites' data (sites/*/src/lib/data/) is committed: CI doesn't rerun the
@@ -34,6 +36,7 @@ jobs:
           cache: npm
           cache-dependency-path: |
             sites/2026-projection/package-lock.json
+            sites/2026-projection-complicated/package-lock.json
             sites/maori-to-general/package-lock.json
       - run: npm ci
         working-directory: sites/2026-projection
@@ -41,6 +44,12 @@ jobs:
         working-directory: sites/2026-projection
         env:
           BASE_PATH: /elections/2026-projection
+      - run: npm ci
+        working-directory: sites/2026-projection-complicated
+      - run: npm run build
+        working-directory: sites/2026-projection-complicated
+        env:
+          BASE_PATH: /elections/2026-projection-complicated
       - run: npm ci
         working-directory: sites/maori-to-general
       - run: npm run build
@@ -51,6 +60,7 @@ jobs:
         run: |
           mkdir -p _site
           cp -r sites/2026-projection/build _site/2026-projection
+          cp -r sites/2026-projection-complicated/build _site/2026-projection-complicated
           cp -r sites/maori-to-general/build _site/maori-to-general
           cp sites/2026-projection/static-root/index.html _site/index.html
       - uses: actions/upload-pages-artifact@v3

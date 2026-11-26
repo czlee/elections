@@ -70,17 +70,19 @@ def number(text):
     return int(text.replace(",", "").strip())
 
 
-def find_captures(prelim_path):
+def find_captures(prelim_path, prefix="electorate-details-", suffix=".html"):
     """Returns {e_no: (timestamp, original_url)} for the latest successful
-    capture of each electorate page, using the Wayback Machine's CDX index."""
+    capture of each electorate's file, electionresults.govt.nz/<prelim_path>
+    <prefix><number><suffix>, using the Wayback Machine's CDX index."""
     query = urllib.parse.urlencode({
-        "url": "electionresults.govt.nz/" + prelim_path + "electorate-details-*",
+        "url": "electionresults.govt.nz/" + prelim_path + prefix + "*",
         "output": "json", "fl": "timestamp,original", "filter": "statuscode:200",
     })
     rows = json.loads(get(CDX_URL + "?" + query))[1:]  # first row is the header
     captures = {}
+    pattern = re.compile(re.escape(prefix) + r"(\d+)" + re.escape(suffix) + "$")
     for timestamp, original in rows:
-        match = re.search(r"electorate-details-(\d+)\.html$", original)
+        match = pattern.search(original)
         if match:
             e_no = str(int(match.group(1)))
             if e_no not in captures or timestamp > captures[e_no][0]:

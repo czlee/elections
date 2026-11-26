@@ -1,19 +1,23 @@
 """Exports the 2026 projection, with its intermediate numbers, as JSON for the
-visualisation site (sites/2026-projection/). Runs project_specials.compute() and, for a base
+visualisation site (sites/2026-projection-complicated/). Runs project_specials.compute() and, for a base
 with electorate projections, project_electorates.compute(), so it needs the
 same inputs, and results/projection-2026/*.csv to check against (run the
 scripts first, with the same --base).
 
-Writes, in sites/2026-projection/src/lib/data/<base>/:
+Writes, in sites/2026-projection-complicated/src/lib/data/<base>/:
   national.json     the national projection, Sainte-Laguë ladders and seats
   electorates.json  one entry per 2026 electorate: candidate and party votes
                     at every step, its base-year sources and the break-even
-                    multiplier for the projected runner-up (only for bases
-                    in ELECTORATE_BASES)
+                    for the projected runner-up
 
-2017 and 2023 have electorate projections. For the other base (2020), both
-counts' seats hold electorates at the 2026 preliminary winners, as
-project_specials.py does.
+Base-year electorate figures are final-count ordinary votes, overseas and
+domestic special votes (download_specials.py), not preliminary counts: the
+multipliers are measured against ordinary votes (project_specials.py).
+
+The break-even is the factor by which the projected runner-up's overseas and
+domestic multipliers would both have to be scaled, with everyone else's
+unchanged, to tie with the projected winner, and the special votes that
+would give it.
 """
 import argparse
 import csv
@@ -27,7 +31,7 @@ import project_electorates as pe
 import project_specials as ps
 from seats import TOTAL_SEATS, allocate, quotient_ladder
 
-OUTDIR = "sites/2026-projection/src/lib/data"
+OUTDIR = "sites/2026-projection-complicated/src/lib/data"
 CSV_DIR = "results/projection-2026"
 LADDER_BEFORE, LADDER_AFTER = 12, 8
 
@@ -37,10 +41,11 @@ LADDER_BEFORE, LADDER_AFTER = 12, 8
 RESULTS = "https://www.electionresults.govt.nz/"
 WAYBACK = "https://web.archive.org/web/{0}/" + RESULTS + "{1}"
 RELEASES = "https://elections.nz/media-and-news/"
-ELECTORATE_BASES = {"2017", "2023"}
+ELECTORATE_BASES = {"2017", "2020", "2023"}
 # Regression guards for check(): ((preliminary House, projected House), flips).
 EXPECTED = {
     "2017": ((131, 130), ["Hamilton East", "Wairarapa", "Wellington Bays"]),
+    "2020": ((131, 130), ["Hamilton East", "Wairarapa", "Wellington Bays"]),
     "2023": ((131, 131), ["Wellington Bays"]),
 }
 SOURCES_2026 = {
@@ -87,9 +92,15 @@ def electorate_links_2026(elec_id):
 
 
 def electorate_links_base(base, elec_id, timestamps):
+    # The voting-place CSVs: the live site blocks them, so link to the Wayback
+    # Machine's latest capture (download_specials.py didn't keep timestamps; a
+    # bare year redirects to the nearest capture).
+    csv_path = "electionresults_{0}/statistics/csv/{1}-votes-by-voting-place-{2}.csv"
     links = {"final_base": {
         "url": RESULTS + "electionresults_{0}/electorate-details-{1:02d}.html".format(base, elec_id),
-        "xml": RESULTS + "electionresults_{0}/xml/e{1:02d}/e{1:02d}.xml".format(base, elec_id)}}
+        "xml": RESULTS + "electionresults_{0}/xml/e{1:02d}/e{1:02d}.xml".format(base, elec_id),
+        "party_csv": WAYBACK.format("2026", csv_path.format(base, "party", elec_id)),
+        "candidate_csv": WAYBACK.format("2026", csv_path.format(base, "candidate", elec_id))}}
     if elec_id in timestamps:
         links["prelim_base"] = {"url": WAYBACK.format(
             timestamps[elec_id], "electionresults_{0}_preliminary/electorate-details-{1:02d}.html".format(
@@ -98,8 +109,12 @@ def electorate_links_base(base, elec_id, timestamps):
 
 
 def read_timestamps(base):
-    """{elec_id: Wayback timestamp} of the scraped base-year preliminary pages."""
-    with open("results/{0}-prelim/electorate_stats.csv".format(base), newline="", encoding="utf-8") as f:
+    """{elec_id: Wayback timestamp} of the scraped base-year preliminary pages
+    (none for 2020, whose pages weren't archived)."""
+    filename = "results/{0}-prelim/electorate_stats.csv".format(base)
+    if not os.path.exists(filename):
+        return {}
+    with open(filename, newline="", encoding="utf-8") as f:
         return {int(r["elec_id"]): r["wayback_timestamp"] for r in csv.DictReader(f)}
 
 
@@ -116,26 +131,40 @@ def seats_json(seats, party_votes):
             if t > 0 or p in party_votes}
 
 
-def breakeven(prelim, multipliers, volume, a, b):
-    """The multiplier that `b` would need, all else equal, to tie with `a`
-    after specials. Specials are shared as volume * s_k m_k / sum(s_j m_j),
-    where s is the 2026 preliminary share, so the tie condition is linear in
-    m_b. Returns None if no multiplier would do it."""
-    total = sum(prelim.values())
-    s = {k: v / total for k, v in prelim.items()}
-    d = prelim[a] - prelim[b]
-    rest = sum(s[k] * multipliers[k] for k in prelim if k != b)
-    if volume <= d:
-        return None  # b can't catch up even with every special vote
-    return (d * rest + volume * s[a] * multipliers[a]) / (s[b] * (volume - d))
+def finals_scaled(d, a, b, scale):
+    """Projected final votes of `a` and `b` if b's overseas and domestic
+    multipliers were multiplied by `scale`, everyone else's unchanged."""
+    prelim, total = d["prelim_2026"], sum(d["prelim_2026"].values())
+    fa, fb = prelim[a], prelim[b]
+    for name, pool in d["pools"].items():
+        m = dict(pool["multipliers"])
+        if name in pe.SPECIAL_POOLS:
+            m[b] *= scale
+        _, specials = ps.project_pool({k: v / total for k, v in prelim.items()}, m, pool["volume"])
+        fa, fb = fa + specials[a], fb + specials[b]
+    return fa, fb
 
 
-def check_breakeven(prelim, multipliers, volume, a, b, m_b):
-    m = dict(multipliers, **{b: m_b})
-    norm = sum(prelim[k] * m[k] for k in prelim)
-    fa = prelim[a] + volume * prelim[a] * m[a] / norm
-    fb = prelim[b] + volume * prelim[b] * m[b] / norm
-    assert abs(fa - fb) < 1e-6 * volume, (a, b, fa, fb)
+def breakeven(d, a, b):
+    """The factor by which b's overseas and domestic multipliers would both
+    have to be scaled for b to tie with a (b's lead grows with the factor, so
+    bisection finds it). Returns (factor, b's projected special votes at the
+    factor), or None if b can't catch up even with all the special votes."""
+    def gap(scale):
+        fa, fb = finals_scaled(d, a, b, scale)
+        return fa - fb
+    if gap(1e12) > 0:
+        return None
+    lo, hi = 1.0, 2.0
+    while gap(hi) > 0:
+        lo, hi = hi, hi * 2
+    for _ in range(100):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if gap(mid) > 0 else (lo, mid)
+    factor = (lo + hi) / 2
+    fa, fb = finals_scaled(d, a, b, factor)
+    assert abs(fa - fb) < 1e-6 * d["volume"], (a, b, fa, fb)
+    return factor, fb - d["prelim_2026"][b]
 
 
 def key_id(key):
@@ -191,14 +220,27 @@ def national(cn, ce=None):
             "multiplier": cn["multipliers"][p], "special_share": cn["special_share_2026"][p],
             "specials": cn["specials_2026"][p], "final": final_2026[p],
             "final_share": final_2026[p] / sum(final_2026.values()),
+            "pools": {name: {"multiplier": pool["multipliers"][p], "share": pool["share"][p],
+                             "specials": pool["specials"][p]} for name, pool in cn["pools"].items()},
         })
     base_parties = []
+    ordinary_base = cn["ordinary_base"]
+    total_ordinary = sum(ordinary_base.values())
     for p in sorted(cn["final_base"], key=lambda p: -cn["final_base"][p]):
         base_parties.append({
             "id": p, "short": names.short_names[p], "prelim": cn["prelim_base"][p], "final": cn["final_base"][p],
             "specials": cn["specials_base"][p], "prelim_share": cn["prelim_share_base"][p],
             "special_share": cn["special_share_base"][p], "multiplier": cn["multipliers_base"][p],
+            "ordinary": ordinary_base[p], "ordinary_share": ordinary_base[p] / total_ordinary,
+            "pools": {name: {"votes": cn["pools"][name]["base"][p],
+                             "share": cn["pools"][name]["base"][p] / cn["pools"][name]["base_total"],
+                             "multiplier": cn["pools"][name]["multipliers_base"][p]} for name in pe.SPECIAL_POOLS},
         })
+    pools_json = {}
+    for name, pool in cn["pools"].items():
+        pools_json[name] = {k: pool[k] for k in ["base_total", "adjustment", "volume", "estimate_base", "estimate_2026"]
+                            if k in pool}
+    pools_json["revisions"]["base_prelim"] = sum(cn["prelim_base"].values())
     house = {k: sum(s[2] for s in seats.values()) + other
              for k, seats, other in [("prelim", prelim_seats, prelim_other), ("projected", final_seats, final_other)]}
     return {
@@ -206,7 +248,8 @@ def national(cn, ce=None):
         "estimate_base": cn["estimate_base"], "estimate_2026": cn["estimate_2026"],
         "adjustment": cn["adjustment"], "projected_specials": cn["projected_specials_total"],
         "base_totals": {"prelim": sum(cn["prelim_base"].values()), "final": sum(cn["final_base"].values()),
-                        "specials": sum(cn["specials_base"].values())},
+                        "specials": sum(cn["specials_base"].values()), "ordinary": total_ordinary},
+        "pools": pools_json,
         "prelim_total": sum(cn["prelim_2026"].values()), "final_total": sum(final_2026.values()),
         "parties": parties, "base_parties": base_parties,
         "seats": {"prelim": seats_json(prelim_seats, final_2026), "projected": seats_json(final_seats, final_2026)},
@@ -235,8 +278,8 @@ def rows_for(kind, elec_id, d, ce, names_2023):
     names, labels = ce["names"], ce["labels"]
     prelim, final = d["prelim_2026"], d["final"]
     total_prelim, total_final = sum(prelim.values()), sum(final.values())
-    n_prelim_total = sum(d["prelim_n"].values())
-    n_specials_total = sum(d["final_n"].values()) - n_prelim_total
+    n_ordinary_total = sum(d["ordinary_n"].values())
+    n_specials_total = sum(d["final_n"].values()) - n_ordinary_total
     rows = []
     for key in sorted(prelim, key=lambda k: -final[k]):
         link = d["links"][key]
@@ -245,16 +288,20 @@ def rows_for(kind, elec_id, d, ce, names_2023):
                "link": link, "prelim": prelim[key], "prelim_share": prelim[key] / total_prelim,
                "multiplier": d["multipliers"][key], "specials": d["specials"][key],
                "special_share": d["specials"][key] / d["volume"],
-               "final": final[key], "final_share": final[key] / total_final}
+               "final": final[key], "final_share": final[key] / total_final,
+               "pools": {name: {"multiplier": pool["multipliers"][key], "specials": pool["specials"][key]}
+                         for name, pool in d["pools"].items()}}
         if kind == "candidate":
             row["candidate"] = ce["names_2026"][(elec_id, key)]
             row["label"] = labels[(elec_id, key)]
         else:
             row["label"] = names.short_names[key]
         if link and link != "party vote":
-            np_, nf = d["prelim_n"][link], d["final_n"].get(link, 0)
-            row["base"] = {"key": link, "prelim": np_, "final": nf, "specials": nf - np_,
-                           "prelim_share": np_ / n_prelim_total, "special_share": (nf - np_) / n_specials_total}
+            no, nf = d["ordinary_n"][link], d["final_n"].get(link, 0)
+            row["base"] = {"key": link, "ordinary": no, "final": nf, "specials": nf - no,
+                           "ordinary_share": no / n_ordinary_total, "special_share": (nf - no) / n_specials_total}
+            for pool in pe.SPECIAL_POOLS:
+                row["base"][pool] = d["pools"][pool]["notional"].get(link, 0)
         rows.append(row)
     return rows
 
@@ -263,8 +310,9 @@ def base_rows(kind, elec_id, d, ce, names_2023):
     """The notional base-year count for every key in the area (including ones
     with no 2026 counterpart), with each key's multiplier."""
     names = ce["names"]
-    prelim_n, final_n = d["prelim_n"], d["final_n"]
+    prelim_n, final_n = d["ordinary_n"], d["final_n"]  # base-year ordinary votes, not preliminary
     total_p = sum(prelim_n.values())
+    pool_m = {pool: pe.pool_multipliers(d["pools"][pool]["notional"], prelim_n) for pool in pe.SPECIAL_POOLS}
     total_s = sum(final_n.values()) - total_p
     live = ce["electorates"][elec_id]["live"]
     rows = []
@@ -273,9 +321,11 @@ def base_rows(kind, elec_id, d, ce, names_2023):
         p, f = prelim_n.get(key, 0), final_n.get(key, 0)
         row = {"key": key_id(key), "party": None if isinstance(key, tuple) else key,
                "label": key[1] if isinstance(key, tuple) else names.short_names[key],
-               "prelim": p, "final": f, "specials": f - p,
-               "prelim_share": p / total_p, "special_share": (f - p) / total_s,
-               "multiplier": ((f - p) / total_s) / (p / total_p) if p > 0 else None}
+               "ordinary": p, "final": f, "specials": f - p,
+               "ordinary_share": p / total_p, "special_share": (f - p) / total_s,
+               "multiplier": ((f - p) / total_s) / (p / total_p) if p > 0 else None,
+               "pools": {pool: {"votes": d["pools"][pool]["notional"].get(key, 0),
+                                "multiplier": pool_m[pool].get(key)} for pool in pe.SPECIAL_POOLS}}
         if kind == "candidate" and not isinstance(key, tuple):
             # Each 2023 candidate of this party in the area, with the share of the
             # 2026 electorate's population their electorate contributes.
@@ -283,7 +333,8 @@ def base_rows(kind, elec_id, d, ce, names_2023):
                 ({"name": names_2023[(e, key)], "share": share_2026} for e, _, share_2026 in live
                  if (e, key) in names_2023), key=lambda c: -c["share"])
         rows.append(row)
-    return {"rows": rows, "prelim": total_p, "final": sum(final_n.values()), "specials": total_s}
+    return {"rows": rows, "ordinary": total_p, "final": sum(final_n.values()), "specials": total_s,
+            "pools": {pool: sum(d["pools"][pool]["notional"].values()) for pool in pe.SPECIAL_POOLS}}
 
 
 def electorates(ce):
@@ -320,23 +371,26 @@ def electorates(ce):
                    "omitted": e23 in ce["omitted_base"], "links": electorate_links_base(base, e23, timestamps)}
             if not src["omitted"]:
                 for kind in ["party", "candidate"]:
-                    p, f = data[(base, "prelim", kind)][e23], data[(base, "final", kind)][e23]
-                    src[kind] = {"prelim": sum(p.values()), "final": sum(f.values()),
+                    cats = ce["categories"][kind]
+                    p, f = cats["ordinary"][e23], data[(base, "final", kind)][e23]
+                    src[kind] = {"ordinary": sum(p.values()), "final": sum(f.values()),
+                                 "overseas": sum(cats["overseas"][e23].values()),
+                                 "domestic": sum(cats["domestic"][e23].values()),
                                  "by_key": {key_id(k): [p.get(k, 0), f.get(k, 0)]
                                             for k in sorted(set(p) | set(f), key=key_id)}}
             entry["sources"].append(src)
         for kind in ["party", "candidate"]:
             d = detail[kind]
-            entry[kind] = {"ratio": d["ratio"], "volume": d["volume"], "scale": ce["scale"],
+            entry[kind] = {"volume": d["volume"],
+                           "pools": {name: {"ratio": pool["ratio"], "volume": pool["volume"],
+                                            "scale": ce["scales"].get(name)} for name, pool in d["pools"].items()},
                            "prelim_total": sum(d["prelim_2026"].values()),
                            "base_rows": base_rows(kind, elec_id, d, ce, names_2023),
                            "rows": rows_for(kind, elec_id, d, ce, names_2023)}
         d = detail["candidate"]
         a, b = d["winner"], d["second"]
         pa, pb = d["prelim_winner"], d["prelim_second"]
-        m_b = breakeven(d["prelim_2026"], d["multipliers"], d["volume"], a, b)
-        if m_b is not None:
-            check_breakeven(d["prelim_2026"], d["multipliers"], d["volume"], a, b, m_b)
+        be = breakeven(d, a, b)
         entry.update({
             "flips": pa != a,
             "prelim_winner": key_id(pa), "prelim_second": key_id(pb),
@@ -349,8 +403,8 @@ def electorates(ce):
             # projected winner over the projected runner-up, then each one's specials.
             "bridge": {"prelim_lead": d["prelim_2026"][a] - d["prelim_2026"][b],
                        "specials_winner": d["specials"][a], "specials_second": d["specials"][b]},
-            "breakeven": {"key": key_id(b), "needed": m_b, "had": d["multipliers"][b],
-                          "winner_multiplier": d["multipliers"][a]},
+            "breakeven": {"key": key_id(b), "factor": be and be[0], "needed_specials": be and be[1],
+                          "had_specials": d["specials"][b]},
         })
         out.append(entry)
     return out
