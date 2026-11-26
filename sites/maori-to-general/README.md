@@ -44,4 +44,4 @@ npm run build      # writes build/
 
 Pushing to `main` deploys both sites via `../../.github/workflows/pages.yml`.
 `DRAFT` in `src/lib/config.js` adds a DRAFT banner and asks search engines not
-to index the site; set it to `false` to publish for real.
+to index the site. It's off (`false`): the site is public.

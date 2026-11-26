@@ -342,8 +342,8 @@ seats: 120 seats, National 36 and Labour 36 (as counted: 131 seats, Te Pāti Mā
 
 The site is `sites/maori-to-general/` (served at `/elections/maori-to-general/`; see its
 README), built from `export_maori_site_data.py`. It's a copy of the projection
-site's design and some components, not a second route tree in `sites/2026-projection/`. It's
-still marked DRAFT (`src/lib/config.js`). Added at the user's request (26
+site's design and some components, not a second route tree in `sites/2026-projection/`. The DRAFT flag
+(`src/lib/config.js`) is off. Added at the user's request (26
 November 2026): a break-even for each electorate (the share of Te Pāti Māori
 voters who'd have to vote Labour for Labour to win; the rest count for no
 one), and a sensitivity table (0–100% of them voting Labour: 4 flips at 0%, 6
