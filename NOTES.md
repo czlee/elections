@@ -15,6 +15,19 @@ split; the others are in `scripts/`, which also has `party_names.toml`
 The downloaded inputs are in `data/elections/<year>[-prelim]/` (they were in `results/` until 26 November 2026;
 older entries below that mention `results/` for a downloaded file mean `data/elections/`).
 
+**Reproducing the committed site data (26 November 2026).** Regenerating a site's JSON from the scripts
+(`--outdir` to a temporary directory, then compare with `sites/<site>/src/lib/data/`) gives the committed
+files, with two known differences, both in the main site (`sites/2026-projection`):
+
+- Every file has a `generated` date, which is the day the script ran.
+- The 2017 and 2023 `electorates.json` committed there still have `rows[].base.candidates` (the sorted
+  names of the base-year candidates of the matched party in the overlapping base electorates), which the
+  exporter stopped writing in `f277284`. The site doesn't read it (the electorate page's base-year table
+  uses `base_rows.rows[].candidates`, with population shares), so it's left as dead data; regenerating
+  those two files would drop it. The 2020 base has no electorates file.
+
+The complicated site's data matches exactly, apart from `generated`.
+
 ## Facts
 
 ### Site access (checked 8–9 November 2026)
