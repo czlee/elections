@@ -56,10 +56,10 @@ not the working directory. `/data` and `/results` are gitignored.
 There are two projections of the 2026 special votes, each with its own site:
 
 - `scripts/2026-projection/` is the main one: one special-vote multiplier per party. It's the one I've
-  checked carefully. Its CSVs are in `results/projection-2026/`.
+  checked carefully. Its CSVs are in `results/2026-projection/`.
 - `scripts/2026-projection-complicated/` is an experiment I haven't checked as rigorously: separate
   multipliers for overseas and domestic special votes, and the official count's revisions to ordinary
-  votes. Its CSVs are in `results/projection-2026-complicated/`, so the two don't overwrite each other.
+  votes. Its CSVs are in `results/2026-projection-complicated/`, so the two don't overwrite each other.
 
 ## Running the 2026 projections
 

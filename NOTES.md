@@ -11,7 +11,7 @@ The scripts are in `scripts/`, mirroring `sites/`: shared ones in `scripts/`, ea
 are from before this move: `project_specials.py` etc. are `scripts/2026-projection/` for the
 single-multiplier projection, and `scripts/2026-projection-complicated/` for the overseas/domestic
 split; the others are in `scripts/`, which also has `party_names.toml`
-(`candidate_name_exceptions.toml` is in `scripts/2026-projection-complicated/`). The split version writes to `results/projection-2026-complicated/`.
+(`candidate_name_exceptions.toml` is in `scripts/2026-projection-complicated/`). The split version writes to `results/2026-projection-complicated/`.
 
 ## Facts
 
@@ -534,7 +534,7 @@ saved (the script was a one-off in a job scratch directory).
 - `project_specials.py` (10 November 2026; split into overseas, domestic and
   revisions pools 20 November 2026): national projection of the 2026
   final party vote from 2023's preliminary-to-final changes; method in its
-  docstring. Writes `results/projection-2026/national.csv`. Reads the 2023
+  docstring. Writes `results/2026-projection/national.csv`. Reads the 2023
   preliminary totals straight from the saved overview page. Parties new in 2026
   get a multiplier of 1.
   - `--base 2017|2020` (14 November 2026) uses that election's specials
@@ -577,7 +577,7 @@ saved (the script was a one-off in a job scratch directory).
 - `project_electorates.py` (10 November 2026): per-electorate projection of
   both party and candidate votes; method in its docstring. Writes
   `electorates_party.csv`, `electorates_candidate.csv` and
-  `electorates_summary.csv` in `results/projection-2026/`. Confirmed by the
+  `electorates_summary.csv` in `results/2026-projection/`. Confirmed by the
   user (14 November 2026): a candidate whose party had no base-year candidate
   in the area uses that party's party-vote multiplier in the same electorate
   (not 1); Te Tai Tokerau Party (Mariameno Kapa-Kingi, the 2023 Te Pāti

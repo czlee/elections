@@ -68,8 +68,8 @@ DEFAULT_BASE = "2023"
 
 def default_output(base):
     if base == DEFAULT_BASE:
-        return "results/projection-2026/national.csv"
-    return "results/projection-2026/national-base{0}.csv".format(base)
+        return "results/2026-projection/national.csv"
+    return "results/2026-projection/national-base{0}.csv".format(base)
 
 
 def read_party_totals(filename):
@@ -206,7 +206,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--base", choices=sorted(BASES), default=DEFAULT_BASE,
                         help="past election whose special votes to apply (default %(default)s)")
-    parser.add_argument("--output", help="default results/projection-2026/national.csv for 2023, "
+    parser.add_argument("--output", help="default results/2026-projection/national.csv for 2023, "
                         "national-base<year>.csv otherwise")
     args = parser.parse_args()
     base = args.base

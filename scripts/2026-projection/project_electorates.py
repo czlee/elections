@@ -26,7 +26,7 @@ includes changes to ordinary votes in the official count.
   4. Projected special votes are shared out as in project_specials.py: the
      2026 preliminary share times the multiplier, normalised.
   5. Seats are allocated from the national projection's party votes
-     (results/projection-2026/national.csv, from project_specials.py) and the
+     (results/2026-projection/national.csv, from project_specials.py) and the
      projected electorate winners.
 
 The base election (the "2023" throughout) is 2023 by default, or 2017 with
@@ -42,7 +42,7 @@ Nothing is left out of the 2017 base.
 
 Inputs: results/concordance/electorates_<base>_2026.csv (concordance.py),
 results/<base>-prelim/ (scrape_wayback_prelim.py), results/<base>/ and
-results/2026-prelim/ (download.py), results/projection-2026/national.csv or
+results/2026-prelim/ (download.py), results/2026-projection/national.csv or
 national-base<base>.csv (project_specials.py) and the base election's
 preliminary count as project_specials.py reads it (NOTES.md).
 """
@@ -272,7 +272,7 @@ def seats_from(party_votes, won):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--base", choices=sorted(OMITTED), default=DEFAULT_BASE)
-    parser.add_argument("--outdir", default="results/projection-2026")
+    parser.add_argument("--outdir", default="results/2026-projection")
     args = parser.parse_args()
     base = args.base
 
