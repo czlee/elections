@@ -377,6 +377,37 @@ Party qualify, so Te Pāti Māori has 1 list seat and National has 35, not 36.
 Without it: Te Pāti Māori 0, National 36 (printed by `maori_to_general.py`). The
 waiver doesn't touch the electorate results.
 
+Boundaries without Māori electorates (26 November 2026): the estimate behind the
+site's limitation ("Boundaries stay as they were"; the page says about 60% for
+East Cape and about four more North Island electorates). Rules, from the
+Electoral Act 1993 s 35 as described by Stats NZ and the Electoral Commission:
+the South Island has 16 general electorates by law; the South Island quota is its
+general electoral population ÷ 16; North Island general electorates are its
+general electoral population ÷ that quota; Māori electorates are the Māori
+electoral population ÷ that quota. Inputs: the 2023 Census electoral population
+by meshblock (2025 layers), split by island using the regional council layer, with
+the Māori counts scaled by 1.084 (520,005 published ÷ 479,916 known) to cover the
+suppressed meshblocks: South Island 1,119,414 general + 58,420 Māori; North
+Island 3,355,917 general + 461,585 Māori. Check: today's rules give a South Island
+quota of 69,963 (published 70,037), 47.97 North Island general electorates (48)
+and 7.43 Māori electorates (7). With no Māori electorates (everyone in the general
+population): South Island quota (1,119,414 + 58,420) ÷ 16 = 73,615 (+5%); North
+Island (3,355,917 + 461,585) ÷ 73,615 = 51.9, so about 52 general electorates
+(+4, none in the South Island); about 68 electorates in all, not 71.
+
+Where the Māori roll is large, by the census measure (Māori electoral population
+inside each 2025 general electorate as a share of its general electoral
+population, summed from meshblock points): East Cape 57% on known counts, 62%
+scaled (about 70,100 general, 39,900 to 43,300 Māori); Northland 43%; Rotorua 40%;
+Whangārei 26%; Tukituki and Hamilton West 23%; Napier and Whanganui 22%; Manurewa
+and Taupō 21%; median 9%, minimum 2%. By votes (Māori-roll votes at voting
+places as a share of votes counted there): East Cape 32.6% (16,142 added to
+33,382, so +48%), Northland 23.6%, Rotorua 23.5%, Manurewa 18.0%, Hamilton West
+17.9%, Whangārei 15.1%; median 5.5%, minimum 1.6% (Waitaki). Five of the seven
+flipping electorates are in the top nine by votes. Votes understate the roll
+because Māori-roll turnout is lower. The per-electorate census table wasn't
+saved (the script was a one-off in a job scratch directory).
+
 ## Code status
 
 - `download.py`: downloads the top-level and `eNN/eNN.xml` files for one
