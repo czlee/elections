@@ -1,6 +1,7 @@
 <script>
 	import { colour } from '#lib/parties.js';
 	import { votes as fmtVotes } from '#lib/format.js';
+	import Term from '#lib/components/Term.svelte';
 
 	/** @type {{data: any}} */
 	let { data } = $props();
@@ -34,6 +35,8 @@
 	let hovered = $state('');
 </script>
 
+{#snippet div()}<Term tip="Divisor">Div.</Term>{/snippet}
+
 <p class="muted">
 	A party’s nth seat has quotient votes ÷ (2n − 1). The {data.to_allocate} highest quotients get the Sainte-Laguë seats
 	({data.total_seats}, less electorates won by independents or parties without a list). The {data.to_allocate}th is the last seat in and
@@ -46,7 +49,7 @@
 			<thead>
 				<tr>
 					<th>Party</th><th class="num">Party votes</th><th class="num">Seats</th>
-					<th class="num">Last in</th><th class="num">÷</th><th class="num">Next out</th><th class="num">÷</th>
+					<th class="num">Last in</th><th class="num muted">{@render div()}</th><th class="num">Next out</th><th class="num muted">{@render div()}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -60,9 +63,11 @@
 							{#if q}
 								{@const k = keyOf(p.party, seatOf(q.divisor))}
 								<!-- svelte-ignore a11y_no_static_element_interactions -->
-								<td class="num q" class:pick={pickedCell(p, /** @type {any} */ (which))} class:linked={hovered === k}
+								<td class="num q" class:pick={pickedCell(p, /** @type {any} */ (which))} class:linked-l={hovered === k}
 									onmouseenter={() => (hovered = k)} onmouseleave={() => (hovered = '')}>{fmtVotes(q.quotient)}</td>
-								<td class="num muted">{q.divisor}</td>
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<td class="num q muted" class:linked-r={hovered === k}
+									onmouseenter={() => (hovered = k)} onmouseleave={() => (hovered = '')}>{q.divisor}</td>
 							{:else}
 								<td class="num">–</td><td class="num">–</td>
 							{/if}
@@ -75,7 +80,7 @@
 	<div class="table-wrap">
 		<table>
 			<thead>
-				<tr><th class="num">Rank</th><th>Party</th><th class="num">Its seat</th><th class="num muted">÷</th><th class="num">Quotient</th></tr>
+				<tr><th class="num">Rank</th><th>Party</th><th class="num">Its seat</th><th class="num muted">{@render div()}</th><th class="num">Quotient</th></tr>
 			</thead>
 			<tbody onmouseleave={() => (hovered = '')} role="presentation">
 				{#each data.ladder as r (r.rank)}
@@ -101,8 +106,10 @@
 	tr.faded td { color: var(--text-3); opacity: 0.6; }
 	tr.faded.linked td { opacity: 1; }
 	/* The quotient under the pointer, or its counterpart in the other table. */
-	.linked { box-shadow: inset 0 0 0 2px var(--accent); }
-	tr.linked { background: var(--surface-2); }
+	tr.linked { background: var(--surface-2); box-shadow: inset 0 0 0 2px var(--accent); }
+	/* In the left table the quotient and its divisor are outlined together, with no line between them. */
+	.linked-l { box-shadow: inset 2px 0 0 var(--accent), inset 0 2px 0 var(--accent), inset 0 -2px 0 var(--accent); }
+	.linked-r { box-shadow: inset -2px 0 0 var(--accent), inset 0 2px 0 var(--accent), inset 0 -2px 0 var(--accent); }
 	tr.cut td { border-bottom: 2px solid var(--text-2); }
 	td.q { cursor: default; }
 </style>

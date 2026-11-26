@@ -16,7 +16,7 @@
 
 <h1>{e.year} New Zealand election margins{e.prelim ? ', preliminary count' : ''}</h1>
 <p class="muted">
-	From the Electoral Commission’s {e.prelim ? 'preliminary ' : ''}results.
+	From the Electoral Commission’s <a href={e.official} target="electionresults" rel="noopener">{e.prelim ? 'preliminary ' : ''}results</a>.
 </p>
 
 <h2>Party vote: votes to gain or lose a seat</h2>

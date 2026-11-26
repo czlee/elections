@@ -2,6 +2,7 @@
 	import { colour } from '#lib/parties.js';
 	import { candidateName, votes as fmtVotes } from '#lib/format.js';
 	import { electorateUrl } from '#lib/elections.js';
+	import Term from '#lib/components/Term.svelte';
 
 	/** @type {{data: any, official: string, initial?: number}} */
 	let { data, official, initial = 10 } = $props();
@@ -13,7 +14,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Electorate</th><th class="num">Margin</th><th class="num">%</th><th>Winner</th><th>Runner-up</th><th aria-label="Official results"></th>
+				<th>Electorate</th><th class="num">Margin (votes)</th><th class="num">Margin (<Term tip="percentage points">pp</Term>)</th><th>Winner</th><th>Runner-up</th><th aria-label="Official results"></th>
 			</tr>
 		</thead>
 		<tbody>

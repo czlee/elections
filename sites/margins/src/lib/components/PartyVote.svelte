@@ -110,7 +110,7 @@
 								<td class="num">{p.entitlement}</td>
 							{/if}
 							{#if s}
-								<td class="num votes">{mode === 'threshold' ? (s.direction === 'reach' ? '+' : '−') : ''}{fmtVotes(s.votes)}{s.overhang_only ? '*' : ''}</td>
+								<td class="num votes">{s.overhang_only ? '*' : ''}{mode === 'threshold' ? (s.direction === 'reach' ? '+' : '−') : ''}{fmtVotes(s.votes)}</td>
 								<td class="chgs">
 									{#each changes(p, s) as c (c.id)}
 										<span class="chg"><span class="swatch" style:background={colour(c.id)}></span>{c.name} {delta(c.d)}{c.overhang ? '*' : ''}</span>
@@ -136,8 +136,8 @@
 		</p>
 		{#if anyOverhangOnly}
 			<p class="muted small">
-				* Only changes the overhang: the party has won at least as many electorates as its entitlement before and after, so its
-				seats don’t change.
+				* Only changes the overhang: the party won more electorates than its party vote entitlement, so its seats don’t change,
+				but it may change the size of the House.
 			</p>
 		{/if}
 	</div>
