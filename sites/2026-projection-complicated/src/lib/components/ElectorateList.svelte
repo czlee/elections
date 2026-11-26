@@ -121,7 +121,7 @@
 		font: inherit; font-size: 0.9rem; padding: 0.3em 0.5em; border: 1px solid var(--border);
 		border-radius: 4px; background: var(--surface); color: var(--text);
 	}
-	input { width: 16em; max-width: 100%; }
+	input { width: 18em; max-width: 100%; }
 	th button {
 		font: inherit; font-weight: 600; color: inherit; background: none; border: 0; padding: 0;
 		cursor: pointer; text-align: inherit;

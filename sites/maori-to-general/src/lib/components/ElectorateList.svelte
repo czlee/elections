@@ -96,7 +96,7 @@
 	.filters { display: flex; flex-wrap: wrap; gap: 0.6em 1.2em; margin: 0.6em 0; align-items: center; }
 	input[type='search'] {
 		font: inherit; font-size: 0.9rem; padding: 0.3em 0.5em; border: 1px solid var(--border);
-		border-radius: 4px; background: var(--surface); color: var(--text); width: 16em; max-width: 100%;
+		border-radius: 4px; background: var(--surface); color: var(--text); width: 18em; max-width: 100%;
 	}
 	.check { font-size: 0.9rem; color: var(--text-2); }
 	th button {
