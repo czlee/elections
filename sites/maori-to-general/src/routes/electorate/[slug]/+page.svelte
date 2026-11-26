@@ -38,10 +38,10 @@
 
 <p class="verdict">
 	<span class="swatch" style:background={colour(W.party)}></span>
-	<strong>{who(W)}</strong> ({party(W.party)}) {e.flips ? 'overtakes' : 'holds on'},
+	<strong>{who(W)}</strong> ({party(W.party)}) {e.flips ? 'would overtake' : 'would hold on'},
 	winning by <strong>{votes(e.margin_new)}</strong> votes ({points(e.margin_new_pct)}) over
 	{who(S)} ({party(S.party)}).
-	{#if e.flips}<span class="badge flip">flips from {party(e.winner_prelim)}</span>{/if}
+	{#if e.flips}<span class="badge flip">would flip from {party(e.winner_prelim)}</span>{/if}
 </p>
 
 <div class="callout">
@@ -52,7 +52,7 @@
 		({#each origins as [from, n], i (from)}{i > 0 ? ', ' : ''}{from} {votes(n)}{/each}).
 		{#if e.flips}
 			In the preliminary count {who(prelimWinner)} led by {votes(e.margin_prelim)}; with the Māori-roll votes
-			{who(W)} wins by {votes(e.margin_new)}.
+			{who(W)} would win by {votes(e.margin_new)}.
 		{:else}
 			In the preliminary count {who(W)} led by {votes(e.margin_prelim)}; now they lead by {votes(e.margin_new)}.
 		{/if}
@@ -62,14 +62,14 @@
 			{#if b === null}
 				No TPM+ voters cast votes at voting places here.
 			{:else if b <= 0}
-				Labour’s candidate wins here even if <strong>none</strong> of the {votes(e.tpm_votes)} TPM+
+				Labour’s candidate would win here even if <strong>none</strong> of the {votes(e.tpm_votes)} TPM+
 				voters here vote for them (the other Māori-roll votes are enough).
 			{:else if b <= 1}
-				Labour’s candidate wins if more than <strong>{pct(b, 0)}</strong> of the {votes(e.tpm_votes)} TPM+
+				Labour’s candidate would win if more than <strong>{pct(b, 0)}</strong> of the {votes(e.tpm_votes)} TPM+
 				voters here vote for them (the rest counted for no one, everything else as above).
-				{#if e.winner_new === 'labour'}Below that, {who(rival)} wins.{:else}Above that, they overtake {who(rival)}.{/if}
+				{#if e.winner_new === 'labour'}Below that, {who(rival)} would win.{:else}Above that, they would overtake {who(rival)}.{/if}
 			{:else}
-				Labour’s candidate doesn’t win here even if <strong>all</strong> {votes(e.tpm_votes)} TPM+
+				Labour’s candidate wouldn’t win here even if <strong>all</strong> {votes(e.tpm_votes)} TPM+
 				voters here vote for them: they’d still be {votes(Math.round((b - 1) * e.tpm_votes))} votes behind {who(rival)}.
 			{/if}
 			<span class="muted small">(TPM+ is Te Pāti Māori, Te Tai Tokerau Party and Tākuta Ferris voters.)</span>

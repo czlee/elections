@@ -120,7 +120,7 @@
 	const close = $derived(data.electorates.toSorted((/** @type {any} */ a, /** @type {any} */ b) => a.margin - b.margin).slice(0, 3));
 </script>
 
-<h1>The 2026 election with no Māori electorates</h1>
+<h1>The 2026 election if there were no Māori electorates</h1>
 <p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">
 	What would the 2026 <strong>electorate</strong> results have been if there were no Māori electorates, and
@@ -129,7 +129,7 @@
 	stays as-is; only the electorates change.
 </p>
 <p class="lede">
-	Under the <a href="#assumptions">assumptions</a>, <strong>{flips.length} of the {nat.general_electorates} general electorates flip</strong>
+	Under the <a href="#assumptions">assumptions</a>, <strong>{flips.length} of the {nat.general_electorates} general electorates would flip</strong>
 	from {name(flipGroups[0].from)} to {name(flipGroups[0].to)}, for a net gain of {labourGain}
 	electorate{labourGain === 1 ? '' : 's'} for {name('labour')}. {noOverhang} Overall seats:
 	<strong
@@ -140,7 +140,7 @@
 </p>
 <p class="lede">
 	If the 5% threshold is waived for {name('te-pati-maori')} (per the 1986
-	<a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission</a>), they keep
+	<a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission</a><sup><a href="#fn-waiver" id="fnref-waiver">1</a></sup>), they keep
 	{waivedTpm} list seat{waivedTpm === 1 ? '' : 's'}; otherwise, that seat goes to {name(seatGoesTo)}.
 	<a href="#threshold">You can switch this below.</a>
 </p>
@@ -199,20 +199,18 @@
 		</li>
 		<li>
 			The <strong>party vote is left as it was</strong>. In reality, Te Pāti Māori would probably have
-			campaigned (and been voted for) differently without its electorates, which could change who gets
-			list seats.
+			campaigned for the party vote, which would see it get more list seats.
 		</li>
 		<li>
-			<strong>Boundaries stay as they were.</strong> With no Māori electorates, the general electorates would have
-			been redrawn. The South Island is fixed at 16 general electorates, so its population quota would rise by
-			about 5% (from about 70,000 to 73,600) as South Island Māori-roll voters join it, and the North Island,
-			whose count is its population divided by that quota, would have about 52 general electorates, not 48. By our
-			estimate that’s about 68 electorates, not 71. So these aren’t the seats there would have been.
+			<strong>Boundaries stay as they were.</strong> With no Māori electorates, the general electorates would have to
+			be redrawn, especially in areas with large Māori-roll populations. For example, East Cape’s electoral population
+			would rise by about 60% without a boundary change. As Māori-roll voters are more concentrated in the North
+			Island, it would gain about four electorates, while the South Island is fixed by law at 16 electorates.
 		</li>
 		<li>
 			The narrowest electorates are sensitive to the assumptions above:
 			{#each close as e, i (e.slug)}{i > 0 ? ', ' : ''}<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a>
-				({e.flips ? 'flips' : 'stays'} {name(e.winner_party)} by {votes(e.margin)})
+				({e.flips ? 'would flip to' : 'would stay'} {name(e.winner_party)} by {votes(e.margin)})
 			{/each}.
 		</li>
 	</ul>
@@ -237,7 +235,7 @@
 		</span>
 		<span class="small muted">
 			The 1986 <a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission on the
-			Electoral System</a> recommended this when it proposed abolishing the Māori electorates, but it was never adopted.
+			Electoral System</a> suggested this when it proposed abolishing the Māori electorates, but it was never adopted.<sup><a href="#fn-waiver">1</a></sup>
 		</span>
 	</div>
 </div>
@@ -283,17 +281,13 @@
 				</tr>
 			</tfoot>
 		</table>
-		<p class="small muted">
-			Seats are allocated from the preliminary party vote ({votes(nat.party_vote_total)} valid votes) and the
-			electorates each party wins in that count, with the threshold waived for Māori parties in the “No Māori elec.” column. Elec. and List are for that column too.
-		</p>
 	</div>
 </div>
 
 <h2>Electorates</h2>
 <p>
 	Colour is the {view === 'counted' ? 'preliminary' : 'new'} leader in each of the {nat.general_electorates}
-	general electorates (switch with the toggle above). {flips.length === 1 ? 'The hatched electorate flips' : 'Hatched electorates flip'}
+	general electorates (switch with the toggle above). {flips.length === 1 ? 'The hatched electorate would flip' : 'Hatched electorates would flip'}
 	when the Māori-roll votes are added. Boxes on the main map show the city insets.
 </p>
 <p class="muted small">
@@ -316,10 +310,10 @@
 		<thead>
 			<tr>
 				<th class="num">Share voting Labour</th>
-				<th class="num">Electorates flipping</th>
-				<th>Newly flipping</th>
-				<th class="num">Labour wins</th>
-				<th class="num">National wins</th>
+				<th class="num">Electorates that would flip</th>
+				<th>Would newly flip</th>
+				<th class="num">Labour would win</th>
+				<th class="num">National would win</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -337,11 +331,22 @@
 </div>
 <p class="muted small">
 	Each range starts where another electorate’s break-even is: Labour needs <em>more than</em> the lower figure to
-	win it. “Wins” are among the {nat.general_electorates} general electorates. The “Labour needs” column on the
+	win it. “Would win” counts are among the {nat.general_electorates} general electorates. The “Labour needs” column on the
 	<a href={link('/electorates/')}>electorates page</a> gives each electorate’s break-even.
 </p>
 
+<aside class="footnotes" aria-label="Footnotes">
+	<p class="small muted" id="fn-waiver">
+		<sup>1</sup> The Commission assumed a modified Sainte-Laguë method for allocating seats, under which a party
+		representing Māori interests would win a seat with about 1.25% of the party vote. Te Pāti Māori, with 0.57%, would
+		have fallen short. We use New Zealand’s current method, which would give it one. (See paragraphs 3.74–3.75 of the
+		1986 <a href="https://elections.nz/democracy-in-nz/what-is-new-zealands-system-of-government/report-of-the-royal-commission-on-the-electoral-system" target="_blank" rel="noopener">Royal Commission’s report</a>.) <a href="#fnref-waiver" aria-label="Back to the text">↩</a>
+	</p>
+</aside>
+
 <style>
+	.footnotes { margin-top: 2em; padding-top: 0.6em; border-top: 1px solid var(--border); max-width: var(--measure); }
+	sup a { text-decoration: none; }
 	.byline { color: var(--text-2); margin: 0 0 1em; }
 	.credit { color: var(--text-3); }
 	.lede { font-size: 1.05rem; }
@@ -359,11 +364,18 @@
 	.limits li + li { margin-top: 0.25em; }
 	.assumptions { max-width: var(--measure); padding-left: 1.4em; }
 	.assumptions li { margin: 0.6em 0; }
-	.votes { margin: 0.8em 0; }
+	/* A muted box, so the collapsed table is visible without competing with the limitations box. */
+	.votes {
+		border: 1px solid var(--border); border-radius: 4px; max-width: var(--measure);
+		background: color-mix(in srgb, var(--surface-2) 55%, var(--surface));
+		padding: 0.5em 0.9em; margin: 1em 0;
+	}
 	.votes summary { cursor: pointer; color: var(--text-2); font-size: 0.9rem; }
+	.votes[open] summary { margin-bottom: 0.3em; }
 	.controls { display: flex; flex-wrap: wrap; gap: 0.6em 1.5em; align-items: flex-start; margin: 0.8em 0; }
 	.controls .toggle { margin: 0; }
-	.param { display: flex; flex-direction: column; gap: 0.15em; max-width: 34ch; font-size: 0.9rem; }
+	.param { display: flex; flex-direction: column; gap: 0.15em; max-width: 36rem; font-size: 0.9rem; }
+	.param .small { font-size: 0.78rem; }
 	.param-row { display: flex; align-items: center; gap: 0.6em; color: var(--text-2); }
 	.switch {
 		position: relative; flex: none; width: 2.4em; height: 1.35em; padding: 0; border: 0; border-radius: 1em;
@@ -382,6 +394,7 @@
 		color: var(--text-2); cursor: pointer;
 	}
 	.toggle button[aria-pressed='true'] { background: var(--text); color: var(--surface); }
-	.grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.5em; align-items: start; }
+	/* The horseshoe is at most 304px wide (Parliament.svelte), so its column is capped; the table gets the rest. */
+	.grid { display: grid; grid-template-columns: minmax(0, 482px) minmax(0, 1fr); gap: 1.5em; align-items: start; }
 	@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
 </style>

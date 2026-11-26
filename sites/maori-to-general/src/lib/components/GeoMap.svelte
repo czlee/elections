@@ -60,7 +60,7 @@
 		const l = leader(e);
 		if (!e || !l) return null;
 		const party = l.party ? names[l.party] ?? l.party : 'independent';
-		return { name: e.name, text: ` ${candidateName(l.who)} (${party}) ${view === 'none' ? 'wins' : 'leads'} by ${points(l.margin)}${e.flips ? (view === 'none' ? ` · flips from ${names[e.prelim_winner_party] ?? 'other'}` : ' · flips without Māori electorates') : ''}` };
+		return { name: e.name, text: ` ${candidateName(l.who)} (${party}) ${view === 'none' ? 'would win' : 'leads'} by ${points(l.margin)}${e.flips ? (view === 'none' ? ` · would flip from ${names[e.prelim_winner_party] ?? 'other'}` : ' · would flip without Māori electorates') : ''}` };
 	});
 	const parties = $derived(
 		[...new Set(electorates.map((e) => leader(e)?.party))]
@@ -126,7 +126,7 @@
 		{#each parties as p (p.id)}
 			<li><span class="swatch" style:background={colour(p.id)}></span>{p.id ? names[p.id] ?? p.id : 'Other'} {p.n}</li>
 		{/each}
-		<li><span class="flip-key"></span>flips</li>
+		<li><span class="flip-key"></span>would flip</li>
 	</ul>
 </figure>
 

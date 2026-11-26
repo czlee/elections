@@ -51,7 +51,7 @@
 		<span class="visually-hidden">Search</span>
 		<input type="search" placeholder="Search electorate or candidate" bind:value={query} />
 	</label>
-	<label class="check"><input type="checkbox" bind:checked={flipsOnly} /> Only electorates that flip</label>
+	<label class="check"><input type="checkbox" bind:checked={flipsOnly} /> Only electorates that would flip</label>
 </div>
 
 <div class="table-wrap">
@@ -72,7 +72,7 @@
 				<tr>
 					<td>
 						<a href={link(`/electorate/${e.slug}/`)}>{e.name}</a>
-						{#if e.flips}<span class="badge flip">flips</span>{/if}
+						{#if e.flips}<span class="badge flip">would flip</span>{/if}
 					</td>
 					<td>
 						<span class="swatch" style:background={colour(e.prelim_winner_party)}></span>{candidateName(e.prelim_winner)}

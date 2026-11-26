@@ -1,8 +1,13 @@
-const SITE_NAME = 'The 2026 election with no Māori electorates';
-const SITE_ORIGIN = 'https://czlee.nz';
-const DESCRIPTION =
-	'What the 2026 preliminary electorate results would have been if every Māori-roll voter had voted in the general electorate for their area.';
+import { SITE_NAME, SITE_ORIGIN, CARD, pageMeta } from '#lib/server/og.js';
 
-export function load({ url }) {
-	return { meta: { siteName: SITE_NAME, description: DESCRIPTION, url: SITE_ORIGIN + url.pathname } };
+export function load({ params, route, url }) {
+	const { title, description, version } = pageMeta(route.id, params.slug);
+	// url.pathname includes the base path while prerendering; each page's card is its og.png.
+	const pageUrl = SITE_ORIGIN + url.pathname;
+	return {
+		meta: {
+			siteName: SITE_NAME, title, description, url: pageUrl,
+			image: `${pageUrl}og.png?v=${version}`, imageWidth: CARD.width, imageHeight: CARD.height
+		}
+	};
 }

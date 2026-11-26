@@ -18,23 +18,27 @@
 		{ href: '/', route: '/', label: 'Overview' },
 		{ href: '/electorates/', route: '/electorates', label: 'Electorates' }
 	];
-	const title = $derived(page.data.title ? `${page.data.title} · ${data.meta.siteName}` : data.meta.siteName);
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} type="image/svg+xml" />
 	<link rel="apple-touch-icon" href={appleTouchIcon} />
 	{#if DRAFT}<meta name="robots" content="noindex, nofollow" />{/if}
-	<title>{title}</title>
+	<title>{data.meta.title}</title>
 	<meta name="description" content={data.meta.description} />
 	<link rel="canonical" href={data.meta.url} />
 	<meta property="og:type" content="website" />
 	<meta property="og:locale" content="en_NZ" />
 	<meta property="og:site_name" content={data.meta.siteName} />
-	<meta property="og:title" content={title} />
+	<meta property="og:title" content={data.meta.title} />
 	<meta property="og:description" content={data.meta.description} />
 	<meta property="og:url" content={data.meta.url} />
-	<meta name="twitter:card" content="summary" />
+	<meta property="og:image" content={data.meta.image} />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content={String(data.meta.imageWidth)} />
+	<meta property="og:image:height" content={String(data.meta.imageHeight)} />
+	<meta property="og:image:alt" content={data.meta.description} />
+	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 {#if DRAFT}
@@ -45,7 +49,7 @@
 
 <header>
 	<nav>
-		<a class="brand" href={link('/')}>2026 with no Māori electorates{#if DRAFT}<span class="draft-tag">DRAFT</span>{/if}</a>
+		<a class="brand" href={link('/')}>2026 if there were no Māori electorates{#if DRAFT}<span class="draft-tag">DRAFT</span>{/if}</a>
 		{#each nav as item (item.href)}
 			<a href={link(item.href)} aria-current={page.route.id === item.route ? 'page' : undefined}>{item.label}</a>
 		{/each}
@@ -70,7 +74,6 @@
 		results by voting place), <a href="https://datafinder.stats.govt.nz/">Stats NZ</a> (2025 electorate
 		boundaries and 2025 regional council boundaries for the coastline, CC BY 4.0). Code:
 		<a href="https://github.com/czlee/elections">czlee/elections</a>.
-		Companion: <a href="https://czlee.nz/elections/2026-projection/">the special votes projection</a>.
 	</p>
 </footer>
 

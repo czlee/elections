@@ -354,19 +354,28 @@ the smallest margin after dropped votes is 51, Northland, then Nelson 62 after F
 
 Threshold waiver (26 November 2026, at the user's request). The 1986 Royal
 Commission on the Electoral System (*Towards a Better Democracy*) proposed a 4%
-threshold, abolishing the Māori electorates, and waiving the threshold for
-parties primarily representing Māori interests; Parliament kept the seats and
-set 5% (so the waiver wasn't adopted). Sources: Wikipedia's article on the
-Commission (its Recommendations: Māori electorates abolished, "with Māori
-parties instead receiving representation if they did not pass the threshold")
-and two search summaries quoting the report (p. 101, "parties primarily
-representing Māori interests"). Not checked against the report itself:
-elections.nz's page returned nothing and Te Ara gave a 403. The site applies it
-in the no-Māori-electorates scenario only: `seats.allocate(waived=...)` lets
-Te Pāti Māori and Te Tai Tokerau Party qualify, so Te Pāti Māori's 13,845 party
-votes (0.57%) earn 1 list seat and National has 35, not 36. Without it: Te Pāti
-Māori 0, National 36 (printed by `maori_to_general.py`). The waiver doesn't
-touch the electorate results.
+threshold, abolishing the Māori electorates (no Māori roll, seats or option) and
+suggested waiving the threshold for parties primarily representing Māori
+interests. Confirmed by the user from the report itself (paragraphs 3.74–3.75):
+"We have suggested the 4% threshold be waived for parties primarily
+representing Maori interests". (elections.nz's copy is behind a bot wall
+(Incapsula), so scripts can't read it.) Parliament kept the seats and set 5%, so
+the waiver wasn't adopted. The page says "suggested", not "recommended".
+
+Method caveat, with a footnote on the page: paragraph 3.75 assumes a *modified*
+Sainte-Laguë method, under which a Māori party is "sure to win 1 list seat" with
+about 25,000 of 2,000,000 votes (1.25%), 2 with about 37,500, 3 with about
+42,000 and 4 with about 58,800. That implies a first divisor of about 3 (the user's
+reading), not the plain 1,3,5 New Zealand uses. We use the current method, so
+Te Pāti Māori's 13,845 party votes (0.57%) earn 1 list seat; under the
+Commission's own method it would not have been sure of one. We chose not to
+model the Commission's method (too much to explain on the page).
+
+The site applies the waiver in the no-Māori-electorates scenario only, as a
+parameter: `seats.allocate(waived=...)` lets Te Pāti Māori and Te Tai Tokerau
+Party qualify, so Te Pāti Māori has 1 list seat and National has 35, not 36.
+Without it: Te Pāti Māori 0, National 36 (printed by `maori_to_general.py`). The
+waiver doesn't touch the electorate results.
 
 ## Code status
 

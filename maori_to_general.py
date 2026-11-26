@@ -45,7 +45,7 @@ MAORI = range(65, 72)
 # in Te Pāti Māori's bloc, is treated as a party of his own so that his votes
 # aren't dropped with the other independents.
 FERRIS = "Tākuta Ferris"
-# The 1986 Royal Commission on the Electoral System recommended abolishing the
+# The 1986 Royal Commission on the Electoral System suggested abolishing the
 # Māori electorates and waiving the party-vote threshold for parties
 # primarily representing Māori interests. With no Māori electorates, we apply
 # that: these parties qualify for list seats whatever their party vote.
