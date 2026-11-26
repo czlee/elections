@@ -44,7 +44,7 @@ is affected. In step 3 it's counted at the national ratios, and in step 5 at
 its preliminary winner. Nothing is left out of the 2017 and 2020 bases.
 
 Inputs: results/concordance/electorates_<base>_2026.csv (concordance.py),
-results/<base>/ (download.py and download_specials.py), results/2026-prelim/
+data/elections/<base>/ (download.py and download_specials.py), data/elections/2026-prelim/
 (download.py), and project_specials.py's inputs (it's run for the national
 pools), and results/2026-projection-complicated/national.csv or national-base<base>.csv
 (project_specials.py) for seats.
@@ -74,10 +74,10 @@ def concordance_file(base):
 
 def files(base):
     return {
-        (base, "final", "party"): "results/{0}/party_votes.csv".format(base),
-        (base, "final", "candidate"): "results/{0}/candidate_votes.csv".format(base),
-        ("2026", "prelim", "party"): "results/2026-prelim/party_votes.csv",
-        ("2026", "prelim", "candidate"): "results/2026-prelim/candidate_votes.csv",
+        (base, "final", "party"): "data/elections/{0}/party_votes.csv".format(base),
+        (base, "final", "candidate"): "data/elections/{0}/candidate_votes.csv".format(base),
+        ("2026", "prelim", "party"): "data/elections/2026-prelim/party_votes.csv",
+        ("2026", "prelim", "candidate"): "data/elections/2026-prelim/candidate_votes.csv",
     }
 
 
@@ -123,7 +123,7 @@ def read_votes(filename, election, names, kind):
 
 
 def category_file(base, kind):
-    return "results/{0}/{1}_votes_by_category.csv".format(base, kind)
+    return "data/elections/{0}/{1}_votes_by_category.csv".format(base, kind)
 
 
 def read_categories(filename, election, names, kind):

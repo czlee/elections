@@ -24,10 +24,10 @@ parties.py). A 2026 party that was part of an umbrella party in the base
 election uses the umbrella party's multiplier. A 2026 party with no
 counterpart in the base election gets a multiplier of 1.
 
-Inputs: results/<base>/party_votes.csv (download.py --election <base>),
-results/2026-prelim/party_votes.csv (download.py), and the base election's
+Inputs: data/elections/<base>/party_votes.csv (download.py --election <base>),
+data/elections/2026-prelim/party_votes.csv (download.py), and the base election's
 preliminary count: for 2020 and 2023 the overview page saved from the Wayback
-Machine, for 2017 results/2017-prelim/party_votes.csv
+Machine, for 2017 data/elections/2017-prelim/party_votes.csv
 (scrape_wayback_prelim.py --election 2017), which sums exactly to 2017's
 overview page (see NOTES.md).
 """
@@ -47,19 +47,19 @@ from seats import TOTAL_SEATS, allocate
 SPECIAL_ESTIMATE_2023 = 567000
 SPECIAL_ESTIMATE_2026 = 399365
 
-PRELIM_2023_OVERVIEW = "results/2023-prelim/raw/index-20231026013849.html"
-FINAL_2023_PARTY_VOTES = "results/2023/party_votes.csv"
-PRELIM_2026_PARTY_VOTES = "results/2026-prelim/party_votes.csv"
-PRELIM_2026_CANDIDATE_VOTES = "results/2026-prelim/candidate_votes.csv"
+PRELIM_2023_OVERVIEW = "data/elections/2023-prelim/raw/index-20231026013849.html"
+FINAL_2023_PARTY_VOTES = "data/elections/2023/party_votes.csv"
+PRELIM_2026_PARTY_VOTES = "data/elections/2026-prelim/party_votes.csv"
+PRELIM_2026_CANDIDATE_VOTES = "data/elections/2026-prelim/candidate_votes.csv"
 
 # Base elections. "prelim" is ("overview", saved overview page) or ("csv",
 # electorate-level party_votes.csv); "estimate" is the press release's
 # special-vote estimate (see NOTES.md).
 BASES = {
-    "2017": {"estimate": 384072, "prelim": ("csv", "results/2017-prelim/party_votes.csv"),
-             "final": "results/2017/party_votes.csv"},
-    "2020": {"estimate": 480000, "prelim": ("overview", "results/2020-prelim/raw/index-20201103192629.html"),
-             "final": "results/2020/party_votes.csv"},
+    "2017": {"estimate": 384072, "prelim": ("csv", "data/elections/2017-prelim/party_votes.csv"),
+             "final": "data/elections/2017/party_votes.csv"},
+    "2020": {"estimate": 480000, "prelim": ("overview", "data/elections/2020-prelim/raw/index-20201103192629.html"),
+             "final": "data/elections/2020/party_votes.csv"},
     "2023": {"estimate": SPECIAL_ESTIMATE_2023, "prelim": ("overview", PRELIM_2023_OVERVIEW),
              "final": FINAL_2023_PARTY_VOTES},
 }

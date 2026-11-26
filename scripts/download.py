@@ -5,7 +5,7 @@ XML feeds exist for 2017, 2020 and 2023 (official results) and 2026
 (preliminary results); all share the same layout. Earlier elections have no XML
 feed, only CSVs (see the old CSV-based scripts in czlee/elections-2020). Choose a feed with --election, or give any feed's
 URL with --base. Raw XML is saved under <outdir>/raw/ and tidy CSVs are written
-to <outdir>/ (default: results/<election>).
+to <outdir>/ (default: data/elections/<election>).
 
 Per-voting-place files are not downloaded.
 """
@@ -103,12 +103,12 @@ def main(base, outdir, force=False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("outdir", nargs="?", help="output directory (default: results/<election>)")
+    parser.add_argument("outdir", nargs="?", help="output directory (default: data/elections/<election>)")
     parser.add_argument("-e", "--election", choices=ELECTIONS, default=DEFAULT_ELECTION,
                         help="which election's feed to download (default: %(default)s)")
     parser.add_argument("--base", help="base URL of the XML feed, overriding --election")
     parser.add_argument("-f", "--force", action="store_true", help="re-download files that already exist")
     args = parser.parse_args()
     base = args.base or ELECTIONS[args.election]
-    outdir = args.outdir or os.path.join("results", args.election)
+    outdir = args.outdir or os.path.join("data", "elections", args.election)
     main(base, outdir, args.force)

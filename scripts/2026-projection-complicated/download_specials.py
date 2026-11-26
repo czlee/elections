@@ -21,7 +21,7 @@ Categories, by the row label before " - <electorate>":
              votes were taken", hospital teams, etc.
 
 For each electorate and party, the three categories must add up to the CSV's
-total row, and that must equal results/<year>/party_votes.csv
+total row, and that must equal data/elections/<year>/party_votes.csv
 (download.py --election <year>), or the script stops with an error.
 
 The candidate CSVs work the same way, except that they have no party-only
@@ -33,9 +33,9 @@ total is unique and equal to candidate_votes.csv's (checked for 2017, 2020 and
 in candidate_name_exceptions.toml. An electorate where every candidate has 0
 votes (2023 Port Waikato, which had no electorate vote) is skipped.
 
-Raw CSVs are saved under results/<year>/raw/csv/. The outputs are
-results/<year>/party_votes_by_category.csv and
-results/<year>/candidate_votes_by_category.csv, with the official feed's party
+Raw CSVs are saved under data/elections/<year>/raw/csv/. The outputs are
+data/elections/<year>/party_votes_by_category.csv and
+data/elections/<year>/candidate_votes_by_category.csv, with the official feed's party
 and candidate names.
 
 --check-xml (2017 and 2020 only) also downloads each electorate's special-vote
@@ -129,18 +129,18 @@ def parse_party_csv(text, elec_id):
 
 
 def read_official(year):
-    """Reads results/<year>/party_votes.csv as {elec_id: Counter({party: votes})}."""
+    """Reads data/elections/<year>/party_votes.csv as {elec_id: Counter({party: votes})}."""
     official = defaultdict(Counter)
-    with open(os.path.join("results", year, "party_votes.csv"), newline="", encoding="utf-8") as f:
+    with open(os.path.join("data", "elections", year, "party_votes.csv"), newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             official[int(row["elec_id"])][row["party"]] += int(row["votes"])
     return official
 
 
 def read_official_candidates(year):
-    """Reads results/<year>/candidate_votes.csv as {elec_id: {candidate: (party, votes)}}."""
+    """Reads data/elections/<year>/candidate_votes.csv as {elec_id: {candidate: (party, votes)}}."""
     official = defaultdict(dict)
-    with open(os.path.join("results", year, "candidate_votes.csv"), newline="", encoding="utf-8") as f:
+    with open(os.path.join("data", "elections", year, "candidate_votes.csv"), newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             official[int(row["elec_id"])][row["candidate"]] = (row["party"], int(row["votes"]))
     return official
@@ -213,7 +213,7 @@ def write_candidates(year, files):
     unused = set(exceptions) - used
     if unused:
         raise ValueError("{0}: unused entries in {1}: {2}".format(year, NAME_EXCEPTIONS_FILE, sorted(unused)))
-    write_csv(os.path.join("results", year, "candidate_votes_by_category.csv"),
+    write_csv(os.path.join("data", "elections", year, "candidate_votes_by_category.csv"),
               ["elec_id", "elec_name", "candidate", "party", "category", "votes"], rows)
     print("{0} candidates: ordinary {1:,}, overseas {2:,}, domestic {3:,}{4}".format(
         year, national["ordinary"], national["overseas"], national["domestic"],
@@ -237,7 +237,7 @@ def check_xml(year, by_elec):
     """Compares by_elec ({elec_id: {category: Counter({party: votes})}}, with
     the overseas party-only votes also as "overseas party-only") with the XML
     feed's special-vote voting places. Prints any unexplained differences."""
-    base, rawdir = FEEDS[year], os.path.join("results", year, "raw")
+    base, rawdir = FEEDS[year], os.path.join("data", "elections", year, "raw")
     parties = {p.get("p_no"): p.findtext("short_name") for p in fetch(base, "parties.xml", rawdir)}
     problems, missing_party_only = 0, Counter()
     for elec_id, categories in sorted(by_elec.items()):
@@ -266,7 +266,7 @@ def check_xml(year, by_elec):
 
 
 def main(year, types, force=False, xml=False):
-    rawdir = os.path.join("results", year, "raw", "csv")
+    rawdir = os.path.join("data", "elections", year, "raw", "csv")
     files = {kind: download(year, kind, rawdir, force) for kind in types}
     if "candidate" in files:
         write_candidates(year, files["candidate"])
@@ -308,7 +308,7 @@ def main(year, types, force=False, xml=False):
                 national[category][to_official[party]] += value
                 by_elec[elec_id][category][to_official[party]] += value
 
-    write_csv(os.path.join("results", year, "party_votes_by_category.csv"),
+    write_csv(os.path.join("data", "elections", year, "party_votes_by_category.csv"),
               ["elec_id", "elec_name", "party", "category", "votes"], rows)
     print("{0}: ordinary {1:,}, overseas {2:,}, domestic {3:,}".format(
         year, *(sum(national[c].values()) for c in ["ordinary", "overseas", "domestic"])))

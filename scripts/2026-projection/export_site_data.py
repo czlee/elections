@@ -101,7 +101,7 @@ def electorate_links_base(base, elec_id, timestamps):
 
 def read_timestamps(base):
     """{elec_id: Wayback timestamp} of the scraped base-year preliminary pages."""
-    with open("results/{0}-prelim/electorate_stats.csv".format(base), newline="", encoding="utf-8") as f:
+    with open("data/elections/{0}-prelim/electorate_stats.csv".format(base), newline="", encoding="utf-8") as f:
         return {int(r["elec_id"]): r["wayback_timestamp"] for r in csv.DictReader(f)}
 
 

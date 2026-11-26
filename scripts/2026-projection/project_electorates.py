@@ -41,8 +41,8 @@ counted at the national 2023 ratio, and in step 5 at its preliminary winner.
 Nothing is left out of the 2017 base.
 
 Inputs: results/concordance/electorates_<base>_2026.csv (concordance.py),
-results/<base>-prelim/ (scrape_wayback_prelim.py), results/<base>/ and
-results/2026-prelim/ (download.py), results/2026-projection/national.csv or
+data/elections/<base>-prelim/ (scrape_wayback_prelim.py), data/elections/<base>/ and
+data/elections/2026-prelim/ (download.py), results/2026-projection/national.csv or
 national-base<base>.csv (project_specials.py) and the base election's
 preliminary count as project_specials.py reads it (NOTES.md).
 """
@@ -71,12 +71,12 @@ def concordance_file(base):
 
 def files(base):
     return {
-        (base, "prelim", "party"): "results/{0}-prelim/party_votes.csv".format(base),
-        (base, "final", "party"): "results/{0}/party_votes.csv".format(base),
-        (base, "prelim", "candidate"): "results/{0}-prelim/candidate_votes.csv".format(base),
-        (base, "final", "candidate"): "results/{0}/candidate_votes.csv".format(base),
-        ("2026", "prelim", "party"): "results/2026-prelim/party_votes.csv",
-        ("2026", "prelim", "candidate"): "results/2026-prelim/candidate_votes.csv",
+        (base, "prelim", "party"): "data/elections/{0}-prelim/party_votes.csv".format(base),
+        (base, "final", "party"): "data/elections/{0}/party_votes.csv".format(base),
+        (base, "prelim", "candidate"): "data/elections/{0}-prelim/candidate_votes.csv".format(base),
+        (base, "final", "candidate"): "data/elections/{0}/candidate_votes.csv".format(base),
+        ("2026", "prelim", "party"): "data/elections/2026-prelim/party_votes.csv",
+        ("2026", "prelim", "candidate"): "data/elections/2026-prelim/candidate_votes.csv",
     }
 
 

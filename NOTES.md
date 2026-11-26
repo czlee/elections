@@ -12,6 +12,8 @@ are from before this move: `project_specials.py` etc. are `scripts/2026-projecti
 single-multiplier projection, and `scripts/2026-projection-complicated/` for the overseas/domestic
 split; the others are in `scripts/`, which also has `party_names.toml`
 (`candidate_name_exceptions.toml` is in `scripts/2026-projection-complicated/`). The split version writes to `results/2026-projection-complicated/`.
+The downloaded inputs are in `data/elections/<year>[-prelim]/` (they were in `results/` until 26 November 2026;
+older entries below that mention `results/` for a downloaded file mean `data/elections/`).
 
 ## Facts
 
@@ -120,7 +122,7 @@ Machine instead (next section).
   votes** at 100% counted: 2,383,796 valid party votes (Labour 1,171,544,
   National 638,606, ACT 190,139, Green 180,347, NZ First 63,534, Māori Party
   23,932). Other archives (e.g. archive.today) haven't been checked.
-  Saved on 14 November 2026 to `results/2020-prelim/raw/index-20201103192629.html`
+  Saved on 14 November 2026 to `data/elections/2020-prelim/raw/index-20201103192629.html`
   from `web.archive.org/web/20201103192629id_/https://www.electionresults.govt.nz/electionresults_2020_preliminary/index.html`
   (note `_preliminary`; the same path without it redirects to a 2021 403
   capture). Same table layout as 2023, 17 parties, rows sum to the total.
@@ -225,7 +227,7 @@ Machine instead (next section).
 
 - Saved from Wayback capture `20231026013849` of
   `electionresults_2023_preliminary/index.html` to
-  `results/2023-prelim/raw/index-20231026013849.html` (table
+  `data/elections/2023-prelim/raw/index-20231026013849.html` (table
   `#overall-results-table`). Not yet parsed by any script. Total 2,254,441.
 - The overview uses some names that differ from the official feed's
   `party_votes.csv`: "New Zealand Loyal" (official: "NZ Loyal") and "Leighton
@@ -510,12 +512,12 @@ saved (the script was a one-off in a job scratch directory).
   feed into `<outdir>/raw/` and writes `candidate_votes.csv`,
   `party_votes.csv`, `electorate_stats.csv` and `national_stats.csv`. Pick a
   feed with `--election` (`2026-prelim` (default), `2023`, `2020`, `2017`) or
-  `--base URL`; the output defaults to `results/<election>`. It doesn't fetch
+  `--base URL`; the output defaults to `data/elections/<election>`. It doesn't fetch
   voting-place files. Checked 10 November 2026: it runs for 2017, 2020 and 2023,
   and party votes summed over electorates match `election.xml` for each.
 - `scrape_wayback_prelim.py`: scrapes the 2023 or 2017 preliminary count
   (`--election`, default 2023) from the Wayback Machine into
-  `results/<election>-prelim/`, writing `candidate_votes.csv` and
+  `data/elections/<election>-prelim/`, writing `candidate_votes.csv` and
   `party_votes.csv` with the same columns and names as `download.py --election
   <election>`, and an `electorate_stats.csv` with different columns (the capture's
   timestamp, results counted, and both totals; `total_votes_cast` is the
@@ -526,8 +528,8 @@ saved (the script was a one-off in a job scratch directory).
   reported except 2023's missing Port Waikato page.
 - `download_specials.py` (20 November 2026): downloads the party and
   candidate per-voting-place CSVs for 2017, 2020 and 2023 from the Wayback
-  Machine into `results/<year>/raw/csv/`, and writes
-  `results/<year>/party_votes_by_category.csv` and
+  Machine into `data/elections/<year>/raw/csv/`, and writes
+  `data/elections/<year>/party_votes_by_category.csv` and
   `candidate_votes_by_category.csv` (ordinary, overseas, domestic). Stops on
   any reconciliation error. `--check-xml` compares 2017's and 2020's specials
   with the XML 4xx files.
@@ -541,7 +543,7 @@ saved (the script was a one-off in a job scratch directory).
     instead (`BASES` holds each year's estimate and sources), writing
     `national-base<year>.csv`; 2023 is still the default and its output is
     unchanged (checked by diff). 2017's preliminary count is the sum of the
-    scraped electorates (`results/2017-prelim/party_votes.csv`), which equals
+    scraped electorates (`data/elections/2017-prelim/party_votes.csv`), which equals
     its overview page. Adjustments: 2017 1.0990, 2020 1.0471 (2023: 1.0525).
     With electorates held at the preliminary winners, both give 132 seats
     (Green +1, Opportunity +1, NZ First −1) and National + ACT + NZ First

@@ -113,7 +113,7 @@ def electorate_links_base(base, elec_id, timestamps):
 def read_timestamps(base):
     """{elec_id: Wayback timestamp} of the scraped base-year preliminary pages
     (none for 2020, whose pages weren't archived)."""
-    filename = "results/{0}-prelim/electorate_stats.csv".format(base)
+    filename = "data/elections/{0}-prelim/electorate_stats.csv".format(base)
     if not os.path.exists(filename):
         return {}
     with open(filename, newline="", encoding="utf-8") as f:

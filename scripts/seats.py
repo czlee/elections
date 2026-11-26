@@ -15,7 +15,7 @@ A tie for the last seat is decided by lot under the Act; allocate() raises an
 error instead. Doesn't handle a party list running out of candidates.
 
 Run `python3 seats.py` to check the allocation against the Electoral
-Commission's in results/*/raw/election.xml.
+Commission's in data/elections/*/raw/election.xml.
 """
 import os
 import xml.etree.ElementTree as ET
@@ -106,7 +106,7 @@ def check_feed(filename):
 
 def main():
     for election in ["2017", "2020", "2023", "2026-prelim"]:
-        filename = os.path.join("results", election, "raw", "election.xml")
+        filename = os.path.join("data", "elections", election, "raw", "election.xml")
         if not os.path.exists(filename):
             print("{0}: no {1}, skipped".format(election, filename))
             continue

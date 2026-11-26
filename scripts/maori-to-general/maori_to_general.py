@@ -25,7 +25,7 @@ Māori electorates, with the 5% threshold waived for Māori parties
 (THRESHOLD_WAIVED). Compares with the preliminary winners (not the projected
 final result; specials aren't involved).
 
-Inputs: results/2026-prelim/ (download.py), and the voting-place files from
+Inputs: data/elections/2026-prelim/ (download.py), and the voting-place files from
 download_maori_places.py. Outputs to results/maori-to-general/:
 electorates.csv (every general electorate: old and new winner and margin),
 redirects.csv (what happened to Māori-roll votes, by party and treatment).
@@ -39,7 +39,7 @@ from collections import Counter, defaultdict
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 from seats import allocate
 
-PRELIM = "results/2026-prelim"
+PRELIM = "data/elections/2026-prelim"
 RAW = os.path.join(PRELIM, "raw")
 OUT = "results/maori-to-general"
 MAORI = range(65, 72)

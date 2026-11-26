@@ -51,7 +51,12 @@ The scripts are in `scripts/`, and mirror `sites/`: the scripts that only one si
 from the repository root, e.g. `python3 scripts/download.py`. The scripts in `scripts/<site>/` add
 `scripts/` to `sys.path` to find the shared modules. `party_names.toml` is in `scripts/` (with `parties.py`) and `candidate_name_exceptions.toml` in
 `scripts/2026-projection-complicated/` (with `download_specials.py`); both are found relative to the script,
-not the working directory. `/data` and `/results` are gitignored.
+not the working directory.
+
+Both `data/` and `results/` are gitignored. `data/` is what the scripts download: the Electoral Commission's
+results for each election in `data/elections/<year>` (official count) and `data/elections/<year>-prelim`
+(preliminary count), and Stats NZ's boundaries in `data/statsnz/`. `results/` is what the scripts compute:
+`concordance/`, `2026-projection/`, `2026-projection-complicated/` and `maori-to-general/`.
 
 There are two projections of the 2026 special votes, each with its own site:
 
@@ -81,6 +86,6 @@ party and candidate; slow: Wayback Machine). See `sites/2026-projection-complica
 The visualisation site is in `sites/2026-projection/` (see `sites/2026-projection/README.md`); it's deployed to
 https://czlee.nz/elections/2026-projection/ by GitHub Actions on pushes to `main`.
 
-Outputs are in `results/` (gitignored). `project_electorates.py` reads the
+Outputs are in `results/`. `project_electorates.py` reads the
 national projection's party votes for seat allocation, so run
 `project_specials.py` first.

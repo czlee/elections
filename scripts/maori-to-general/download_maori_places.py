@@ -1,6 +1,6 @@
 """Downloads the 2026 preliminary per-voting-place files for the Māori
 electorates (65-71), for maori_to_general.py, into
-results/2026-prelim/raw/eNN/votingplaces/. Skips files already there. Run it
+data/elections/2026-prelim/raw/eNN/votingplaces/. Skips files already there. Run it
 from the repository root.
 """
 import os
@@ -9,7 +9,7 @@ import time
 import urllib.request
 
 BASE = "https://www.electionresults.govt.nz/electionresults_2026_preliminary/xml/"
-RAWDIR = "results/2026-prelim/raw"
+RAWDIR = "data/elections/2026-prelim/raw"
 MAORI = range(65, 72)
 USER_AGENT = "Elections Analysis"  # Python's default is blocked (NOTES.md)
 DELAY = 0.4

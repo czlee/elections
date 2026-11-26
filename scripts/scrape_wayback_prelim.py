@@ -15,7 +15,7 @@ the CSVs use the same names as `download.py --election YYYY` and the two can be
 joined.
 
 Raw HTML is saved under <outdir>/raw/ and CSVs are written to <outdir>/
-(default: results/YYYY-prelim).
+(default: data/elections/YYYY-prelim).
 """
 import gzip
 import html
@@ -213,10 +213,10 @@ def main(election, outdir, force=False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("outdir", nargs="?", help="output directory (default: results/<election>-prelim)")
+    parser.add_argument("outdir", nargs="?", help="output directory (default: data/elections/<election>-prelim)")
     parser.add_argument("-e", "--election", choices=PRELIM_PATHS, default=DEFAULT_ELECTION,
                         help="which election's preliminary count to scrape (default: %(default)s)")
     parser.add_argument("-f", "--force", action="store_true", help="re-download files that already exist")
     args = parser.parse_args()
-    outdir = args.outdir or os.path.join("results", args.election + "-prelim")
+    outdir = args.outdir or os.path.join("data", "elections", args.election + "-prelim")
     main(args.election, outdir, args.force)

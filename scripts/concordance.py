@@ -18,7 +18,7 @@ evenly over its suppressed meshblocks. See NOTES.md.
 
 Needs geopandas (see README.md for the venv) and the Stats NZ layers in
 data/statsnz/ (see README.md). Electorate numbers come from
-results/<base>/electorate_stats.csv and results/2026-prelim/electorate_stats.csv
+data/elections/<base>/electorate_stats.csv and data/elections/2026-prelim/electorate_stats.csv
 (download.py), matched by name, ignoring macrons (the 2014 layers have none,
 and stray bytes where the Māori layer's would be).
 
@@ -120,8 +120,8 @@ def main():
             raise ValueError("{0}: {1} meshblocks aren't in exactly one electorate".format(key, (counts != 1).sum()))
         meshblocks[key] = joined.set_index("MB2025_V1_00")[code].reindex(meshblocks.MB2025_V1_00).values
 
-    elec_ids = {"base": read_elec_ids("results/{0}/electorate_stats.csv".format(base)),
-                "2026": read_elec_ids("results/2026-prelim/electorate_stats.csv")}
+    elec_ids = {"base": read_elec_ids("data/elections/{0}/electorate_stats.csv".format(base)),
+                "2026": read_elec_ids("data/elections/2026-prelim/electorate_stats.csv")}
     rows = []
     for roll, pop_field, key_2023, key_2026 in base_rolls:
         pop = meshblocks[pop_field].astype(float)
