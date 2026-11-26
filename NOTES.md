@@ -338,7 +338,19 @@ Rotorua, Takanini (new margin 571), Wairarapa, Whangārei. Closest that don't
 flip: Kapiti (National by 84), Northland (101). Electorates won 42 National /
 19 Labour + 2 Māori roll... see `results/maori-to-general/`. House with no Māori
 seats: 120 seats, National 36 and Labour 36 (as counted: 131 seats, Te Pāti Māori
-5 electorates and 6 National overhang).
+5 electorates, 4 over its share of 1, and National's 42 electorates, 7 over its share of 35).
+
+The site is `maori-site/` (served at `/elections/maori-to-general/`; see its
+README), built from `export_maori_site_data.py`. It's a copy of the projection
+site's design and some components, not a second route tree in `site/`. It's
+still marked DRAFT (`src/lib/config.js`). Added at the user's request (26
+November 2026): a break-even for each electorate (the share of Te Pāti Māori
+voters who'd have to vote Labour for Labour to win; the rest count for no
+one), and a sensitivity table (0–100% of them voting Labour: 4 flips at 0%, 6
+at 25%, 7 from 50%). The voting-place and Labour assumptions are in the body
+of the page, not the limitations. Dropped votes (independents, parties with no
+bloc) can't change any result even if they all went to a runner-up (checked:
+the smallest margin after dropped votes is 51, Northland).
 
 ## Code status
 

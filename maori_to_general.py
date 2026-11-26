@@ -98,15 +98,25 @@ def check_totals(places):
             raise ValueError("e{0:02d}: voting places have {1} candidate votes, electorate total {2}".format(e, got, total))
 
 
-def project(general, places):
-    """Returns ({e_no: {party: votes}} with the Māori-roll votes added, and a
-    Counter of (party, treatment) -> votes)."""
+def project(general, places, labour_share=1.0):
+    """Returns ({e_no: {party: votes}} with the Māori-roll votes added, a
+    Counter of (party, treatment) -> votes, and a Counter of
+    (general e_no, Māori e_no, party, treatment, target party or None) -> votes).
+
+    labour_share is the share of Te Pāti Māori's votes that go to Labour; the
+    rest are dropped (they'd stay home or vote for someone else we can't
+    identify). The default is 1, the assumption in the module docstring.
+    """
     new = {e: dict(v) for e, v in general.items()}
-    log = Counter()
-    for _, home, totals in places:
+    log, detail = Counter(), Counter()
+    for maori, home, totals in places:
         for party, n in totals.items():
             if n == 0:
                 continue
+            if party == "Te Pāti Māori" and labour_share != 1:
+                dropped = n - n * labour_share
+                n = n * labour_share
+                log[(party, "dropped: not to Labour")] += dropped
             if party == INDEPENDENT:
                 target, how = None, "discarded: independent"
             elif party in TO_LABOUR:
@@ -122,7 +132,8 @@ def project(general, places):
             if target:
                 new[home][target] += n
             log[(party, how)] += n
-    return new, log
+            detail[(home, maori, party, how, target)] += n
+    return new, log, detail
 
 
 def winner(votes):
@@ -135,7 +146,7 @@ def main():
     names, general = read_general()
     places = read_places(c_party)
     check_totals(places)
-    new, log = project(general, places)
+    new, log, _ = project(general, places)
 
     os.makedirs(OUT, exist_ok=True)
     flips, wins_old, wins_new = [], Counter(), Counter()
