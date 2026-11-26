@@ -50,10 +50,12 @@ import csv
 import io
 import os
 import re
+import sys
 import tomllib
 import urllib.error
 from collections import Counter, defaultdict
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 from download import ELECTIONS as FEEDS, fetch, write_csv
 from parties import PartyNames
 from scrape_wayback_prelim import fetch_capture, find_captures

@@ -1,7 +1,7 @@
 """Exports the 2026 projection, with its intermediate numbers, as JSON for the
 visualisation site (sites/2026-projection-complicated/). Runs project_specials.compute() and, for a base
 with electorate projections, project_electorates.compute(), so it needs the
-same inputs, and results/projection-2026/*.csv to check against (run the
+same inputs, and results/projection-2026-complicated/*.csv to check against (run the
 scripts first, with the same --base).
 
 Writes, in sites/2026-projection-complicated/src/lib/data/<base>/:
@@ -24,15 +24,17 @@ import csv
 import json
 import os
 import re
+import sys
 import unicodedata
 from datetime import date
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 import project_electorates as pe
 import project_specials as ps
 from seats import TOTAL_SEATS, allocate, quotient_ladder
 
 OUTDIR = "sites/2026-projection-complicated/src/lib/data"
-CSV_DIR = "results/projection-2026"
+CSV_DIR = "results/projection-2026-complicated"
 LADDER_BEFORE, LADDER_AFTER = 12, 8
 
 # Links to the raw data, for the site to cite. The results website's HTML

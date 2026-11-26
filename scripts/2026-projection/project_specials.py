@@ -36,8 +36,10 @@ import csv
 import html
 import os
 import re
+import sys
 from collections import Counter
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 from parties import PartyNames
 from seats import TOTAL_SEATS, allocate
 

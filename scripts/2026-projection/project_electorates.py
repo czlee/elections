@@ -49,8 +49,10 @@ preliminary count as project_specials.py reads it (NOTES.md).
 import argparse
 import csv
 import os
+import sys
 from collections import Counter, defaultdict
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 import project_specials as ps
 from parties import PartyNames
 from project_specials import SPECIAL_ESTIMATE_2026, read_party_totals

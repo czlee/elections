@@ -63,8 +63,10 @@ import csv
 import html
 import os
 import re
+import sys
 from collections import Counter
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 from parties import PartyNames
 from seats import TOTAL_SEATS, allocate
 
@@ -103,8 +105,8 @@ DEFAULT_BASE = "2023"
 
 def default_output(base):
     if base == DEFAULT_BASE:
-        return "results/projection-2026/national.csv"
-    return "results/projection-2026/national-base{0}.csv".format(base)
+        return "results/projection-2026-complicated/national.csv"
+    return "results/projection-2026-complicated/national-base{0}.csv".format(base)
 
 
 def read_party_totals(filename):
@@ -299,7 +301,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--base", choices=sorted(BASES), default=DEFAULT_BASE,
                         help="past election whose special votes to apply (default %(default)s)")
-    parser.add_argument("--output", help="default results/projection-2026/national.csv for 2023, "
+    parser.add_argument("--output", help="default results/projection-2026-complicated/national.csv for 2023, "
                         "national-base<year>.csv otherwise")
     args = parser.parse_args()
     base = args.base

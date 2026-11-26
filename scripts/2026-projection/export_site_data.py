@@ -20,9 +20,11 @@ import csv
 import json
 import os
 import re
+import sys
 import unicodedata
 from datetime import date
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 import project_electorates as pe
 import project_specials as ps
 from seats import TOTAL_SEATS, allocate, quotient_ladder

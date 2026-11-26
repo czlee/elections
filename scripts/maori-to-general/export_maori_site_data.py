@@ -16,9 +16,11 @@ import csv
 import json
 import os
 import re
+import sys
 import unicodedata
 from collections import Counter, defaultdict
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 import maori_to_general as m
 from parties import PartyNames
 from seats import TOTAL_SEATS, _quotients, allocate

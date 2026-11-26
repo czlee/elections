@@ -32,9 +32,11 @@ redirects.csv (what happened to Māori-roll votes, by party and treatment).
 """
 import csv
 import os
+import sys
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # shared modules are in scripts/
 from seats import allocate
 
 PRELIM = "results/2026-prelim"
