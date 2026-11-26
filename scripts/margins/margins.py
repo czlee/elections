@@ -24,9 +24,10 @@ at which that party's seat count changes:
     under the line.
   - "to lose": likewise, the fewest party votes removed at which the party
     certainly has one fewer seat.
-  - "None" means no number of votes does it: a party whose electorate seats
-    already exceed its share (overhang) can't gain or lose a list seat by
-    votes; and a party with no seats can't lose one.
+  - "None" means no number of votes does it: a party with no entitlement
+    (e.g. one that qualifies only through an electorate, on a tiny party vote)
+    has no seat to lose. Overhang doesn't cause it: the entitlement still
+    changes, and the number is starred.
 
 "Seats" here means a party's Sainte-Laguë entitlement, ignoring overhang: the
 seats it would have from the party vote alone. A party that wins more
@@ -284,7 +285,7 @@ def write_html(filename, title, updated, party_rows, elec_rows, label, shown, la
            "<p class=note>From the Electoral Commission's results as of {0}.</p>".format(html.escape(updated)),
            "<h2>Party vote: votes to gain or lose a seat</h2>",
            "<p class=note>Extra (or fewer) party votes for that party alone, everyone else unchanged, at which "
-           "its seat count changes. – means it can't (e.g. overhang, or no seat to lose).</p>",
+           "its seat count changes. – means it can't (a party with no seat can't lose one).</p>",
            "<table><tr><th>Party<th class=n>Party votes<th class=n>%<th class=n>Entitlement"
            "<th class=n>Votes to gain<th>Gain from<th class=n>Votes to lose<th>Lose from</tr>"]
     for r in party_rows:
@@ -346,31 +347,33 @@ def write_html(filename, title, updated, party_rows, elec_rows, label, shown, la
         f.write("\n".join(out))
 
 
-def composition(entitlements, electorates, other, label):
+def composition(entitlements, electorates, other, label, pid):
     """The House if parties had these Sainte-Laguë entitlements (and the same electorates): a list of
-    {"party", "entitlement", "electorates", "seats"} for each party with a seat, and the House size."""
+    {"party", "id", "name", "entitlement", "electorates", "seats", "list"} for each party with a seat, and the
+    House size."""
     parties = []
     for p in set(entitlements) | set(electorates):
         e, won = entitlements.get(p, 0), electorates.get(p, 0)
         if e or won:
-            parties.append({"party": p, "name": label(p), "entitlement": e, "electorates": won,
+            parties.append({"party": p, "id": pid(p), "name": label(p), "entitlement": e, "electorates": won,
                             "seats": max(e, won), "list": max(e, won) - won})
     parties.sort(key=lambda r: (-r["seats"], r["party"]))
     return {"parties": parties, "other_electorates": other, "house": sum(r["seats"] for r in parties) + other}
 
 
-def build_json(election, updated, party_rows, elec_rows, label, ladder, to_allocate, electorates, other, near):
+def build_json(election, updated, party_rows, elec_rows, label, pid, ladder, to_allocate, electorates, other, near):
     """Everything the page shows, for a site to present. Each scenario (the party gaining or losing a seat
     on the party vote, or crossing the 5% threshold) has the votes it takes and the whole resulting House,
-    so a site can show it without knowing the electoral rules."""
+    so a site can show it without knowing the electoral rules. Parties have an "id" (the stable party_id from
+    party_names.toml, null if it has none) so a site can colour them."""
     def scenario(row, direction, votes, after, extra=None):
-        result = {"direction": direction, "votes": votes, "house": composition(after, electorates, other, label)}
+        result = {"direction": direction, "votes": votes, "house": composition(after, electorates, other, label, pid)}
         result.update(extra or {})
         return result
 
     parties = []
     for r in party_rows:
-        entry = {"party": r["party"], "name": label(r["party"]), "votes": r["votes"], "share": r["share"],
+        entry = {"party": r["party"], "id": pid(r["party"]), "name": label(r["party"]), "votes": r["votes"], "share": r["share"],
                  "qualified": r["qualified"], "entitlement": r["seats"], "electorates": r["electorates"],
                  "overhang": r["overhang"],
                  "last": None if r["last_divisor"] is None else
@@ -390,10 +393,12 @@ def build_json(election, updated, party_rows, elec_rows, label, ladder, to_alloc
     base = {r["party"]: r["seats"] for r in party_rows}
     return {"election": election, "updated": updated, "generated": datetime.date.today().isoformat(),
             "total_seats": seats.TOTAL_SEATS, "threshold": seats.THRESHOLD, "near": near,
-            "to_allocate": to_allocate, "house": composition(base, electorates, other, label),
+            "to_allocate": to_allocate, "house": composition(base, electorates, other, label, pid),
             "parties": parties,
-            "ladder": [dict(r, name=label(r["party"])) for r in ladder],
-            "electorates": elec_rows}
+            "ladder": [dict(r, id=pid(r["party"]), name=label(r["party"])) for r in ladder],
+            "electorates": [dict(r, winner_party_id=pid(r["winner_party"]), winner_party_name=label(r["winner_party"]),
+                                 runner_up_party_id=pid(r["runner_up_party"]),
+                                 runner_up_party_name=label(r["runner_up_party"])) for r in elec_rows]}
 
 
 def write_csv(filename, rows, columns):
@@ -418,6 +423,9 @@ def main(election, shown, outdir, near):
     def label(party):
         return display_name(names, election, party)
 
+    def pid(party):
+        return names.ids.get((election[:4], party))
+
     party_rows = party_margins(votes, electorates, other)
     ladder, to_allocate = seats.quotient_ladder(votes, electorates, other, before=8, after=8)
     elec_rows = electorate_margins(results)
@@ -429,8 +437,8 @@ def main(election, shown, outdir, near):
     write_html(os.path.join(outdir, "index.html"), "Election {0}: margins".format(election), updated, party_rows,
                elec_rows, label, shown, ladder, to_allocate, near)
     with open(os.path.join(outdir, "margins.json"), "w", encoding="utf-8") as f:
-        json.dump(build_json(election, updated, party_rows, elec_rows, label, ladder, to_allocate, electorates,
-                             other, near), f, ensure_ascii=False, indent=1)
+        json.dump(build_json(election, updated, party_rows, elec_rows, label, pid, ladder, to_allocate,
+                             electorates, other, near), f, ensure_ascii=False, indent=1)
     write_csv(os.path.join(outdir, "parties.csv"), party_rows,
               ["party", "votes", "share", "seats", "electorates", "overhang", "last_quotient", "last_divisor",
                "next_quotient", "next_divisor", "gain", "gain_effects", "lose",
