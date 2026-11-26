@@ -11,14 +11,29 @@
 	import { page } from '$app/state';
 	import { ELECTIONS } from '#lib/elections.js';
 
-	/** @type {{children: import('svelte').Snippet}} */
-	let { children } = $props();
+	/** @type {{children: import('svelte').Snippet, data: any}} */
+	let { children, data } = $props();
 	const href = (/** @type {string} */ path) => resolve(/** @type {any} */ (path));
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} type="image/svg+xml" />
 	<link rel="apple-touch-icon" href={appleTouchIcon} />
+	<title>{data.meta.title}</title>
+	<meta name="description" content={data.meta.description} />
+	<link rel="canonical" href={data.meta.url} />
+	<meta property="og:type" content="website" />
+	<meta property="og:locale" content="en_NZ" />
+	<meta property="og:site_name" content={data.meta.siteName} />
+	<meta property="og:title" content={data.meta.title} />
+	<meta property="og:description" content={data.meta.description} />
+	<meta property="og:url" content={data.meta.url} />
+	<meta property="og:image" content={data.meta.image} />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content={String(data.meta.imageWidth)} />
+	<meta property="og:image:height" content={String(data.meta.imageHeight)} />
+	<meta property="og:image:alt" content={data.meta.description} />
+	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <header>

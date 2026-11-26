@@ -4,11 +4,6 @@
 	const prelim = ELECTIONS.filter((e) => e.prelim);
 </script>
 
-<svelte:head>
-	<title>New Zealand election margins</title>
-	<meta name="description" content="How many party votes it would take for a party to gain or lose a seat, and the closest electorates, for New Zealand general elections." />
-</svelte:head>
-
 <h1>2026 New Zealand election margins</h1>
 <p class="callout">
 	The final 2026 results will be here once they’re released: how many party votes it would take for each party to
