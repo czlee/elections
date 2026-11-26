@@ -28,6 +28,12 @@ files, with two known differences, both in the main site (`sites/2026-projection
 
 The complicated site's data matches exactly, apart from `generated`.
 
+## Tooling
+
+- **Don't use Chromium (or headless browser screenshots) to check sites here** (user's instruction, 27 November
+  2026; they suspect a WSL limitation, not verified). Check with `npm run check` and `npm run build`, read the
+  prerendered `build/**/index.html` if needed, and leave visual inspection to the user (`npm run dev`).
+
 ## Facts
 
 ### Site access (checked 8–9 November 2026)
@@ -762,7 +768,15 @@ mind, but fine as it's consistent across bases).
   electorates, seats, list seats, and the House size). A roll-over can show a cell's House without knowing the
   electoral rules. Also in it: per-party last-in and next-out quotients with divisors, the ranking around the
   cutoff (`ladder`), and every electorate's margin.
-- **Site (to do, a separate thread, Sonnet is enough).** A SvelteKit site like the others (copy
+- **Site built 27 November 2026: `sites/margins/`** (served at `/elections/margins/`; the root page is a placeholder
+  for the 2026 final results with links to 2017, 2020, 2023 and the 2026 preliminary count). Its data is the
+  `margins.json` files, committed as `sites/margins/src/lib/data/<election>.json`. **The live step is:**
+  `margins.py 2026`, copy `results/margins/2026/margins.json` to `sites/margins/src/lib/data/2026.json`, and make
+  `/` show it (not yet done: the root is the placeholder). `margins.py` now also writes each party's `id`
+  (party_id) and the electorate parties' short names, which the site uses for colours. The layout is the first
+  pass (green-tinted background; the party-vote table beside a horseshoe that previews each scenario), and the
+  closest-electorates and quotient sections are static. The description below is the original plan.
+- **Site plan (original; Sonnet is enough).** A SvelteKit site like the others (copy
   `sites/2026-projection`'s scaffolding and deployment). Wanted: rolling over a gain/loss/threshold cell shows the
   hypothetical House composition; gain and loss probably as separate tables (the static HTML puts them side by
   side); the quotient ladder and closest electorates as in the HTML. It should be **built and tested on the
