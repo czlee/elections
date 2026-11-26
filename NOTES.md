@@ -318,6 +318,28 @@ Machine instead (next section).
   Glendene is electorate 11 in 2026). No 2023 → 2026 correspondence table has
   been looked for yet.
 
+### No Māori electorates: 2026 preliminary (checked 26 November 2026)
+
+`maori_to_general.py` (inputs from `download_maori_places.py`: 2,755 voting-place
+files for electorates 65–71, which are the Māori electorates; 1–64 are general).
+Every place that took Māori-electorate votes has a general electorate as its
+home (`vp_e_no`), so the votes follow places with no geography. Rules, set by the
+user: Te Pāti Māori and Te Tai Tokerau Party → Labour; independents dropped; the
+same party's candidate where there is one; otherwise the bloc's major party
+(Green → Labour, NZ First and ACT → National). **Nobody was redirected to
+National by the bloc rule** (no right-bloc Māori candidates besides National's
+own 1,104 votes). Discarded, no candidate there and no bloc: Legalise Cannabis
+1,276, NZ Loyal 421, Your PIC Party 236, Opportunity 225 (2,158 votes, none
+could decide a flip). Independents: 5,421.
+
+Result (preliminary count only; specials not involved): 7 of 64 general
+electorates flip National → Labour: East Cape, Hamilton East, Hamilton West,
+Rotorua, Takanini (new margin 571), Wairarapa, Whangārei. Closest that don't
+flip: Kapiti (National by 84), Northland (101). Electorates won 42 National /
+19 Labour + 2 Māori roll... see `results/maori-to-general/`. House with no Māori
+seats: 120 seats, National 36 and Labour 36 (as counted: 131 seats, Te Pāti Māori
+5 electorates and 6 National overhang).
+
 ## Code status
 
 - `download.py`: downloads the top-level and `eNN/eNN.xml` files for one
