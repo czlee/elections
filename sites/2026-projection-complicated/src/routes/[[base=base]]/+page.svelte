@@ -1,7 +1,6 @@
 <script>
 	import Parliament from '#lib/components/Parliament.svelte';
 	import GeoMap from '#lib/components/GeoMap.svelte';
-	import Term from '#lib/components/Term.svelte';
 	import { colour } from '#lib/parties.js';
 	import { link } from '#lib/link.js';
 	import { votes, points, signed, candidateName } from '#lib/format.js';
@@ -75,7 +74,7 @@
 <p class="byline">By Chuan-Zheng Lee<span class="credit">, with implementation by Claude</span></p>
 <p class="lede">
 	This projection applies the impact of the <strong>{base}
-	<Term tip="In a slight abuse of terminology, we’re using “special votes” to mean the difference between the preliminary and final counts. That’s overseas special votes and domestic special votes, which are projected separately, and the official count’s corrections to ordinary votes.">special votes</Term></strong>
+	special votes</strong>
 	to the 2026 preliminary count.
 	{#if !data.hasElectorates}Party vote only: electorates aren’t projected from {base}.{/if}
 </p>

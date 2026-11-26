@@ -55,13 +55,13 @@
 
 {#if DRAFT}
 	<div class="draft-banner" role="note">
-		<strong>DRAFT</strong> · Work in progress: numbers, wording and layout may change. Not an official result.
+		<strong>EXPERIMENTAL</strong> · I did this version mostly as a curiosity and haven’t checked it as rigorously. See my <a href={SIMPLE_URL}>simpler projection</a> for a more reliable version.
 	</div>
 {/if}
 
 <header>
 	<nav>
-		<a class="brand" href={link('/')}>2026 special votes projection{#if DRAFT}<span class="draft-tag">DRAFT</span>{/if}</a>
+		<a class="brand" href={link('/')}>2026 special votes projection{#if DRAFT}<span class="draft-tag">EXPERIMENTAL</span>{/if}</a>
 		{#each nav as item (item.href)}
 			<a href={link(item.href)} aria-current={page.route.id === item.route ? 'page' : undefined}
 				>{item.label}</a
@@ -109,6 +109,7 @@
 	.draft-banner {
 		background: #fab219; color: #1a1a19; font-size: 0.85rem; text-align: center; padding: 0.35em 16px;
 	}
+	.draft-banner a { color: inherit; text-decoration: underline; }
 	.draft-tag {
 		font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; vertical-align: 0.2em; margin-left: 0.5em;
 		padding: 0.1em 0.4em; border-radius: 3px; background: #fab219; color: #1a1a19;
