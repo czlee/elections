@@ -1,9 +1,9 @@
 <script>
-	// DM Sans, self-hosted via Fontsource (SIL Open Font License); latin and latin-ext subsets.
-	import '@fontsource/dm-sans/400.css';
-	import '@fontsource/dm-sans/500.css';
-	import '@fontsource/dm-sans/600.css';
-	import '@fontsource/dm-sans/700.css';
+	// Figtree, self-hosted via Fontsource (SIL Open Font License); latin and latin-ext subsets.
+	import '@fontsource/figtree/400.css';
+	import '@fontsource/figtree/500.css';
+	import '@fontsource/figtree/600.css';
+	import '@fontsource/figtree/700.css';
 	import '../app.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import appleTouchIcon from '#lib/assets/apple-touch-icon.png';

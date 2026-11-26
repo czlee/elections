@@ -213,17 +213,17 @@ function woffToSfnt(/** @type {Buffer} */ woff) {
 /** @type {string[] | undefined} */
 let fonts;
 /**
- * DM Sans as TTF files in a temporary directory. (resvg-js's Node build
+ * Figtree as TTF files in a temporary directory. (resvg-js's Node build
  * ignores `fontBuffers`, and then loads the system fonts, so it gets paths.)
  */
 function loadFonts() {
 	if (fonts) return fonts;
 	// Builds run from site/, where node_modules is.
-	const src = `${process.cwd()}/node_modules/@fontsource/dm-sans/files`;
+	const src = `${process.cwd()}/node_modules/@fontsource/figtree/files`;
 	const dir = mkdtempSync(join(tmpdir(), 'og-fonts-'));
 	return (fonts = ['latin', 'latin-ext'].flatMap((subset) => [400, 600, 700].map((w) => {
-		const file = join(dir, `dm-sans-${subset}-${w}.ttf`);
-		writeFileSync(file, woffToSfnt(readFileSync(`${src}/dm-sans-${subset}-${w}-normal.woff`)));
+		const file = join(dir, `figtree-${subset}-${w}.ttf`);
+		writeFileSync(file, woffToSfnt(readFileSync(`${src}/figtree-${subset}-${w}-normal.woff`)));
 		return file;
 	})));
 }
@@ -238,7 +238,7 @@ function text(/** @type {number} */ x, /** @type {number} */ y, /** @type {strin
 		spacing ? ` letter-spacing="${spacing}"` : ''}>${esc(s)}</text>`;
 }
 
-/** Shrinks a font size so roughly `chars` characters fit in `width` (DM Sans averages ~0.55em, less for lower case). */
+/** Shrinks a font size so roughly `chars` characters fit in `width` (Figtree averages ~0.55em, less for lower case). */
 const fit = (/** @type {string} */ s, /** @type {number} */ size, /** @type {number} */ width, em = 0.55) =>
 	Math.min(size, Math.floor(width / (em * s.length)));
 /** "leads by 140 (0.34 pp)", for an electorate card panel. */
@@ -290,7 +290,7 @@ function homeSvg(/** @type {ReturnType<typeof homeData>} */ d) {
 		out.push(text(400, cy, minus(c.change), { size, weight: 700, anchor: 'end' }));
 	});
 	y += (Math.max(1, changes.length) - 1) * step;
-	// DM Sans has no → glyph, so these are in words.
+	// Figtree has no → glyph, so these are in words.
 	const notes = [];
 	if (d.flips.length === 1) notes.push(`${d.flips[0].name} flips to ${d.flips[0].to}`);
 	else if (d.flips.length) notes.push(`${d.flips.length} electorates flip`);
@@ -337,7 +337,7 @@ function electorateSvg(/** @type {NonNullable<ReturnType<typeof electorateData>>
 /** The card as SVG markup. */
 export function cardSvg(/** @type {ReturnType<typeof cardData>} */ d) {
 	const inner = d.kind === 'electorate' ? electorateSvg(/** @type {any} */ (d)) : homeSvg(/** @type {any} */ (d));
-	return `<svg xmlns="http://www.w3.org/2000/svg" width="${CARD.width}" height="${CARD.height}" viewBox="0 0 ${CARD.width} ${CARD.height}" font-family="DM Sans">` +
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="${CARD.width}" height="${CARD.height}" viewBox="0 0 ${CARD.width} ${CARD.height}" font-family="Figtree">` +
 		`<rect width="100%" height="100%" fill="${T('surface')}"/>` +
 		`<rect y="${CARD.height - 12}" width="100%" height="12" fill="${T('accent')}"/>` + inner + '</svg>';
 }
@@ -346,7 +346,7 @@ export function cardSvg(/** @type {ReturnType<typeof cardData>} */ d) {
 export function cardPng(/** @type {ReturnType<typeof cardData>} */ d) {
 	const png = new Resvg(cardSvg(d), {
 		fitTo: { mode: 'width', value: CARD.width },
-		font: { fontFiles: loadFonts(), loadSystemFonts: false, defaultFontFamily: 'DM Sans' }
+		font: { fontFiles: loadFonts(), loadSystemFonts: false, defaultFontFamily: 'Figtree' }
 	}).render().asPng();
 	return new Response(new Uint8Array(png), { headers: { 'content-type': 'image/png' } });
 }

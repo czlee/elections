@@ -193,7 +193,6 @@
 	.maj { fill: var(--text); font-weight: 600; }
 	.blocs { margin-top: 0.5em; font-size: 0.9rem; }
 	.blocs p { margin: 0.15em 0; display: flex; flex-wrap: wrap; gap: 0.1em 1em; }
-	.blocs strong { font-variant-numeric: tabular-nums; }
 	.legend {
 		list-style: none; padding: 0; margin: 0.3em 0 0; display: flex; flex-wrap: wrap;
 		gap: 0.2em 1em; font-size: 0.9rem;

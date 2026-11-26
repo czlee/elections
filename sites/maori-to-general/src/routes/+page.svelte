@@ -249,7 +249,7 @@
 		overhang={house - 120}
 	/>
 	<div class="table-wrap">
-		<table>
+		<table class="seats">
 			<thead>
 				<tr>
 					<th>Party</th>

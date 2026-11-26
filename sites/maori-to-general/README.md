@@ -26,7 +26,7 @@ map (`../../scripts/export_boundaries.py`).
 Every page has Open Graph/Twitter tags (set in `src/routes/+layout.svelte` from
 `src/lib/server/og.js`) and a 1200×630 card at `og.png` next to it, prerendered
 by an `og.png/+server.js` endpoint: an SVG drawn with the same horseshoe
-component, converted to PNG with resvg using the Fontsource DM Sans files. The
+component, converted to PNG with resvg using the Fontsource Figtree files. The
 image URL carries a hash of the card's data, so social platforms refetch it
 when the numbers change. To see a card, build and open `build/og.png` or
 `build/electorate/<slug>/og.png`.
