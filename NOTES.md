@@ -740,6 +740,37 @@ mind, but fine as it's consistent across bases).
 
 ## Plans
 
+### Margins: seat thresholds and closest electorates (script built 27 November 2026; site not started)
+
+- **What it is.** `scripts/margins/margins.py <election>` reads `data/elections/<election>/` (party and candidate
+  votes) and writes `results/margins/<election>/`: `index.html`, `margins.json`, `parties.csv`, `electorates.csv`.
+  Method and conventions are in its docstring. In short: for each party, change only its party vote and search
+  (on the real `seats.py` allocation) for the fewest votes at which its **Sainte-Laguë entitlement** (not its seats:
+  overhang is ignored, per the user) certainly changes by one. An asterisk marks changes that only move a party's
+  overhang. A party with no electorate near 5% (within `--near`, default 1 point) gets a threshold scenario;
+  there's no such section when no party is that close, which is most elections.
+- **Purpose.** On **27 November 2026 at 2pm** the Electoral Commission releases the final results; the user wants
+  the margins out quickly. **Requirement: nothing to design or decide live.** The day is
+  `download.py --election 2026` (or `--base <URL>`), `seats.py`, `margins.py 2026` (and, once the site exists,
+  its build). The 2026 final feed URL in `download.py` is a **guess from the pattern**
+  (`electionresults_2026/xml/`), a 404 on 27 November before the release; confirm it on the day.
+- **Tested on** 2017, 2020, 2023, 2026-prelim and the 2017 and 2023 prelims. Seat counts and House sizes match the
+  official results (122 in 2023, 120 in 2017 and 2020), and each threshold is confirmed against `seats.allocate`
+  (seats unchanged one vote short, changed at it).
+- **`margins.json` is the data contract for a site.** Every scenario (a party's `gain`, `lose` or `threshold`)
+  has the votes it takes, `overhang_only`, and the whole resulting House (`house.parties[]` with entitlement,
+  electorates, seats, list seats, and the House size). A roll-over can show a cell's House without knowing the
+  electoral rules. Also in it: per-party last-in and next-out quotients with divisors, the ranking around the
+  cutoff (`ladder`), and every electorate's margin.
+- **Site (to do, a separate thread, Sonnet is enough).** A SvelteKit site like the others (copy
+  `sites/2026-projection`'s scaffolding and deployment). Wanted: rolling over a gain/loss/threshold cell shows the
+  hypothetical House composition; gain and loss probably as separate tables (the static HTML puts them side by
+  side); the quotient ladder and closest electorates as in the HTML. It should be **built and tested on the
+  earlier elections well before 2pm** so that the live step is running scripts.
+- **Presentation changes still wanted** (the user's, not yet specified): "some formatting to change". The HTML is
+  deliberately plain.
+- **Don't regenerate with `-n 0`** to tidy terminal output: it also writes the HTML with no electorates.
+
 ### Phase 3: site for the pooled projection (built on `special-pools` on 20 November 2026; published as the EXPERIMENTAL "complicated" site on 26 November 2026)
 
 - **Decided by the user (26 November 2026):** the single-multiplier site (`sites/2026-projection`) is the

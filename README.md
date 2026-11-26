@@ -56,7 +56,7 @@ not the working directory.
 Both `data/` and `results/` are gitignored. `data/` is what the scripts download: the Electoral Commission's
 results for each election in `data/elections/<year>` (official count) and `data/elections/<year>-prelim`
 (preliminary count), and Stats NZ's boundaries in `data/statsnz/`. `results/` is what the scripts compute:
-`concordance/`, `2026-projection/`, `2026-projection-complicated/` and `maori-to-general/`.
+`concordance/`, `2026-projection/`, `2026-projection-complicated/`, `maori-to-general/` and `margins/`.
 
 There are two projections of the 2026 special votes, each with its own site:
 
@@ -89,3 +89,18 @@ https://czlee.nz/elections/2026-projection/ by GitHub Actions on pushes to `main
 Outputs are in `results/`. `project_electorates.py` reads the
 national projection's party votes for seat allocation, so run
 `project_specials.py` first.
+
+## Margins: seat thresholds and closest electorates
+
+`scripts/margins/margins.py` takes one election's results and writes a page (`results/margins/<election>/index.html`,
+plus CSVs) with the party votes each party would need to gain or lose a seat, and the closest electorates.
+The method is in its docstring. For the final results on the day:
+
+```
+python3 scripts/download.py --election 2026     # or --base <URL of the final feed's /xml/> if that 404s
+python3 scripts/seats.py                        # checks the allocation against the Commission's seats
+python3 scripts/margins/margins.py 2026         # prints a summary, writes results/margins/2026/
+```
+
+Test it on `2026-prelim`, `2023`, `2020`, `2017`, `2023-prelim` or `2017-prelim`.
+
