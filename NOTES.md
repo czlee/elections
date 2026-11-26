@@ -10,7 +10,8 @@ The scripts are in `scripts/`, mirroring `sites/`: shared ones in `scripts/`, ea
 `scripts/<site>/`; run from the repo root (see README.md). The script names in the rest of these notes
 are from before this move: `project_specials.py` etc. are `scripts/2026-projection/` for the
 single-multiplier projection, and `scripts/2026-projection-complicated/` for the overseas/domestic
-split; the others are in `scripts/`. The split version writes to `results/projection-2026-complicated/`.
+split; the others are in `scripts/`, which also has `party_names.toml`
+(`candidate_name_exceptions.toml` is in `scripts/2026-projection-complicated/`). The split version writes to `results/projection-2026-complicated/`.
 
 ## Facts
 

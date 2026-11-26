@@ -9,11 +9,12 @@ this party's (e.g. Vision New Zealand was part of Freedoms NZ in 2023).
 Every name in the data must be in the file, so a new election makes you decide
 explicitly how its parties link to earlier ones.
 """
+import os
 import re
 import tomllib
 from collections import Counter
 
-PARTY_NAMES_FILE = "party_names.toml"
+PARTY_NAMES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "party_names.toml")
 
 
 class PartyNames:

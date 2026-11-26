@@ -80,7 +80,7 @@ SPECIAL_RE = re.compile(r"special votes|votes allowed", re.I)
 NOT_PARTIES = {"Total Valid Party Votes", "Informal Party Votes"}
 NOT_CANDIDATES = {"Total Valid Candidate Votes", "Informal Candidate Votes"}
 HEADINGS = {"party": "Party Vote Details", "candidate": "Candidate Vote Details"}
-NAME_EXCEPTIONS_FILE = "candidate_name_exceptions.toml"
+NAME_EXCEPTIONS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "candidate_name_exceptions.toml")
 # Years whose XML feed has special-vote voting places, numbered 4xx (NOTES.md).
 # Electorates have up to five; missing numbers are skipped.
 XML_SPECIAL_YEARS = {"2017", "2020"}
