@@ -8,8 +8,8 @@ My previous scripts have been moved to [czlee/elections-2020](https://github.com
 
 ## Setup
 
-The scripts that download and project results (`download.py`, `download_specials.py`,
-`scrape_wayback_prelim.py`, `project_specials.py`, `seats.py`) use only the
+The scripts that download and project results (everything in `scripts/` except
+`concordance.py` and `export_boundaries.py`) use only the
 Python standard library (Python 3.11 or later, for `tomllib`).
 
 The electorate concordance (2023 → 2026 boundaries) needs geopandas. Install it
@@ -43,19 +43,39 @@ gives one folder per layer:
 
 All are CC BY 4.0, credited in the site's footer.
 
+## Layout
+
+The scripts are in `scripts/`, and mirror `sites/`: the scripts that only one site uses are in
+`scripts/<site>/`, and the ones several sites use (`download.py`, `parties.py`, `seats.py`,
+`concordance.py`, `scrape_wayback_prelim.py`, `export_boundaries.py`) are in `scripts/`. Run them all
+from the repository root, e.g. `python3 scripts/download.py`. The scripts in `scripts/<site>/` add
+`scripts/` to `sys.path` to find the shared modules. `party_names.toml` and
+`candidate_name_exceptions.toml` are at the root, and `/data` and `/results` are gitignored.
+
+There are two projections of the 2026 special votes, each with its own site:
+
+- `scripts/2026-projection/` is the main one: one special-vote multiplier per party. It's the one I've
+  checked carefully. Its CSVs are in `results/projection-2026/`.
+- `scripts/2026-projection-complicated/` is an experiment I haven't checked as rigorously: separate
+  multipliers for overseas and domestic special votes, and the official count's revisions to ordinary
+  votes. Its CSVs are in `results/projection-2026-complicated/`, so the two don't overwrite each other.
+
 ## Running the 2026 projections
 
 ```
-python3 download.py --election 2023          # 2023 official results
-python3 download.py                          # 2026 preliminary results
-python3 scrape_wayback_prelim.py             # 2023 preliminary count (slow: Wayback Machine)
-python3 download_specials.py -e 2023         # special votes by category, party and candidate (slow: Wayback Machine)
-python3 project_specials.py                  # national projection
-venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
-python3 project_electorates.py               # per-electorate projection
-python3 export_site_data.py                  # JSON for the site (sites/2026-projection/src/lib/data/)
-venv/bin/python export_boundaries.py         # map boundaries for the site (needs data/statsnz/ and sites/2026-projection/ npm install)
+python3 scripts/download.py --election 2023  # 2023 official results
+python3 scripts/download.py                  # 2026 preliminary results
+python3 scripts/scrape_wayback_prelim.py     # 2023 preliminary count (slow: Wayback Machine)
+python3 scripts/2026-projection/project_specials.py      # national projection
+venv/bin/python scripts/concordance.py       # 2023 -> 2026 electorates (needs data/statsnz/)
+python3 scripts/2026-projection/project_electorates.py   # per-electorate projection
+python3 scripts/2026-projection/export_site_data.py      # JSON for the site (sites/2026-projection/src/lib/data/)
+venv/bin/python scripts/export_boundaries.py # map boundaries for the site (needs data/statsnz/ and sites/2026-projection/ npm install)
 ```
+
+The experimental projection has the same three steps in `scripts/2026-projection-complicated/`, and also needs
+`python3 scripts/2026-projection-complicated/download_specials.py -e 2023` first (special votes by category,
+party and candidate; slow: Wayback Machine). See `sites/2026-projection-complicated/README.md`.
 
 The visualisation site is in `sites/2026-projection/` (see `sites/2026-projection/README.md`); it's deployed to
 https://czlee.nz/elections/2026-projection/ by GitHub Actions on pushes to `main`.

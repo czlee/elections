@@ -4,6 +4,14 @@ Working notes for this repo: facts we've established about the Electoral
 Commission's results website, and (later) plans. Dates are when something was
 checked; the site changes, so re-check anything old before relying on it.
 
+## Layout (26 November 2026)
+
+The scripts are in `scripts/`, mirroring `sites/`: shared ones in `scripts/`, each site's own in
+`scripts/<site>/`; run from the repo root (see README.md). The script names in the rest of these notes
+are from before this move: `project_specials.py` etc. are `scripts/2026-projection/` for the
+single-multiplier projection, and `scripts/2026-projection-complicated/` for the overseas/domestic
+split; the others are in `scripts/`. The split version writes to `results/projection-2026-complicated/`.
+
 ## Facts
 
 ### Site access (checked 8–9 November 2026)
@@ -716,15 +724,20 @@ mind, but fine as it's consistent across bases).
 
 ## Plans
 
-### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`; **parked, not published**)
+### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`, since merged into `site-pooled`; **parked, not published on the main site**)
 
-- **Decided by the user (20 November 2026): not publishing this for now**; it stays
-  on the `special-pools` and `site-v1` branches (neither pushed). The split changes no
-  party vote seats under any base; 2017 and 2023 results are identical to the
-  published site; the 2020 base gains electorate projections (Hamilton East,
-  Wairarapa and Wellington Bays flip; National 42 → 40, House 132 → 130). To
-  publish later: push `site-v1` first (pages.yml checks it out), then merge
-  `special-pools` into main.
+- **Decided by the user (20 November 2026): not publishing this for now.** The
+  split changes no party vote seats under any base; 2017 and 2023 results are
+  identical to the published site; the 2020 base gains electorate projections
+  (Hamilton East, Wairarapa and Wellington Bays flip; National 42 → 40, House
+  132 → 130).
+- **Branches (updated 26 November 2026):** the work was merged into `site-pooled`
+  (pushed to origin), where the pooled site lives as
+  `sites/2026-projection-complicated`, with an EXPERIMENTAL banner. `main` still
+  has only the single-multiplier site. The `special-pools` and `site-v1`
+  branches were deleted (locally and on origin) and are no longer needed; the
+  user decided the original single-multiplier site is the main one, so the
+  `/v1/` freeze below is moot.
 
 - Freeze the current site at `/elections/2026-projection/v1/` (the user's
   choice of path, "least jinx-y") by building a tagged commit (`d946dec`, the
