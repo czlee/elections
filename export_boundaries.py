@@ -1,5 +1,5 @@
 """Exports simplified 2025 electorate boundaries, clipped to land, as TopoJSON
-for the site's map (site/src/lib/data/electorates-2025.topo.json). Needs the
+for the site's map (sites/2026-projection/src/lib/data/electorates-2025.topo.json). Needs the
 venv (geopandas), Node with the site's dev dependencies (mapshaper), and in
 data/statsnz/:
 
@@ -33,7 +33,7 @@ LAND_GLOB = "*clipped*"
 CHATHAMS_X = 2200000  # NZTM easting; the Chathams are around 2.4M
 SIMPLIFY_M = 250  # mapshaper Visvalingam, tolerance in metres
 MIN_ISLAND_KM2 = 4  # islands smaller than this are dropped (unless it's an electorate's only part)
-OUTPUT = "site/src/lib/data/electorates-2025.topo.json"
+OUTPUT = "sites/2026-projection/src/lib/data/electorates-2025.topo.json"
 
 
 def gpkg(folder):
@@ -84,7 +84,7 @@ def main():
                "-clean",
                "-o", "format=topojson", "quantization=20000",
                os.path.abspath(args.output)]
-        subprocess.run(cmd, check=True, cwd="site")
+        subprocess.run(cmd, check=True, cwd="sites/2026-projection")
     print("wrote {0} ({1:,} bytes)".format(args.output, os.path.getsize(args.output)))
 
 

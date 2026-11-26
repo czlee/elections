@@ -1,5 +1,5 @@
 """Exports the "no Māori electorates" analysis (maori_to_general.py) as JSON for
-the site in maori-site/, in maori-site/src/lib/data/:
+the site in sites/maori-to-general/, in sites/maori-to-general/src/lib/data/:
 
   national.json     seats as counted and with no Māori electorates, the
                     Sainte-Laguë entitlements, where the Māori-roll votes went
@@ -23,7 +23,7 @@ import maori_to_general as m
 from parties import PartyNames
 from seats import TOTAL_SEATS, _quotients, allocate
 
-OUTDIR = "maori-site/src/lib/data"
+OUTDIR = "sites/maori-to-general/src/lib/data"
 SHARES = [0, 0.25, 0.5, 0.75, 1]
 RESULTS = "https://www.electionresults.govt.nz/"
 LABOUR, TPM = "Labour Party", "Te Pāti Māori"

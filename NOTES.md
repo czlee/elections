@@ -340,9 +340,9 @@ flip: Kapiti (National by 84), Northland (101). Electorates won 42 National /
 seats: 120 seats, National 36 and Labour 36 (as counted: 131 seats, Te Pāti Māori
 5 electorates, 4 over its share of 1, and National's 42 electorates, 7 over its share of 35).
 
-The site is `maori-site/` (served at `/elections/maori-to-general/`; see its
+The site is `sites/maori-to-general/` (served at `/elections/maori-to-general/`; see its
 README), built from `export_maori_site_data.py`. It's a copy of the projection
-site's design and some components, not a second route tree in `site/`. It's
+site's design and some components, not a second route tree in `sites/2026-projection/`. It's
 still marked DRAFT (`src/lib/config.js`). Added at the user's request (26
 November 2026): a break-even for each electorate (the share of Te Pāti Māori
 voters who'd have to vote Labour for Labour to win; the rest count for no
@@ -446,7 +446,7 @@ touch the electorate results.
     2017's small-party multipliers are noisy (e.g. East Cape ACT candidate,
     party-vote multiplier 0.174), since ACT had 0.5% in 2017.
 - `export_site_data.py` (13 November 2026): writes the site's JSON
-  (`site/src/lib/data/2023/`) from `project_specials.compute()` and
+  (`sites/2026-projection/src/lib/data/2023/`) from `project_specials.compute()` and
   `project_electorates.compute()` (both scripts were refactored to expose their
   intermediates; their CSV and console output are unchanged, checked by diff).
   Adds each electorate's break-even multiplier for the projected runner-up
@@ -456,7 +456,7 @@ touch the electorate results.
   and 2023 official `electorate-details-NN.html`) are by analogy with the 2023
   preliminary pages and haven't been fetched (blocked to scripts); the XML links
   are the files `download.py` reads.
-  - `--base` (14 November 2026) writes `site/src/lib/data/<base>/`. Only bases
+  - `--base` (14 November 2026) writes `sites/2026-projection/src/lib/data/<base>/`. Only bases
     in `ELECTORATE_BASES` (2017, 2023) get `electorates.json`, with
     per-base regression guards in `EXPECTED` (House size, flips); for the others,
     `national.json` has `has_electorates: false` and both counts' seats hold
@@ -468,7 +468,7 @@ touch the electorate results.
     `PYTHONHASHSEED`s.
 - `export_boundaries.py` (13 November 2026, needs the venv and the site's
   npm packages): 2025 electorate boundaries for the site's map
-  (`site/src/lib/data/electorates-2025.topo.json`), simplified by mapshaper
+  (`sites/2026-projection/src/lib/data/electorates-2025.topo.json`), simplified by mapshaper
   with shared borders kept. Datafinder has no clipped electorate layer (the
   user looked, 13 November 2026), so electorates are intersected with a clipped
   land layer (any `data/statsnz/*clipped*` folder, e.g. Regional Council 2025
@@ -480,8 +480,8 @@ touch the electorate results.
   request (in git history: `export_hexmap.py`); population-weighted meshblock
   centres were needed there because Wellington Bays' largest polygon part is
   the Chathams (polygons include sea).
-- `site/` (13 November 2026): SvelteKit 3 static site; see `site/README.md`.
-  `site/src/lib/config.js` has a `DRAFT` flag: while true, every page shows a
+- `sites/2026-projection/` (13 November 2026): SvelteKit 3 static site; see `sites/2026-projection/README.md`.
+  `sites/2026-projection/src/lib/config.js` has a `DRAFT` flag: while true, every page shows a
   DRAFT banner and `noindex`. Candidate names come from the CSVs' candidate
   column, not from "NAME (Party)" labels: names ("MANNING, Romana (Marnz)",
   "SNG, Chee Khiang (CK)") and a 2023 party name ("The Opportunities Party
@@ -598,7 +598,7 @@ mind, but fine as it's consistent across bases).
     allowed only in 2020 and 2023; in 2017 enrolment closed the day before
     election day (22 September 2017), though people could still enrol at
     advance voting places and vote by special vote. The site's limitation
-    gives each base year's rule (`ENROLMENT_UNTIL` in `site/src/lib/bases.js`).
+    gives each base year's rule (`ENROLMENT_UNTIL` in `sites/2026-projection/src/lib/bases.js`).
   - Population weights stand in for enrolled electors (and, for Māori
     electorates, for the Māori roll).
   - **Changes in which parties stand candidates.** The normalisation step

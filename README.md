@@ -52,11 +52,11 @@ python3 scrape_wayback_prelim.py             # 2023 preliminary count (slow: Way
 python3 project_specials.py                  # national projection
 venv/bin/python concordance.py               # 2023 -> 2026 electorates (needs data/statsnz/)
 python3 project_electorates.py               # per-electorate projection
-python3 export_site_data.py                  # JSON for the site (site/src/lib/data/)
-venv/bin/python export_boundaries.py         # map boundaries for the site (needs data/statsnz/ and site/ npm install)
+python3 export_site_data.py                  # JSON for the site (sites/2026-projection/src/lib/data/)
+venv/bin/python export_boundaries.py         # map boundaries for the site (needs data/statsnz/ and sites/2026-projection/ npm install)
 ```
 
-The visualisation site is in `site/` (see `site/README.md`); it's deployed to
+The visualisation site is in `sites/2026-projection/` (see `sites/2026-projection/README.md`); it's deployed to
 https://czlee.nz/elections/2026-projection/ by GitHub Actions on pushes to `main`.
 
 Outputs are in `results/` (gitignored). `project_electorates.py` reads the

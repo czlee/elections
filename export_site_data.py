@@ -1,10 +1,10 @@
 """Exports the 2026 projection, with its intermediate numbers, as JSON for the
-visualisation site (site/). Runs project_specials.compute() and, for a base
+visualisation site (sites/2026-projection/). Runs project_specials.compute() and, for a base
 with electorate projections, project_electorates.compute(), so it needs the
 same inputs, and results/projection-2026/*.csv to check against (run the
 scripts first, with the same --base).
 
-Writes, in site/src/lib/data/<base>/:
+Writes, in sites/2026-projection/src/lib/data/<base>/:
   national.json     the national projection, Sainte-Laguë ladders and seats
   electorates.json  one entry per 2026 electorate: candidate and party votes
                     at every step, its base-year sources and the break-even
@@ -27,7 +27,7 @@ import project_electorates as pe
 import project_specials as ps
 from seats import TOTAL_SEATS, allocate, quotient_ladder
 
-OUTDIR = "site/src/lib/data"
+OUTDIR = "sites/2026-projection/src/lib/data"
 CSV_DIR = "results/projection-2026"
 LADDER_BEFORE, LADDER_AFTER = 12, 8
 
