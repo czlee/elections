@@ -727,25 +727,19 @@ mind, but fine as it's consistent across bases).
 
 ## Plans
 
-### Phase 3: site for the pooled projection (20 November 2026: built on `special-pools`, since merged into `site-pooled`; **parked, not published on the main site**)
+### Phase 3: site for the pooled projection (built on `special-pools` on 20 November 2026; published as the EXPERIMENTAL "complicated" site on 26 November 2026)
 
-- **Decided by the user (20 November 2026): not publishing this for now.** The
-  split changes no party vote seats under any base; 2017 and 2023 results are
-  identical to the published site; the 2020 base gains electorate projections
-  (Hamilton East, Wairarapa and Wellington Bays flip; National 42 → 40, House
-  132 → 130).
-- **Branches (updated 26 November 2026):** the work was merged into `site-pooled`
-  (pushed to origin), where the pooled site lives as
-  `sites/2026-projection-complicated`, with an EXPERIMENTAL banner. `main` still
-  has only the single-multiplier site. The `special-pools` and `site-v1`
-  branches were deleted (locally and on origin) and are no longer needed; the
-  user decided the original single-multiplier site is the main one, so the
-  `/v1/` freeze below is moot.
-
-- Freeze the current site at `/elections/2026-projection/v1/` (the user's
-  choice of path, "least jinx-y") by building a tagged commit (`d946dec`, the
-  last single-pool site) in CI alongside the main build; check OG/canonical URLs;
-  add a "newer version" link on v1.
+- **Decided by the user (26 November 2026):** the single-multiplier site (`sites/2026-projection`) is the
+  main, carefully checked projection, and this one is published alongside it as
+  `sites/2026-projection-complicated`, at `/elections/2026-projection-complicated/`, with an
+  EXPERIMENTAL banner, noindex, and a link to the main site. On 20 November the user had decided not to
+  publish it for now. The split changes no party vote seats under any base; 2017 and 2023 results are
+  identical to the main site; the 2020 base gains electorate projections (Hamilton East, Wairarapa and
+  Wellington Bays flip; National 42 → 40, House 132 → 130).
+- **Code and branches:** the original scripts stay as they were, in `scripts/2026-projection/`; the split
+  versions are in `scripts/2026-projection-complicated/` (see Layout, above). The `special-pools`,
+  `site-v1` and `site-pooled` branches were merged or dropped. The plan to freeze the old site at `/v1/`
+  was dropped, because the original site is the main one.
 - Exported JSON changed in phase 2; the site now reads it (phase 3). Base-year electorate fields
   are now final-count ordinaries (`ordinary`, `ordinary_share`), not
   preliminary counts (`prelim`); rows and base rows have per-pool
