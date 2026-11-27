@@ -5,6 +5,8 @@
 # https://czlee.nz/elections/2026-projection/,
 # https://czlee.nz/elections/2026-projection-complicated/ and
 # https://czlee.nz/elections/maori-to-general/ and https://czlee.nz/elections/margins/.
+# The landing page at https://czlee.nz/elections/ is sites/index.html, with its own copy of the font in
+# sites/fonts/; the assemble step copies both into the Pages tree.
 #
 # The sites' data (sites/*/src/lib/data/) is committed: CI doesn't rerun the
 # Python pipeline, which needs Stats NZ data and a slow Wayback scrape.
@@ -70,7 +72,8 @@ jobs:
           cp -r sites/2026-projection-complicated/build _site/2026-projection-complicated
           cp -r sites/maori-to-general/build _site/maori-to-general
           cp -r sites/margins/build _site/margins
-          cp sites/2026-projection/static-root/index.html _site/index.html
+          cp sites/index.html _site/index.html
+          cp -r sites/fonts _site/fonts
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

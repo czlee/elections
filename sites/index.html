@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Zealand election data nerdery · czlee.nz</title>
+<meta name="description" content="Analyses of New Zealand general election results: margins, special votes projections, and what-ifs.">
+<link rel="stylesheet" href="fonts/figtree.css">
+<style>
+:root{--font:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--bg:#f3f5f2;--text:#0b0b0b;--muted:#4f5f56;--rule:#d8e0d9;--link:#0f7a4e;--tag-bg:#e5ebe6}
+@media (prefers-color-scheme:dark){:root{--bg:#131a16;--text:#f0efec;--muted:#9fada5;--rule:#2b3a32;--link:#19b876;--tag-bg:#202c26}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--font)}
+main{max-width:40rem;margin:0 auto;padding:2.5rem 16px 4rem}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 .5rem}
+.byline{color:var(--muted);margin:0 0 1.25rem}
+.intro{margin:0 0 2rem}
+.intro p{margin:0 0 .9rem}
+.intro a{color:var(--link);text-decoration:none}
+.intro a:hover,.intro a:focus-visible{text-decoration:underline}
+ul{list-style:none;margin:0;padding:0}
+li{border-top:1px solid var(--rule);padding:1rem 0}
+li:last-child{border-bottom:1px solid var(--rule)}
+li a{color:var(--link);font-size:1.15rem;font-weight:600;text-decoration:none}
+li a:hover,li a:focus-visible{text-decoration:underline}
+li p{margin:.25rem 0 0}
+.tag{display:inline-block;margin-left:.5rem;padding:0 .5rem;border-radius:999px;background:var(--tag-bg);color:var(--muted);font-size:.75rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;vertical-align:.1em}
+li.experimental a,li.experimental p{color:var(--muted)}
+li.experimental a{font-weight:500}
+</style>
+</head>
+<body>
+<main>
+<h1>New Zealand election data nerdery</h1>
+<p class="byline">By Chuan-Zheng Lee</p>
+<div class="intro">
+<p>Kia ora! I'm so glad you're here! This site includes some analyses of New Zealand general election results, mostly done to satisfy my own nerdy curiosity. I've long been interested in voting systems, so these are the kind of breakdowns I often wanted to do, and sometimes did do—and now the advent of AI has made it much faster to produce them quickly.</p>
+<p>I make every non-minor method and design decision myself. I use Claude to help with research, and to implement code for both data processing and the website. With the exception of experimental sites, I've personally reviewed (and often rewritten) every explanation. You can see my GitHub repository for it: <a href="https://github.com/czlee/elections">czlee/elections</a>.</p>
+<p>I sometimes reference these analyses from my Substack, <a href="https://czlee.substack.com/"><em>Everything-Adjacent</em></a>. You can also find me on Twitter <a href="https://x.com/czczlee">@czczlee</a> or Bluesky <a href="https://bsky.app/profile/czlee.bsky.social">@czlee.bsky.social</a>.</p>
+</div>
+<ul>
+<li>
+<a href="margins/">Election margins</a>
+<p>How many party votes it would take for a party to gain or lose a seat, and the closest electorates, for the 2017–2026 elections</p>
+</li>
+<li>
+<a href="2026-projection/">2026 special votes projection</a>
+<p>Mostly interesting <em>before</em> final results are released—what the final result would look like if special votes in 2026 lean similarly to past elections</p>
+</li>
+<li>
+<a href="maori-to-general/">The 2026 election without Māori electorates</a>
+<p>What the 2026 result would have looked like if all Māori-roll voters had voted in their general electorates instead</p>
+</li>
+<li class="experimental">
+<a href="2026-projection-complicated/">2026 special votes projection, overseas/domestic split</a><span class="tag">Experimental</span>
+<p>A variant of the projection that treats overseas and domestic special votes separately—I haven't rigorously checked this one</p>
+</li>
+</ul>
+</main>
+</body>
+</html>
