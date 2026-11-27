@@ -58,6 +58,18 @@ results for each election in `data/elections/<year>` (official count) and `data/
 (preliminary count), and Stats NZ's boundaries in `data/statsnz/`. `results/` is what the scripts compute:
 `concordance/`, `2026-projection/`, `2026-projection-complicated/`, `maori-to-general/` and `margins/`.
 
+The exception is `data-archive/`, which is committed. It has one `.tar.xz` for each folder in `data/elections/`
+(`2017`, `2017-prelim`, `2020`, `2020-prelim`, `2023`, `2023-prelim`, `2026`, `2026-prelim`), each holding
+the tidy CSVs and `raw/`, about 1.5 MB in all. The one that matters is `2026-prelim`: the Electoral
+Commission's 2026 preliminary count (last updated 8 November 2026, 100% of voting places), as downloaded by
+`download.py`, before they took the feed down. It can't be re-downloaded. The others can be re-downloaded
+(or, for the 2017 and 2023 preliminary counts, re-scraped from the Wayback Machine for as long as its copies
+last), so they're insurance. Restore them with
+`for f in data-archive/*.tar.xz; do tar -C data/elections -xJf $f; done`.
+
+Not archived: `data/statsnz/` (public downloads, 379 MB), `data/live-site/` and the two HTML pages saved by
+hand in `data/`. The `Zone.Identifier` files that WSL adds to downloads are left out too.
+
 There are two projections of the 2026 special votes, each with its own site:
 
 - `scripts/2026-projection/` is the main one: one special-vote multiplier per party. It's the one I've
