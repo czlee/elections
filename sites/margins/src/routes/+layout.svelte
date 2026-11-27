@@ -14,6 +14,15 @@
 	/** @type {{children: import('svelte').Snippet, data: any}} */
 	let { children, data } = $props();
 	const href = (/** @type {string} */ path) => resolve(/** @type {any} */ (path));
+	const isCurrent = (/** @type {string} */ id) => (page.params.election ?? DEFAULT_ID) === id && page.route.id !== null;
+
+	/** The menu entries: one per year, with a dropdown when that year has a preliminary count as well as a final one. */
+	const years = $derived(
+		ELECTIONS.filter((e) => !e.prelim || !ELECTIONS.some((x) => x.year === e.year && !x.prelim)).map((e) => ({
+			main: e,
+			sub: e.prelim ? [] : ELECTIONS.filter((x) => x.year === e.year && x.prelim)
+		}))
+	);
 </script>
 
 <svelte:head>
@@ -40,9 +49,20 @@
 	<nav>
 		<a class="brand" href={href('/')}>New Zealand election margins</a>
 		<span class="elections" role="group" aria-label="Election">
-			{#each ELECTIONS as e (e.id)}
-				<a href={href(electionPath(e.id))}
-					aria-current={(page.params.election ?? DEFAULT_ID) === e.id && page.route.id !== null ? 'page' : undefined}>{e.label}</a>
+			{#each years as { main, sub } (main.id)}
+				{#if sub.length}
+					<span class="dropdown">
+						<a href={href(electionPath(main.id))}
+							aria-current={[main, ...sub].some((x) => isCurrent(x.id)) ? 'page' : undefined}>{main.year}</a>
+						<span class="menu">
+							{#each [{ e: main, name: 'Final' }, ...sub.map((e) => ({ e, name: 'Preliminary' }))] as { e, name } (e.id)}
+								<a href={href(electionPath(e.id))} aria-current={isCurrent(e.id) ? 'page' : undefined}>{name}</a>
+							{/each}
+						</span>
+					</span>
+				{:else}
+					<a href={href(electionPath(main.id))} aria-current={isCurrent(main.id) ? 'page' : undefined}>{main.label}</a>
+				{/if}
 			{/each}
 		</span>
 	</nav>
@@ -74,6 +94,14 @@
 	.elections a { padding: 0.05em 0.5em; border-radius: 4px; border: 1px solid transparent; }
 	.elections a:hover { color: var(--text); }
 	.elections a[aria-current='page'] { color: var(--text); font-weight: 600; border-color: var(--border); }
+	.dropdown { position: relative; display: inline-flex; }
+	.menu {
+		display: none; position: absolute; top: 100%; left: 0; z-index: 10; min-width: 100%;
+		flex-direction: column; padding: 0.25em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+	}
+	.dropdown:hover .menu, .dropdown:focus-within .menu { display: flex; }
+	.menu a { white-space: nowrap; }
+	.menu a:hover { background: var(--surface-2); }
 	main { padding-bottom: 3em; }
 	footer { border-top: 1px solid var(--border); color: var(--text-3); font-size: 0.8rem; padding-block: 1em 2em; }
 	footer a { color: var(--text-2); }
