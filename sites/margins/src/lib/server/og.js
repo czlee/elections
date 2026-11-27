@@ -316,3 +316,95 @@ export const ogGet = () =>
 		if (params.election && !electionData(params.election)) error(404, 'No such election');
 		return cardPng(cardData(params.election));
 	};
+
+// ---------------------------------------------------------------------------
+// A square card (1080×1080), for posting where a link preview isn't what's shown
+
+export const SQUARE = { width: 1080, height: 1080 };
+
+function squareElectionSvg(/** @type {NonNullable<ReturnType<typeof electionData>>} */ d) {
+	const out = [kicker(`New Zealand general election${d.prelim ? ' · preliminary count' : ''}`, 88)];
+	out.push(text(72, 164, `${d.year} election margins`, { size: 72, weight: 700 }));
+	let y = 234;
+	for (const c of [d.closest.lose, d.closest.gain]) {
+		if (!c) continue;
+		out.push(text(72, y, (c.dir === 'gain' ? 'Closest to gaining a seat' : 'Closest to losing a seat').toUpperCase(),
+			{ size: 22, weight: 600, fill: T('text-3'), spacing: 1.5 }));
+		out.push(partyDot(c.id, 88, y + 46, 14));
+		const head = `${c.name}: ${votes(c.votes)} votes`;
+		out.push(text(116, y + 62, head, { size: fitText(head, 54, 880, 700), weight: 700, fill: T('text') }));
+		const rest = c.dir === 'gain'
+			? `more party votes would give ${c.name} an extra seat${c.other ? `, at ${c.other}’s expense` : ''}`
+			: `fewer party votes would cost ${c.name} a seat${c.other ? `, which would go to ${c.other}` : ''}`;
+		const lines = wrap(rest, 26, 936);
+		lines.forEach((l, i) => out.push(text(72, y + 102 + i * 32, l, { size: 26, fill: T('text-2') })));
+		y += 102 + lines.length * 32 + 30;
+	}
+	const top = y, bottom = 980, size = bottom - top;
+	// The chart is taller than wide; give it the whole box and it fits by height, centred.
+	out.push(`<svg class="hs" x="${(SQUARE.width - size) / 2}" y="${top}" width="${size}" height="${size}">${horseshoe(d)}</svg>`);
+	out.push(text(72, 1022, 'czlee.nz/elections/margins', { size: 26, weight: 600, fill: T('text-2') }));
+	out.push(text(1008, 1022, d.prelim ? 'Preliminary count · not an official result' : 'Not an official result',
+		{ size: 22, fill: T('text-3'), anchor: 'end' }));
+	return out.join('');
+}
+
+/** An SVG card of `size` (inner markup `inner`, on the standard background with the accent bar) as a PNG response. */
+function sizedPng(/** @type {{width: number, height: number}} */ size, /** @type {string} */ inner) {
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${size.width} ${size.height}" font-family="Figtree">` +
+		`<rect width="100%" height="100%" fill="${T('surface')}"/>` +
+		`<rect y="${size.height - 12}" width="100%" height="12" fill="${T('accent')}"/>` + inner + '</svg>';
+	const png = new Resvg(svg, {
+		fitTo: { mode: 'width', value: size.width },
+		font: { fontFiles: loadFonts(), loadSystemFonts: false, defaultFontFamily: 'Figtree' }
+	}).render().asPng();
+	return new Response(new Uint8Array(png), { headers: { 'content-type': 'image/png' } });
+}
+
+/** The square card for an election as a PNG response, or a 404 if there's no such election. */
+export function squarePng(/** @type {string} */ id) {
+	const d = electionData(id);
+	if (!d) error(404, 'No such election');
+	return sizedPng(SQUARE, squareElectionSvg(d));
+}
+
+// ---------------------------------------------------------------------------
+// A 9:16 card (1080×1920), for Instagram stories. Stories cover roughly the top 250px and
+// bottom 250px with the app's own UI, so nothing important goes there.
+
+export const STORY = { width: 1080, height: 1920 };
+
+function storyElectionSvg(/** @type {NonNullable<ReturnType<typeof electionData>>} */ d) {
+	const out = [kicker(`New Zealand general election${d.prelim ? ' · preliminary count' : ''}`, 300)];
+	out.push(text(72, 384, `${d.year} election margins`, { size: 80, weight: 700 }));
+	const sub = wrap('How many more or fewer party votes would it have taken for a party to gain or lose a seat?', 34, 936, 700);
+	sub.forEach((l, i) => out.push(text(72, 438 + i * 44, l, { size: 34, weight: 700, fill: T('accent') })));
+	let y = 438 + (sub.length - 1) * 44 + 84;
+	for (const c of [d.closest.lose, d.closest.gain]) {
+		if (!c) continue;
+		out.push(text(72, y, (c.dir === 'gain' ? 'Closest to gaining a seat' : 'Closest to losing a seat').toUpperCase(),
+			{ size: 24, weight: 600, fill: T('text-3'), spacing: 1.5 }));
+		out.push(partyDot(c.id, 88, y + 52, 15));
+		const head = `${c.name}: ${votes(c.votes)} votes`;
+		out.push(text(118, y + 70, head, { size: fitText(head, 60, 880, 700), weight: 700, fill: T('text') }));
+		const rest = c.dir === 'gain'
+			? `more party votes would give ${c.name} an extra seat${c.other ? `, at ${c.other}’s expense` : ''}`
+			: `fewer party votes would cost ${c.name} a seat${c.other ? `, which would go to ${c.other}` : ''}`;
+		const lines = wrap(rest, 30, 936);
+		lines.forEach((l, i) => out.push(text(72, y + 116 + i * 38, l, { size: 30, fill: T('text-2') })));
+		y += 116 + lines.length * 38 + 40;
+	}
+	const top = y, bottom = 1640, size = Math.min(bottom - top, 1080);
+	out.push(`<svg class="hs" x="${(STORY.width - size) / 2}" y="${top}" width="${size}" height="${size}">${horseshoe(d)}</svg>`);
+	out.push(text(72, 1692, 'czlee.nz/elections/margins', { size: 28, weight: 600, fill: T('text-2') }));
+	out.push(text(1008, 1692, d.prelim ? 'Preliminary count · not an official result' : 'Not an official result',
+		{ size: 22, fill: T('text-3'), anchor: 'end' }));
+	return out.join('');
+}
+
+/** The 9:16 card for an election as a PNG response, or a 404 if there's no such election. */
+export function storyPng(/** @type {string} */ id) {
+	const d = electionData(id);
+	if (!d) error(404, 'No such election');
+	return sizedPng(STORY, storyElectionSvg(d));
+}
