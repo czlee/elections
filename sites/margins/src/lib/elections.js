@@ -22,8 +22,14 @@ export const ELECTIONS = Object.keys(DATA)
 export const electorateUrl = (/** @type {string} */ official, /** @type {number} */ id) =>
 	`${official}electorate-details-${String(id).padStart(2, '0')}.html`;
 
-/** Elections that have a final result. */
-export const PAST = ELECTIONS.filter((e) => !e.prelim);
+/** The election the home page shows (at `/`, so it has no page of its own at `/<id>/`). */
+export const DEFAULT_ID = '2026';
+
+/** The elections with a page at `/<id>/`: all but the default. */
+export const OTHER_ELECTIONS = ELECTIONS.filter((e) => e.id !== DEFAULT_ID);
+
+/** An election's page path. */
+export const electionPath = (/** @type {string} */ id) => (id === DEFAULT_ID ? '/' : `/${id}/`);
 
 /** A party's key for colours and seat charts: its party_id, or "independent" for no party. */
 export const partyKey = (/** @type {{id?: string | null}} */ p) => p.id ?? 'independent';

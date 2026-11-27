@@ -9,7 +9,7 @@
 	import appleTouchIcon from '#lib/assets/apple-touch-icon.png';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { ELECTIONS } from '#lib/elections.js';
+	import { ELECTIONS, DEFAULT_ID, electionPath } from '#lib/elections.js';
 
 	/** @type {{children: import('svelte').Snippet, data: any}} */
 	let { children, data } = $props();
@@ -41,7 +41,8 @@
 		<a class="brand" href={href('/')}>New Zealand election margins</a>
 		<span class="elections" role="group" aria-label="Election">
 			{#each ELECTIONS as e (e.id)}
-				<a href={href(`/${e.id}/`)} aria-current={page.params.election === e.id ? 'page' : undefined}>{e.label}</a>
+				<a href={href(electionPath(e.id))}
+					aria-current={(page.params.election ?? DEFAULT_ID) === e.id && page.route.id !== null ? 'page' : undefined}>{e.label}</a>
 			{/each}
 		</span>
 	</nav>

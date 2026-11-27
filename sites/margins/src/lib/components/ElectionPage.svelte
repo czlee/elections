@@ -1,0 +1,22 @@
+<script>
+	import PartyVote from '#lib/components/PartyVote.svelte';
+	import Quotients from '#lib/components/Quotients.svelte';
+	import Closest from '#lib/components/Closest.svelte';
+
+	/** @type {{election: {year: string, prelim: boolean, official: string}, data: any}} */
+	let { election: e, data: d } = $props();
+</script>
+
+<h1>{e.year} New Zealand election margins{e.prelim ? ', preliminary count' : ''}</h1>
+<p class="muted">
+	From the Electoral Commission’s <a href={e.official} target="electionresults" rel="noopener">{e.prelim ? 'preliminary ' : ''}results</a>.
+</p>
+
+<h2>Party vote: votes to gain or lose a seat</h2>
+<PartyVote data={d} />
+
+<h2>Sainte-Laguë quotients</h2>
+<Quotients data={d} />
+
+<h2>Closest electorates</h2>
+<Closest data={d} official={e.official} />

@@ -772,9 +772,9 @@ mind, but fine as it's consistent across bases).
 - **Site built 27 November 2026: `sites/margins/`** (served at `/elections/margins/`). Its data is the
   `margins.json` files, committed as `sites/margins/src/lib/data/<election>.json`. **The live step was (done 27
   November 2026, from 2pm):** `margins.py 2026`, copy `results/margins/2026/margins.json` to
-  `sites/margins/src/lib/data/2026.json`, link `/2026/` from the root page (replacing the placeholder callout; the
-  root's list of earlier elections leaves 2026 out) and make the home social card the 2026 card (`cardData()` in
-  `lib/server/og.js`; the home page keeps its own title and description). The home URL's cached preview needs a
+  `sites/margins/src/lib/data/2026.json`, make the root page the 2026 page (as on the other sites, the latest is at `/`, with
+  no `/2026/`; `DEFAULT_ID` in `lib/elections.js`; the other elections stay at `/<id>/`) and so the home social
+  card the 2026 card (`cardData()` in `lib/server/og.js`). The home URL's cached preview needs a
   rescrape (Facebook Sharing Debugger, LinkedIn Post Inspector). `margins.py` now also writes each party's `id`
   (party_id) and the electorate parties' short names, which the site uses for colours. The layout is the first
   pass (green-tinted background; the party-vote table beside a horseshoe that previews each scenario), and the

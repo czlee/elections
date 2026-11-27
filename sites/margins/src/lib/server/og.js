@@ -104,8 +104,7 @@ const LAYOUT = ogSource + parliamentSource + appCss;
 export function pageMeta(/** @type {string | undefined} */ election) {
 	const data = cardData(election);
 	const version = createHash('sha1').update(JSON.stringify(data)).update(LAYOUT).digest('hex').slice(0, 10);
-	// The home page shows the 2026 card but keeps the site's own title and description.
-	if (election && data.kind === 'election') {
+	if (data.kind === 'election') {
 		const d = /** @type {NonNullable<ReturnType<typeof electionData>>} */ (data);
 		const parts = [d.closest.lose && `${sentence(d.closest.lose)}.`, d.closest.gain && `${sentence(d.closest.gain)}.`,
 			d.electorate && `Closest electorate: ${d.electorate.name}, by ${votes(d.electorate.margin)} ${d.electorate.margin === 1 ? 'vote' : 'votes'}.`,

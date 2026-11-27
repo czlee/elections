@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { DATA, ELECTIONS } from '#lib/elections.js';
+import { DATA, ELECTIONS, OTHER_ELECTIONS } from '#lib/elections.js';
 
-export const entries = () => ELECTIONS.map((e) => ({ election: e.id }));
+export const entries = () => OTHER_ELECTIONS.map((e) => ({ election: e.id }));
 
 export function load({ params }) {
 	const data = DATA[params.election];
