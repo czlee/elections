@@ -3,6 +3,7 @@
 	import Quotients from '#lib/components/Quotients.svelte';
 	import Closest from '#lib/components/Closest.svelte';
 	import { ELECTIONS, electionPath } from '#lib/elections.js';
+	import { resolve } from '$app/paths';
 
 	/** @type {{election: {year: string, prelim: boolean, official: string}, data: any}} */
 	let { election: e, data: d } = $props();
@@ -20,7 +21,7 @@
 	<div class="alert" role="status">
 		<strong>The final results are out.</strong>
 		This page shows the preliminary count, which has been superseded.
-		<a href={electionPath(final.id)}>See the final {final.year} results</a>.
+		<a href={resolve(/** @type {any} */ (electionPath(final.id)))}>See the final {final.year} results</a>.
 	</div>
 {/if}
 
