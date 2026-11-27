@@ -41,6 +41,9 @@ jobs:
             sites/2026-projection-complicated/package-lock.json
             sites/maori-to-general/package-lock.json
             sites/margins/package-lock.json
+      # Fails if the horseshoe chart's lane table is out of date with its constants; fix with --write.
+      - name: Check the horseshoe lane table
+        run: python3 scripts/horseshoe_lanes.py sites/*/src/lib/components/Parliament.svelte
       - run: npm ci
         working-directory: sites/2026-projection
       - run: npm run build

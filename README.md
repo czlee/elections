@@ -47,7 +47,7 @@ All are CC BY 4.0, credited in the site's footer.
 
 The scripts are in `scripts/`, and mirror `sites/`: the scripts that only one site uses are in
 `scripts/<site>/`, and the ones several sites use (`download.py`, `parties.py`, `seats.py`,
-`concordance.py`, `scrape_wayback_prelim.py`, `export_boundaries.py`) are in `scripts/`. Run them all
+`concordance.py`, `scrape_wayback_prelim.py`, `export_boundaries.py`, `horseshoe_lanes.py`) are in `scripts/`. Run them all
 from the repository root, e.g. `python3 scripts/download.py`. The scripts in `scripts/<site>/` add
 `scripts/` to `sys.path` to find the shared modules. `party_names.toml` is in `scripts/` (with `parties.py`) and `candidate_name_exceptions.toml` in
 `scripts/2026-projection-complicated/` (with `download_specials.py`); both are found relative to the script,
