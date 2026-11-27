@@ -1,0 +1,4468 @@
+{
+ "election": "2026",
+ "updated": "2026-11-27T00:00:00",
+ "generated": "2026-11-27",
+ "total_seats": 120,
+ "threshold": 0.05,
+ "near": 0.01,
+ "to_allocate": 120,
+ "house": {
+  "parties": [
+   {
+    "party": "National Party",
+    "id": "national",
+    "name": "National",
+    "entitlement": 34,
+    "electorates": 40,
+    "seats": 40,
+    "list": 0
+   },
+   {
+    "party": "Labour Party",
+    "id": "labour",
+    "name": "Labour",
+    "entitlement": 36,
+    "electorates": 22,
+    "seats": 36,
+    "list": 14
+   },
+   {
+    "party": "Green Party",
+    "id": "green",
+    "name": "Green",
+    "entitlement": 17,
+    "electorates": 3,
+    "seats": 17,
+    "list": 14
+   },
+   {
+    "party": "ACT New Zealand",
+    "id": "act",
+    "name": "ACT",
+    "entitlement": 13,
+    "electorates": 1,
+    "seats": 13,
+    "list": 12
+   },
+   {
+    "party": "New Zealand First Party",
+    "id": "nz-first",
+    "name": "NZ First",
+    "entitlement": 12,
+    "electorates": 0,
+    "seats": 12,
+    "list": 12
+   },
+   {
+    "party": "Opportunity Party",
+    "id": "top",
+    "name": "Opportunity",
+    "entitlement": 7,
+    "electorates": 0,
+    "seats": 7,
+    "list": 7
+   },
+   {
+    "party": "Te Pāti Māori",
+    "id": "te-pati-maori",
+    "name": "Te Pāti Māori",
+    "entitlement": 1,
+    "electorates": 5,
+    "seats": 5,
+    "list": 0
+   }
+  ],
+  "other_electorates": 0,
+  "house": 130
+ },
+ "parties": [
+  {
+   "party": "Labour Party",
+   "id": "labour",
+   "name": "Labour",
+   "votes": 863238,
+   "share": 0.29881303891806194,
+   "qualified": true,
+   "entitlement": 36,
+   "electorates": 22,
+   "overhang": 0,
+   "last": {
+    "quotient": 12158.281690140846,
+    "divisor": 71
+   },
+   "next": {
+    "quotient": 11825.17808219178,
+    "divisor": 73
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 17730,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 37,
+       "electorates": 22,
+       "seats": 37,
+       "list": 15
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": false
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 20487,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 35,
+       "electorates": 22,
+       "seats": 35,
+       "list": 13
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": false
+   },
+   "threshold": null
+  },
+  {
+   "party": "National Party",
+   "id": "national",
+   "name": "National",
+   "votes": 819012,
+   "share": 0.2835040448061366,
+   "qualified": true,
+   "entitlement": 34,
+   "electorates": 40,
+   "overhang": 6,
+   "last": {
+    "quotient": 12224.059701492537,
+    "divisor": 67
+   },
+   "next": {
+    "quotient": 11869.739130434782,
+    "divisor": 69
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 13684,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": true
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 26726,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 37,
+       "electorates": 22,
+       "seats": 37,
+       "list": 15
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": true
+   },
+   "threshold": null
+  },
+  {
+   "party": "Green Party",
+   "id": "green",
+   "name": "Green",
+   "votes": 406356,
+   "share": 0.14066163820706223,
+   "qualified": true,
+   "entitlement": 17,
+   "electorates": 3,
+   "overhang": 0,
+   "last": {
+    "quotient": 12313.818181818182,
+    "divisor": 33
+   },
+   "next": {
+    "quotient": 11610.171428571428,
+    "divisor": 35
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 16026,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 18,
+       "electorates": 3,
+       "seats": 18,
+       "list": 15
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": false
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 14655,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": false
+   },
+   "threshold": null
+  },
+  {
+   "party": "ACT New Zealand",
+   "id": "act",
+   "name": "ACT",
+   "votes": 304521,
+   "share": 0.1054110748418943,
+   "qualified": true,
+   "entitlement": 13,
+   "electorates": 1,
+   "overhang": 0,
+   "last": {
+    "quotient": 12180.84,
+    "divisor": 25
+   },
+   "next": {
+    "quotient": 11278.555555555555,
+    "divisor": 27
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 21317,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 14,
+       "electorates": 1,
+       "seats": 14,
+       "list": 13
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": false
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 7778,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": false
+   },
+   "threshold": null
+  },
+  {
+   "party": "New Zealand First Party",
+   "id": "nz-first",
+   "name": "NZ First",
+   "votes": 277565,
+   "share": 0.0960801553537864,
+   "qualified": true,
+   "entitlement": 12,
+   "electorates": 0,
+   "overhang": 0,
+   "last": {
+    "quotient": 12068.04347826087,
+    "divisor": 23
+   },
+   "next": {
+    "quotient": 11102.6,
+    "divisor": 25
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 26393,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 35,
+       "electorates": 22,
+       "seats": 35,
+       "list": 13
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 13,
+       "electorates": 0,
+       "seats": 13,
+       "list": 13
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": false
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 4562,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": false
+   },
+   "threshold": {
+    "direction": "drop below",
+    "votes": 140127,
+    "house": {
+     "parties": [
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 40,
+       "electorates": 22,
+       "seats": 40,
+       "list": 18
+      },
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 38,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 19,
+       "electorates": 3,
+       "seats": 19,
+       "list": 16
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 14,
+       "electorates": 1,
+       "seats": 14,
+       "list": 13
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 8,
+       "electorates": 0,
+       "seats": 8,
+       "list": 8
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 126
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Opportunity Party",
+   "id": "top",
+   "name": "Opportunity",
+   "votes": 175093,
+   "share": 0.06060909207342612,
+   "qualified": true,
+   "entitlement": 7,
+   "electorates": 0,
+   "overhang": 0,
+   "last": {
+    "quotient": 13468.692307692309,
+    "divisor": 13
+   },
+   "next": {
+    "quotient": 11672.866666666667,
+    "divisor": 15
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 5928,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 8,
+       "electorates": 0,
+       "seats": 8,
+       "list": 8
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": false
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 20787,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": false
+   },
+   "threshold": {
+    "direction": "drop below",
+    "votes": 32262,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 37,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 38,
+       "electorates": 22,
+       "seats": 38,
+       "list": 16
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 18,
+       "electorates": 3,
+       "seats": 18,
+       "list": 15
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 14,
+       "electorates": 1,
+       "seats": 14,
+       "list": 13
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 127
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Te Pāti Māori",
+   "id": "te-pati-maori",
+   "name": "Te Pāti Māori",
+   "votes": 18310,
+   "share": 0.006338074485355967,
+   "qualified": true,
+   "entitlement": 1,
+   "electorates": 5,
+   "overhang": 4,
+   "last": {
+    "quotient": 18310.0,
+    "divisor": 1
+   },
+   "next": {
+    "quotient": 6103.333333333333,
+    "divisor": 3
+   },
+   "gain": {
+    "direction": "gain",
+    "votes": 17895,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 34,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 2,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 129
+    },
+    "overhang_only": true
+   },
+   "lose": {
+    "direction": "lose",
+    "votes": 6441,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 35,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 36,
+       "electorates": 22,
+       "seats": 36,
+       "list": 14
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 17,
+       "electorates": 3,
+       "seats": 17,
+       "list": 14
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 13,
+       "electorates": 1,
+       "seats": 13,
+       "list": 12
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 12,
+       "electorates": 0,
+       "seats": 12,
+       "list": 12
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 0,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 130
+    },
+    "overhang_only": true
+   },
+   "threshold": null
+  },
+  {
+   "party": "Aotearoa Legalise Cannabis Party",
+   "id": "alcp",
+   "name": "Legalise Cannabis",
+   "votes": 6230,
+   "share": 0.0021565376321009107,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 145489,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Aotearoa Legalise Cannabis Party",
+       "id": "alcp",
+       "name": "Legalise Cannabis",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 145489,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Aotearoa Legalise Cannabis Party",
+       "id": "alcp",
+       "name": "Legalise Cannabis",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Animal Justice Party Aotearoa New Zealand",
+   "id": "animal-justice",
+   "name": "Animal Justice",
+   "votes": 3136,
+   "share": 0.0010855380440238293,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 148746,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Animal Justice Party Aotearoa New Zealand",
+       "id": "animal-justice",
+       "name": "Animal Justice",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 148746,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Animal Justice Party Aotearoa New Zealand",
+       "id": "animal-justice",
+       "name": "Animal Justice",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "NZ Outdoors & Freedom Party",
+   "id": "nz-outdoors",
+   "name": "Outdoors & Freedom",
+   "votes": 2991,
+   "share": 0.0010353457556362478,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 148899,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "NZ Outdoors & Freedom Party",
+       "id": "nz-outdoors",
+       "name": "Outdoors & Freedom",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 148899,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "NZ Outdoors & Freedom Party",
+       "id": "nz-outdoors",
+       "name": "Outdoors & Freedom",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Conservative Party NZ",
+   "id": "conservative",
+   "name": "Conservative",
+   "votes": 2246,
+   "share": 0.0007774612394379849,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 149683,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Conservative Party NZ",
+       "id": "conservative",
+       "name": "Conservative",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 149683,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Conservative Party NZ",
+       "id": "conservative",
+       "name": "Conservative",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Women’s Rights Party",
+   "id": "womens-rights",
+   "name": "Women’s Rights",
+   "votes": 2231,
+   "share": 0.0007722689337427178,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 149699,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Women’s Rights Party",
+       "id": "womens-rights",
+       "name": "Women’s Rights",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 149699,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Women’s Rights Party",
+       "id": "womens-rights",
+       "name": "Women’s Rights",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "New Zealand Loyal",
+   "id": "nz-loyal",
+   "name": "NZ Loyal",
+   "votes": 2043,
+   "share": 0.0007071920356953709,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 149897,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "New Zealand Loyal",
+       "id": "nz-loyal",
+       "name": "NZ Loyal",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 149897,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "New Zealand Loyal",
+       "id": "nz-loyal",
+       "name": "NZ Loyal",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Vision New Zealand",
+   "id": "vision-nz",
+   "name": "Vision NZ",
+   "votes": 1963,
+   "share": 0.0006794997386539467,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 149981,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Vision New Zealand",
+       "id": "vision-nz",
+       "name": "Vision NZ",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 149981,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Vision New Zealand",
+       "id": "vision-nz",
+       "name": "Vision NZ",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Te Tai Tokerau Party",
+   "id": "te-tai-tokerau",
+   "name": "Te Tai Tokerau",
+   "votes": 1554,
+   "share": 0.0005379228700296654,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 150412,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Tai Tokerau Party",
+       "id": "te-tai-tokerau",
+       "name": "Te Tai Tokerau",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 150412,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Te Tai Tokerau Party",
+       "id": "te-tai-tokerau",
+       "name": "Te Tai Tokerau",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Alliance Party",
+   "id": "alliance",
+   "name": "Alliance",
+   "votes": 1322,
+   "share": 0.00045761520860953517,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 150656,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Alliance Party",
+       "id": "alliance",
+       "name": "Alliance",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 150656,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Alliance Party",
+       "id": "alliance",
+       "name": "Alliance",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  },
+  {
+   "party": "Free Palestine",
+   "id": "free-palestine",
+   "name": "Free Palestine",
+   "votes": 1079,
+   "share": 0.0003734998563462091,
+   "qualified": false,
+   "entitlement": 0,
+   "electorates": 0,
+   "overhang": 0,
+   "last": null,
+   "next": null,
+   "gain": {
+    "direction": "gain",
+    "votes": 150912,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Free Palestine",
+       "id": "free-palestine",
+       "name": "Free Palestine",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "overhang_only": false
+   },
+   "lose": null,
+   "threshold": {
+    "direction": "reach",
+    "votes": 150912,
+    "house": {
+     "parties": [
+      {
+       "party": "National Party",
+       "id": "national",
+       "name": "National",
+       "entitlement": 33,
+       "electorates": 40,
+       "seats": 40,
+       "list": 0
+      },
+      {
+       "party": "Labour Party",
+       "id": "labour",
+       "name": "Labour",
+       "entitlement": 34,
+       "electorates": 22,
+       "seats": 34,
+       "list": 12
+      },
+      {
+       "party": "Green Party",
+       "id": "green",
+       "name": "Green",
+       "entitlement": 16,
+       "electorates": 3,
+       "seats": 16,
+       "list": 13
+      },
+      {
+       "party": "ACT New Zealand",
+       "id": "act",
+       "name": "ACT",
+       "entitlement": 12,
+       "electorates": 1,
+       "seats": 12,
+       "list": 11
+      },
+      {
+       "party": "New Zealand First Party",
+       "id": "nz-first",
+       "name": "NZ First",
+       "entitlement": 11,
+       "electorates": 0,
+       "seats": 11,
+       "list": 11
+      },
+      {
+       "party": "Opportunity Party",
+       "id": "top",
+       "name": "Opportunity",
+       "entitlement": 7,
+       "electorates": 0,
+       "seats": 7,
+       "list": 7
+      },
+      {
+       "party": "Free Palestine",
+       "id": "free-palestine",
+       "name": "Free Palestine",
+       "entitlement": 6,
+       "electorates": 0,
+       "seats": 6,
+       "list": 6
+      },
+      {
+       "party": "Te Pāti Māori",
+       "id": "te-pati-maori",
+       "name": "Te Pāti Māori",
+       "entitlement": 1,
+       "electorates": 5,
+       "seats": 5,
+       "list": 0
+      }
+     ],
+     "other_electorates": 0,
+     "house": 131
+    },
+    "near": false
+   }
+  }
+ ],
+ "ladder": [
+  {
+   "rank": 113,
+   "party": "Labour Party",
+   "seat": 34,
+   "quotient": 12884.149253731342,
+   "allocated": true,
+   "id": "labour",
+   "name": "Labour"
+  },
+  {
+   "rank": 114,
+   "party": "National Party",
+   "seat": 33,
+   "quotient": 12600.184615384615,
+   "allocated": true,
+   "id": "national",
+   "name": "National"
+  },
+  {
+   "rank": 115,
+   "party": "Labour Party",
+   "seat": 35,
+   "quotient": 12510.695652173914,
+   "allocated": true,
+   "id": "labour",
+   "name": "Labour"
+  },
+  {
+   "rank": 116,
+   "party": "Green Party",
+   "seat": 17,
+   "quotient": 12313.818181818182,
+   "allocated": true,
+   "id": "green",
+   "name": "Green"
+  },
+  {
+   "rank": 117,
+   "party": "National Party",
+   "seat": 34,
+   "quotient": 12224.059701492537,
+   "allocated": true,
+   "id": "national",
+   "name": "National"
+  },
+  {
+   "rank": 118,
+   "party": "ACT New Zealand",
+   "seat": 13,
+   "quotient": 12180.84,
+   "allocated": true,
+   "id": "act",
+   "name": "ACT"
+  },
+  {
+   "rank": 119,
+   "party": "Labour Party",
+   "seat": 36,
+   "quotient": 12158.281690140846,
+   "allocated": true,
+   "id": "labour",
+   "name": "Labour"
+  },
+  {
+   "rank": 120,
+   "party": "New Zealand First Party",
+   "seat": 12,
+   "quotient": 12068.04347826087,
+   "allocated": true,
+   "id": "nz-first",
+   "name": "NZ First"
+  },
+  {
+   "rank": 121,
+   "party": "National Party",
+   "seat": 35,
+   "quotient": 11869.739130434782,
+   "allocated": false,
+   "id": "national",
+   "name": "National"
+  },
+  {
+   "rank": 122,
+   "party": "Labour Party",
+   "seat": 37,
+   "quotient": 11825.17808219178,
+   "allocated": false,
+   "id": "labour",
+   "name": "Labour"
+  },
+  {
+   "rank": 123,
+   "party": "Opportunity Party",
+   "seat": 8,
+   "quotient": 11672.866666666667,
+   "allocated": false,
+   "id": "top",
+   "name": "Opportunity"
+  },
+  {
+   "rank": 124,
+   "party": "Green Party",
+   "seat": 18,
+   "quotient": 11610.171428571428,
+   "allocated": false,
+   "id": "green",
+   "name": "Green"
+  },
+  {
+   "rank": 125,
+   "party": "National Party",
+   "seat": 36,
+   "quotient": 11535.38028169014,
+   "allocated": false,
+   "id": "national",
+   "name": "National"
+  },
+  {
+   "rank": 126,
+   "party": "Labour Party",
+   "seat": 38,
+   "quotient": 11509.84,
+   "allocated": false,
+   "id": "labour",
+   "name": "Labour"
+  },
+  {
+   "rank": 127,
+   "party": "ACT New Zealand",
+   "seat": 14,
+   "quotient": 11278.555555555555,
+   "allocated": false,
+   "id": "act",
+   "name": "ACT"
+  },
+  {
+   "rank": 128,
+   "party": "National Party",
+   "seat": 37,
+   "quotient": 11219.342465753425,
+   "allocated": false,
+   "id": "national",
+   "name": "National"
+  }
+ ],
+ "electorates": [
+  {
+   "id": 55,
+   "electorate": "Wairarapa",
+   "winner": "McANULTY, Kieran",
+   "winner_party": "Labour Party",
+   "winner_votes": 19688,
+   "runner_up": "BUTTERICK, Mike",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 19607,
+   "margin": 81,
+   "margin_pct": 0.17706079087153256,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 12,
+   "electorate": "Hamilton East",
+   "winner": "DANSEY, Georgie",
+   "winner_party": "Labour Party",
+   "winner_votes": 16200,
+   "runner_up": "HAMILTON, Ryan",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 16027,
+   "margin": 173,
+   "margin_pct": 0.48007548007548007,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 46,
+   "electorate": "Takanini",
+   "winner": "NAKHLE, Rima",
+   "winner_party": "National Party",
+   "winner_votes": 14059,
+   "runner_up": "SINGH, Kharag",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13600,
+   "margin": 459,
+   "margin_pct": 1.4932170857867855,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 69,
+   "electorate": "Te Tai Tokerau",
+   "winner": "EDWARDS, Aperahama",
+   "winner_party": "Te Pāti Māori",
+   "winner_votes": 10358,
+   "runner_up": "LYNDON, Hūhana",
+   "runner_up_party": "Green Party",
+   "runner_up_votes": 9775,
+   "margin": 583,
+   "margin_pct": 1.7288929747041903,
+   "winner_party_id": "te-pati-maori",
+   "winner_party_name": "Te Pāti Māori",
+   "runner_up_party_id": "green",
+   "runner_up_party_name": "Green"
+  },
+  {
+   "id": 63,
+   "electorate": "Whangārei",
+   "winner": "BUDD, Lloyd Sam",
+   "winner_party": "National Party",
+   "winner_votes": 17292,
+   "runner_up": "PAYINDA, Gary",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 16607,
+   "margin": 685,
+   "margin_pct": 1.5716055614188043,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 29,
+   "electorate": "Nelson",
+   "winner": "CAMERON, Blair",
+   "winner_party": "National Party",
+   "winner_votes": 18655,
+   "runner_up": "BOYACK, Rachel",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 17572,
+   "margin": 1083,
+   "margin_pct": 2.5223588596981554,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 27,
+   "electorate": "Mt Roskill",
+   "winner": "WOOD, Michael Philip",
+   "winner_party": "Labour Party",
+   "winner_votes": 16581,
+   "runner_up": "CHEUNG, Carlos",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 15453,
+   "margin": 1128,
+   "margin_pct": 3.0984754841367943,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 15,
+   "electorate": "Hutt South",
+   "winner": "ANDERSEN, Ginny",
+   "winner_party": "Labour Party",
+   "winner_votes": 20889,
+   "runner_up": "BISHOP, Chris",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 19404,
+   "margin": 1485,
+   "margin_pct": 3.226857887874837,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 58,
+   "electorate": "Wellington Bays",
+   "winner": "GENTER, Julie Anne",
+   "winner_party": "Green Party",
+   "winner_votes": 19603,
+   "runner_up": "RENNEY, Craig",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 17993,
+   "margin": 1610,
+   "margin_pct": 3.2301426479144513,
+   "winner_party_id": "green",
+   "winner_party_name": "Green",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 20,
+   "electorate": "Kapiti",
+   "winner": "COSTLEY, Tim",
+   "winner_party": "National Party",
+   "winner_votes": 23293,
+   "runner_up": "HANDFORD, Sophie",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 21592,
+   "margin": 1701,
+   "margin_pct": 3.380701580045712,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 13,
+   "electorate": "Hamilton West",
+   "winner": "POTAKA, Tama William",
+   "winner_party": "National Party",
+   "winner_votes": 15375,
+   "runner_up": "WILLIAMSON, Myra",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13105,
+   "margin": 2270,
+   "margin_pct": 6.228050921861282,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 10,
+   "electorate": "Epsom",
+   "winner": "SEYMOUR, David",
+   "winner_party": "ACT New Zealand",
+   "winner_votes": 14662,
+   "runner_up": "GOLDSMITH, Paul",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 12070,
+   "margin": 2592,
+   "margin_pct": 6.254373476823589,
+   "winner_party_id": "act",
+   "winner_party_name": "ACT",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 24,
+   "electorate": "Maungakiekie",
+   "winner": "FLEMING, Greg",
+   "winner_party": "National Party",
+   "winner_votes": 17639,
+   "runner_up": "RADHAKRISHNAN, Priyanca",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 15013,
+   "margin": 2626,
+   "margin_pct": 6.602303012017901,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 71,
+   "electorate": "Waiariki",
+   "winner": "WAITITI, Rawiri",
+   "winner_party": "Te Pāti Māori",
+   "winner_votes": 15253,
+   "runner_up": "WAIKATO, Tania",
+   "runner_up_party": "Green Party",
+   "runner_up_votes": 12617,
+   "margin": 2636,
+   "margin_pct": 7.8201020529251215,
+   "winner_party_id": "te-pati-maori",
+   "winner_party_name": "Te Pāti Māori",
+   "runner_up_party_id": "green",
+   "runner_up_party_name": "Green"
+  },
+  {
+   "id": 70,
+   "electorate": "Te Tai Tonga",
+   "winner": "RAMSDEN, Mananui",
+   "winner_party": "Labour Party",
+   "winner_votes": 10055,
+   "runner_up": "TE MORENGA, Lisa",
+   "runner_up_party": "Green Party",
+   "runner_up_votes": 7282,
+   "margin": 2773,
+   "margin_pct": 8.91124108233177,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "green",
+   "runner_up_party_name": "Green"
+  },
+  {
+   "id": 64,
+   "electorate": "Wigram",
+   "winner": "YANZICK, Dominik",
+   "winner_party": "Labour Party",
+   "winner_votes": 17718,
+   "runner_up": "SUMMERFIELD, Tracy",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 14895,
+   "margin": 2823,
+   "margin_pct": 7.133471471167939,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 2,
+   "electorate": "Banks Peninsula",
+   "winner": "McLELLAN, Tracey",
+   "winner_party": "Labour Party",
+   "winner_votes": 22398,
+   "runner_up": "WEENINK, Vanessa",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 19378,
+   "margin": 3020,
+   "margin_pct": 5.789322342566855,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 66,
+   "electorate": "Ikaroa-Rāwhiti",
+   "winner": "TANGAERE-MANUEL, Cushla",
+   "winner_party": "Labour Party",
+   "winner_votes": 13929,
+   "runner_up": "MAXWELL, Haley",
+   "runner_up_party": "Te Pāti Māori",
+   "runner_up_votes": 10812,
+   "margin": 3117,
+   "margin_pct": 9.474452111006414,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "te-pati-maori",
+   "runner_up_party_name": "Te Pāti Māori"
+  },
+  {
+   "id": 32,
+   "electorate": "Northcote",
+   "winner": "BIDOIS, Dan",
+   "winner_party": "National Party",
+   "winner_votes": 18315,
+   "runner_up": "HALBERT, Shanan",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 15110,
+   "margin": 3205,
+   "margin_pct": 8.211632077888803,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 4,
+   "electorate": "Christchurch Central",
+   "winner": "HAMPTON, George",
+   "winner_party": "Labour Party",
+   "winner_votes": 16601,
+   "runner_up": "STEPHENS, Dale Aotea",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 13255,
+   "margin": 3346,
+   "margin_pct": 7.997131931166348,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 56,
+   "electorate": "Waitākere",
+   "winner": "WALTERS, Vanushi",
+   "winner_party": "Labour Party",
+   "winner_votes": 15729,
+   "runner_up": "LOHENI, Agnes",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 12379,
+   "margin": 3350,
+   "margin_pct": 8.496499949274627,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 36,
+   "electorate": "Palmerston North",
+   "winner": "UTIKERE, Tangi",
+   "winner_party": "Labour Party",
+   "winner_votes": 19342,
+   "runner_up": "BANSAL, Ankit",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 15842,
+   "margin": 3500,
+   "margin_pct": 8.650946660734588,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 1,
+   "electorate": "Auckland Central",
+   "winner": "SWARBRICK, Chlöe",
+   "winner_party": "Green Party",
+   "winner_votes": 18610,
+   "runner_up": "KINSER, Candace",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 13887,
+   "margin": 4723,
+   "margin_pct": 12.117091692749757,
+   "winner_party_id": "green",
+   "winner_party_name": "Green",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 68,
+   "electorate": "Te Tai Hauāuru",
+   "winner": "NGAREWA-PACKER, Debbie",
+   "winner_party": "Te Pāti Māori",
+   "winner_votes": 17819,
+   "runner_up": "KĀTENE, Te Pūoho",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13021,
+   "margin": 4798,
+   "margin_pct": 14.90525007766387,
+   "winner_party_id": "te-pati-maori",
+   "winner_party_name": "Te Pāti Māori",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 45,
+   "electorate": "Taieri",
+   "winner": "LEARY, Ingrid",
+   "winner_party": "Labour Party",
+   "winner_votes": 17959,
+   "runner_up": "FRENCH, Matthew",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 12770,
+   "margin": 5189,
+   "margin_pct": 12.389570698629482,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 42,
+   "electorate": "Rotorua",
+   "winner": "McCLAY, Todd",
+   "winner_party": "National Party",
+   "winner_votes": 18267,
+   "runner_up": "WANG, Fisher",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 12736,
+   "margin": 5531,
+   "margin_pct": 15.3506702561683,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 8,
+   "electorate": "East Cape",
+   "winner": "KIRKPATRICK, Dana Margot",
+   "winner_party": "National Party",
+   "winner_votes": 17998,
+   "runner_up": "LUXTON, Jo",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 12425,
+   "margin": 5573,
+   "margin_pct": 14.933411934939308,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 59,
+   "electorate": "Wellington North",
+   "winner": "PAUL, Tamatha",
+   "winner_party": "Green Party",
+   "winner_votes": 22222,
+   "runner_up": "VERRALL, Ayesha",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 16633,
+   "margin": 5589,
+   "margin_pct": 10.387703516467177,
+   "winner_party_id": "green",
+   "winner_party_name": "Green",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 47,
+   "electorate": "Tāmaki",
+   "winner": "MURALIDHAR, Mahesh",
+   "winner_party": "National Party",
+   "winner_votes": 18167,
+   "runner_up": "HARRIS, Max",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 12243,
+   "margin": 5924,
+   "margin_pct": 13.663622105360274,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 25,
+   "electorate": "Mt Albert",
+   "winner": "WHITE, Helen",
+   "winner_party": "Labour Party",
+   "winner_votes": 17329,
+   "runner_up": "LEE, Melissa",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 11311,
+   "margin": 6018,
+   "margin_pct": 14.774624373956595,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 40,
+   "electorate": "Rangitīkei",
+   "winner": "REDMAYNE, Suze",
+   "winner_party": "National Party",
+   "winner_votes": 19432,
+   "runner_up": "SEVERINSEN, Karl",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13039,
+   "margin": 6393,
+   "margin_pct": 14.411307229323054,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 61,
+   "electorate": "Whanganui",
+   "winner": "BATES, Carl",
+   "winner_party": "National Party",
+   "winner_votes": 21370,
+   "runner_up": "ROBERTS, Angela",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 14286,
+   "margin": 7084,
+   "margin_pct": 17.4573055028463,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 60,
+   "electorate": "West Coast-Tasman",
+   "winner": "MILNE, Katie",
+   "winner_party": "National Party",
+   "winner_votes": 18288,
+   "runner_up": "PATERSON, Rory William",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 11070,
+   "margin": 7218,
+   "margin_pct": 17.199637802030214,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 16,
+   "electorate": "Ilam",
+   "winner": "CAMPBELL, Hamish",
+   "winner_party": "National Party",
+   "winner_votes": 20407,
+   "runner_up": "JAMIESON, Rata",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13187,
+   "margin": 7220,
+   "margin_pct": 17.278514334944717,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 28,
+   "electorate": "Napier",
+   "winner": "NIMON, Katie",
+   "winner_party": "National Party",
+   "winner_votes": 20957,
+   "runner_up": "HEDLEY, Alex",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13579,
+   "margin": 7378,
+   "margin_pct": 18.125537403267412,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 14,
+   "electorate": "Henderson",
+   "winner": "TWYFORD, Phil",
+   "winner_party": "Labour Party",
+   "winner_votes": 16580,
+   "runner_up": "NICHOLAS, Angee",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 8942,
+   "margin": 7638,
+   "margin_pct": 22.958999639293015,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 30,
+   "electorate": "New Plymouth",
+   "winner": "MacLEOD, David",
+   "winner_party": "National Party",
+   "winner_votes": 23352,
+   "runner_up": "CLINTON-GOHDES, Amanda",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 15245,
+   "margin": 8107,
+   "margin_pct": 19.311576941400666,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 11,
+   "electorate": "Glendene",
+   "winner": "SEPULONI, Carmel Jean",
+   "winner_party": "Labour Party",
+   "winner_votes": 17423,
+   "runner_up": "KUMAR, Sunil",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 8868,
+   "margin": 8555,
+   "margin_pct": 24.009317467444994,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 18,
+   "electorate": "Kaikōura",
+   "winner": "SMITH, Stuart",
+   "winner_party": "National Party",
+   "winner_votes": 20323,
+   "runner_up": "FLIGHT, Matt",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 11694,
+   "margin": 8629,
+   "margin_pct": 21.001265576323988,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 33,
+   "electorate": "Northland",
+   "winner": "McCALLUM, Grant Lewis",
+   "winner_party": "National Party",
+   "winner_votes": 18751,
+   "runner_up": "LATIMER, Ashleigh",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 10066,
+   "margin": 8685,
+   "margin_pct": 20.048476454293628,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 57,
+   "electorate": "Waitaki",
+   "winner": "ANDERSON, Miles John",
+   "winner_party": "National Party",
+   "winner_votes": 22092,
+   "runner_up": "O'CONNOR, Damien",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 13092,
+   "margin": 9000,
+   "margin_pct": 20.156323486596044,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 37,
+   "electorate": "Papakura",
+   "winner": "CHATTERTON, Emma May",
+   "winner_party": "National Party",
+   "winner_votes": 18831,
+   "runner_up": "KANONGATA'A, Anahila",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9809,
+   "margin": 9022,
+   "margin_pct": 26.37780311668567,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 67,
+   "electorate": "Tāmaki Makaurau",
+   "winner": "KAIPARA, Oriini",
+   "winner_party": "Te Pāti Māori",
+   "winner_votes": 16723,
+   "runner_up": "LEONI, Kerrin",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 7373,
+   "margin": 9350,
+   "margin_pct": 30.159344558415587,
+   "winner_party_id": "te-pati-maori",
+   "winner_party_name": "Te Pāti Māori",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 7,
+   "electorate": "Dunedin",
+   "winner": "BROOKING, Rachel",
+   "winner_party": "Labour Party",
+   "winner_votes": 18362,
+   "runner_up": "HERNANDEZ, Francisco Bagkus",
+   "runner_up_party": "Green Party",
+   "runner_up_votes": 8838,
+   "margin": 9524,
+   "margin_pct": 23.53115580372585,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "green",
+   "runner_up_party_name": "Green"
+  },
+  {
+   "id": 51,
+   "electorate": "Tukituki",
+   "winner": "WEDD, Catherine",
+   "winner_party": "National Party",
+   "winner_votes": 19175,
+   "runner_up": "SCOTT, Dan",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9579,
+   "margin": 9596,
+   "margin_pct": 25.068575459129026,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 52,
+   "electorate": "Upper Harbour",
+   "winner": "BREWER, Cameron",
+   "winner_party": "National Party",
+   "winner_votes": 19548,
+   "runner_up": "BARAL, Hannah Pia",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9498,
+   "margin": 10050,
+   "margin_pct": 27.288278258980693,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 5,
+   "electorate": "Christchurch East",
+   "winner": "DAVIDSON, Reuben John",
+   "winner_party": "Labour Party",
+   "winner_votes": 21522,
+   "runner_up": "DAVIDS, Alexandra",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 11186,
+   "margin": 10336,
+   "margin_pct": 23.9853340449725,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 17,
+   "electorate": "Invercargill",
+   "winner": "SIMMONDS, Penny",
+   "winner_party": "National Party",
+   "winner_votes": 21454,
+   "runner_up": "LEE, Janice",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 11089,
+   "margin": 10365,
+   "margin_pct": 28.422957742616614,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 38,
+   "electorate": "Port Waikato",
+   "winner": "PAUL, Matthew",
+   "winner_party": "National Party",
+   "winner_votes": 20985,
+   "runner_up": "BRACHI, Matt",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9450,
+   "margin": 11535,
+   "margin_pct": 27.773096092263984,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 50,
+   "electorate": "Tauranga",
+   "winner": "UFFINDELL, Sam",
+   "winner_party": "National Party",
+   "winner_votes": 22342,
+   "runner_up": "TINETTI, Jan",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 10607,
+   "margin": 11735,
+   "margin_pct": 28.66389838788471,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 54,
+   "electorate": "Waimakariri",
+   "winner": "DOOCEY, Matt",
+   "winner_party": "National Party",
+   "winner_votes": 26711,
+   "runner_up": "ROSEWARNE, Dan",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 14320,
+   "margin": 12391,
+   "margin_pct": 25.21417088903811,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 44,
+   "electorate": "Southland",
+   "winner": "MOONEY, Joseph",
+   "winner_party": "National Party",
+   "winner_votes": 21614,
+   "runner_up": "McDONALD, Peter",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9193,
+   "margin": 12421,
+   "margin_pct": 31.828315182575274,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 31,
+   "electorate": "North Shore",
+   "winner": "WATTS, Simon",
+   "winner_party": "National Party",
+   "winner_votes": 22695,
+   "runner_up": "COLLINS, Sam",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 10124,
+   "margin": 12571,
+   "margin_pct": 31.06865701151698,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 34,
+   "electorate": "Ōtāhuhu",
+   "winner": "SALESA, Jenny",
+   "winner_party": "Labour Party",
+   "winner_votes": 17224,
+   "runner_up": "ARYA, Lalit",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 3962,
+   "margin": 13262,
+   "margin_pct": 52.09978393242978,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 48,
+   "electorate": "Taranaki-King Country",
+   "winner": "KURIGER, Barbara Joan",
+   "winner_party": "National Party",
+   "winner_votes": 21882,
+   "runner_up": "PATTEMORE, David",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 8496,
+   "margin": 13386,
+   "margin_pct": 31.841861128951688,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 21,
+   "electorate": "Kenepuru",
+   "winner": "EDMONDS, Barbara",
+   "winner_party": "Labour Party",
+   "winner_votes": 23657,
+   "runner_up": "EVETTS, Matthew",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 10247,
+   "margin": 13410,
+   "margin_pct": 32.538276757333854,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 65,
+   "electorate": "Hauraki-Waikato",
+   "winner": "MAIPI-CLARKE, Hana-Rawhiti",
+   "winner_party": "Te Pāti Māori",
+   "winner_votes": 22536,
+   "runner_up": "KIRIONA, Kingi",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9111,
+   "margin": 13425,
+   "margin_pct": 41.29244586614173,
+   "winner_party_id": "te-pati-maori",
+   "winner_party_name": "Te Pāti Māori",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 53,
+   "electorate": "Waikato",
+   "winner": "VAN DE MOLEN, Tim",
+   "winner_party": "National Party",
+   "winner_votes": 24351,
+   "runner_up": "TOKO, Jamie",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 10850,
+   "margin": 13501,
+   "margin_pct": 31.684306869118302,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 19,
+   "electorate": "Kaipara ki Mahurangi",
+   "winner": "ROWE, Jessica",
+   "winner_party": "National Party",
+   "winner_votes": 21857,
+   "runner_up": "SWINBURN, Jolyon",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 7954,
+   "margin": 13903,
+   "margin_pct": 31.681250569683712,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 3,
+   "electorate": "Botany",
+   "winner": "LUXON, Christopher",
+   "winner_party": "National Party",
+   "winner_votes": 23562,
+   "runner_up": "LEAVASA, Anae Neru",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9578,
+   "margin": 13984,
+   "margin_pct": 38.15448418869881,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 49,
+   "electorate": "Taupō",
+   "winner": "UPSTON, Louise Claire",
+   "winner_party": "National Party",
+   "winner_votes": 25885,
+   "runner_up": "FLATT, Chris",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 11576,
+   "margin": 14309,
+   "margin_pct": 33.28603331162185,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 35,
+   "electorate": "Pakuranga",
+   "winner": "BROWN, Simeon",
+   "winner_party": "National Party",
+   "winner_votes": 24210,
+   "runner_up": "MATTHEWS, Campbell Henry",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9445,
+   "margin": 14765,
+   "margin_pct": 39.646098490951076,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 39,
+   "electorate": "Rangitata",
+   "winner": "MEAGER, James",
+   "winner_party": "National Party",
+   "winner_votes": 24271,
+   "runner_up": "MALAMA, Sange",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9362,
+   "margin": 14909,
+   "margin_pct": 37.75290572535514,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 22,
+   "electorate": "Māngere",
+   "winner": "SOSENE, Lemauga Lydia",
+   "winner_party": "Labour Party",
+   "winner_votes": 18433,
+   "runner_up": "BOURKE, Rosemary",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 3423,
+   "margin": 15010,
+   "margin_pct": 51.98628476431268,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 23,
+   "electorate": "Manurewa",
+   "winner": "WILLIAMS, Arena",
+   "winner_party": "Labour Party",
+   "winner_votes": 19453,
+   "runner_up": "MAJEED, Ghouse",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 4310,
+   "margin": 15143,
+   "margin_pct": 54.48690270581462,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 9,
+   "electorate": "East Coast Bays",
+   "winner": "STANFORD, Erica",
+   "winner_party": "National Party",
+   "winner_votes": 22707,
+   "runner_up": "McENROE, Brendan",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 7386,
+   "margin": 15321,
+   "margin_pct": 42.786528150134046,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 43,
+   "electorate": "Selwyn",
+   "winner": "GRIGG, Nicola",
+   "winner_party": "National Party",
+   "winner_votes": 24640,
+   "runner_up": "GAUTAM, Sunita",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 9310,
+   "margin": 15330,
+   "margin_pct": 34.450212364322795,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 26,
+   "electorate": "Mt Maunganui",
+   "winner": "RUTHERFORD, Tom",
+   "winner_party": "National Party",
+   "winner_votes": 24071,
+   "runner_up": "GREY, Rhieve",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 8678,
+   "margin": 15393,
+   "margin_pct": 36.86416323402625,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 6,
+   "electorate": "Coromandel",
+   "winner": "SIMPSON, Scott",
+   "winner_party": "National Party",
+   "winner_votes": 24292,
+   "runner_up": "BENNETT, Glen",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 8079,
+   "margin": 16213,
+   "margin_pct": 35.882170679886684,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  },
+  {
+   "id": 41,
+   "electorate": "Remutaka",
+   "winner": "HIPKINS, Chris",
+   "winner_party": "Labour Party",
+   "winner_votes": 24964,
+   "runner_up": "LATEEF, Zabeen",
+   "runner_up_party": "National Party",
+   "runner_up_votes": 8382,
+   "margin": 16582,
+   "margin_pct": 37.993767757309136,
+   "winner_party_id": "labour",
+   "winner_party_name": "Labour",
+   "runner_up_party_id": "national",
+   "runner_up_party_name": "National"
+  },
+  {
+   "id": 62,
+   "electorate": "Whangaparāoa",
+   "winner": "MITCHELL, Mark",
+   "winner_party": "National Party",
+   "winner_votes": 27735,
+   "runner_up": "MULLER PALLARÈS, Estefania",
+   "runner_up_party": "Labour Party",
+   "runner_up_votes": 11026,
+   "margin": 16709,
+   "margin_pct": 39.81841145771275,
+   "winner_party_id": "national",
+   "winner_party_name": "National",
+   "runner_up_party_id": "labour",
+   "runner_up_party_name": "Labour"
+  }
+ ]
+}

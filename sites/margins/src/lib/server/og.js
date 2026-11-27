@@ -80,15 +80,16 @@ function electionData(/** @type {string} */ id) {
 	};
 }
 
-/**
- * The home card's data. It's deliberately static, with no results on it: the home page's URL never
- * changes but the elections it covers do, and platforms cache a card by its page's URL.
- */
+/** The home card's data when there's no 2026 final result to feature: static, with no results on it. */
 const homeData = () => ({ kind: /** @type {const} */ ('home') });
 
-/** The card for a page: an election's, or the home card for everything else. */
+/**
+ * The card for a page: an election's, or for the home page the 2026 final results' card (the
+ * static home card if there's no 2026 final). Platforms cache a card by its page's URL, so
+ * the home URL needs a rescrape (Facebook Sharing Debugger, LinkedIn Post Inspector) when this changes.
+ */
 export function cardData(/** @type {string | undefined} */ election) {
-	return (election && electionData(election)) || homeData();
+	return (election ? electionData(election) : electionData('2026')) || homeData();
 }
 
 const sentence = (/** @type {NonNullable<ReturnType<typeof closestParty>>} */ c) =>
@@ -103,7 +104,8 @@ const LAYOUT = ogSource + parliamentSource + appCss;
 export function pageMeta(/** @type {string | undefined} */ election) {
 	const data = cardData(election);
 	const version = createHash('sha1').update(JSON.stringify(data)).update(LAYOUT).digest('hex').slice(0, 10);
-	if (data.kind === 'election') {
+	// The home page shows the 2026 card but keeps the site's own title and description.
+	if (election && data.kind === 'election') {
 		const d = /** @type {NonNullable<ReturnType<typeof electionData>>} */ (data);
 		const parts = [d.closest.lose && `${sentence(d.closest.lose)}.`, d.closest.gain && `${sentence(d.closest.gain)}.`,
 			d.electorate && `Closest electorate: ${d.electorate.name}, by ${votes(d.electorate.margin)} ${d.electorate.margin === 1 ? 'vote' : 'votes'}.`,

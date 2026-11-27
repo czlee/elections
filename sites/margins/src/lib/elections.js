@@ -22,7 +22,7 @@ export const ELECTIONS = Object.keys(DATA)
 export const electorateUrl = (/** @type {string} */ official, /** @type {number} */ id) =>
 	`${official}electorate-details-${String(id).padStart(2, '0')}.html`;
 
-/** Elections that have a final result, for the placeholder's links. */
+/** Elections that have a final result. */
 export const PAST = ELECTIONS.filter((e) => !e.prelim);
 
 /** A party's key for colours and seat charts: its party_id, or "independent" for no party. */

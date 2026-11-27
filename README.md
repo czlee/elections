@@ -97,7 +97,7 @@ plus CSVs) with the party votes each party would need to gain or lose a seat, an
 The method is in its docstring. For the final results on the day:
 
 ```
-python3 scripts/download.py --election 2026     # or --base <URL of the final feed's /xml/> if that 404s
+python3 scripts/download.py --election 2026     # the final results (`--base <URL of a feed's /xml/>` for any other feed)
 python3 scripts/seats.py                        # checks the allocation against the Commission's seats
 python3 scripts/margins/margins.py 2026         # prints a summary, writes results/margins/2026/
 ```

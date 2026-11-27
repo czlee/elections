@@ -758,8 +758,9 @@ mind, but fine as it's consistent across bases).
 - **Purpose.** On **27 November 2026 at 2pm** the Electoral Commission releases the final results; the user wants
   the margins out quickly. **Requirement: nothing to design or decide live.** The day is
   `download.py --election 2026` (or `--base <URL>`), `seats.py`, `margins.py 2026` (and, once the site exists,
-  its build). The 2026 final feed URL in `download.py` is a **guess from the pattern**
-  (`electionresults_2026/xml/`), a 404 on 27 November before the release; confirm it on the day.
+  its build). The 2026 final feed URL in `download.py` was a guess from the pattern
+  (`electionresults_2026/xml/`, a 404 on the morning of 27 November); **it was right**: it returned 200 at 2pm
+  (`election.xml` `updated="2026-11-27T00:00:00"`, 2,905,153 votes cast, against 2,432,403 in the preliminary count).
 - **Tested on** 2017, 2020, 2023, 2026-prelim and the 2017 and 2023 prelims. Seat counts and House sizes match the
   official results (122 in 2023, 120 in 2017 and 2020), and each threshold is confirmed against `seats.allocate`
   (seats unchanged one vote short, changed at it).
@@ -768,11 +769,13 @@ mind, but fine as it's consistent across bases).
   electorates, seats, list seats, and the House size). A roll-over can show a cell's House without knowing the
   electoral rules. Also in it: per-party last-in and next-out quotients with divisors, the ranking around the
   cutoff (`ladder`), and every electorate's margin.
-- **Site built 27 November 2026: `sites/margins/`** (served at `/elections/margins/`; the root page is a placeholder
-  for the 2026 final results with links to 2017, 2020, 2023 and the 2026 preliminary count). Its data is the
-  `margins.json` files, committed as `sites/margins/src/lib/data/<election>.json`. **The live step is:**
-  `margins.py 2026`, copy `results/margins/2026/margins.json` to `sites/margins/src/lib/data/2026.json`, and make
-  `/` show it (not yet done: the root is the placeholder). `margins.py` now also writes each party's `id`
+- **Site built 27 November 2026: `sites/margins/`** (served at `/elections/margins/`). Its data is the
+  `margins.json` files, committed as `sites/margins/src/lib/data/<election>.json`. **The live step was (done 27
+  November 2026, from 2pm):** `margins.py 2026`, copy `results/margins/2026/margins.json` to
+  `sites/margins/src/lib/data/2026.json`, link `/2026/` from the root page (replacing the placeholder callout; the
+  root's list of earlier elections leaves 2026 out) and make the home social card the 2026 card (`cardData()` in
+  `lib/server/og.js`; the home page keeps its own title and description). The home URL's cached preview needs a
+  rescrape (Facebook Sharing Debugger, LinkedIn Post Inspector). `margins.py` now also writes each party's `id`
   (party_id) and the electorate parties' short names, which the site uses for colours. The layout is the first
   pass (green-tinted background; the party-vote table beside a horseshoe that previews each scenario), and the
   closest-electorates and quotient sections are static. The description below is the original plan.
